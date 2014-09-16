@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.samsoft.cuandollega.CLMain"
+    android:background="@color/fondo"
+    android:id="@+id/aaa">
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Por Calle"
+        android:id="@+id/porcalle"
+        android:layout_gravity="center_horizontal"
+        android:clickable="true"
+        android:onClick="calleClick" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Por Colectivo"
+        android:id="@+id/ṕorcolectivo"
+        android:layout_gravity="center_horizontal"
+        android:onClick="busClick" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:indeterminateBehavior="cycle" />
+
+</LinearLayout>
