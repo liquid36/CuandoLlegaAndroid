@@ -65,7 +65,7 @@ public class colectivoSearch extends ActionBarActivity {
                     @Override
                     public void onClick(View view) {
                         JSONObject o = (JSONObject) view.getTag();
-                        if (accion == "bus") { // elegir Calles ahora
+                        if (accion.equals("bus")) { // elegir Calles ahora
                             try {
                                 Intent i = new Intent(colectivoSearch.this, calleSearch.class);
                                 i.putExtra("calle",0);
