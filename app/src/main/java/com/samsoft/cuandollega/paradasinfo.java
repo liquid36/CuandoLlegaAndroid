@@ -2,6 +2,7 @@ package com.samsoft.cuandollega;
 
 import android.app.ExpandableListActivity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -143,10 +144,15 @@ public class paradasinfo extends ActionBarActivity {
         protected void onPostExecute(Boolean result) {
             //if (result) {
                 Log.d("ASKBUS", "Datos " + datos);
-                TextView t = new TextView(contex);
-                t.setText(datos);
-                LinearLayout list = (LinearLayout) v;
-                list.addView(t);
+                String [] lineas = datos.substring(11).split("-");
+                for(int i = 0; i < lineas.length; i++) {
+                    TextView t = new TextView(contex);
+                    t.setText(lineas[i]);
+                    t.setTextColor(Color.WHITE);
+                    //t.setTextSize(30);
+                    LinearLayout list = (LinearLayout) v;
+                    list.addView(t);
+                }
             //}
             return;
         }
