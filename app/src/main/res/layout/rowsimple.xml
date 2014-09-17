@@ -2,7 +2,9 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@drawable/backfondo"
+    android:clickable="true">
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,7 +15,7 @@
         android:textSize="25dp"
         android:textStyle="bold"
         android:textColor="#fff9fb"
-        android:clickable="true"
+        android:clickable="false"
         android:layout_marginLeft="30dp"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="10dp"

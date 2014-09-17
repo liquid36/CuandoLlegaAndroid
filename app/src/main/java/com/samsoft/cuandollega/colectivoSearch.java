@@ -67,6 +67,7 @@ public class colectivoSearch extends ActionBarActivity {
                 o.put("name", " - TODOS - ");
                 o.put("id", 0);
                 b.put(o);
+                Log.d("colectivoSearch", "Pongo todos ----------------------");
                 for(int i = 0;i < a.length();i++)  {
                     b.put(a.get(i));
                 }
@@ -85,12 +86,13 @@ public class colectivoSearch extends ActionBarActivity {
                 View v = inflater.inflate(R.layout.rowsimple, null);
                 TextView t = (TextView) v.findViewById(R.id.label);
                 t.setText(o.getString("name"));
-                t.setTag(o);
-                if (i%2 == 0) v.setBackgroundColor(getResources().getColor(R.color.fondopar));
-                t.setOnClickListener(new View.OnClickListener() {
+                v.setTag(o);
+                if (i%2 == 0) v.setBackgroundResource(R.drawable.backfondo2);
+                v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        TextView tt = (TextView) view;
+                        //TextView vv = (TextView) view;
+                        TextView tt = (TextView) view.findViewById(R.id.label);
                         JSONObject o = (JSONObject) view.getTag();
                         if (accion.equals("bus")) { // elegir Calles ahora
                             try {

@@ -60,9 +60,9 @@ public class calleSearch extends ActionBarActivity {
                 View v = inflater.inflate(R.layout.rowsimple, null);
                 TextView t = (TextView) v.findViewById(R.id.label);
                 t.setText(o.getString("desc"));
-                t.setTag(o);
-                if (i%2 == 0) v.setBackgroundColor(getResources().getColor(R.color.fondopar));
-                t.setOnClickListener(new View.OnClickListener() {
+                v.setTag(o);
+                if (i%2 == 0) v.setBackgroundResource(R.drawable.backfondo2);
+                v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if (idCalle == 0) { // Tengo que seleccionar otra calle
