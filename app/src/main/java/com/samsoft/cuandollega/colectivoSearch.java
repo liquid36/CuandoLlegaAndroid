@@ -2,6 +2,7 @@ package com.samsoft.cuandollega;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,8 +13,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class colectivoSearch extends ActionBarActivity {
@@ -45,11 +58,23 @@ public class colectivoSearch extends ActionBarActivity {
 
     public void ShowItems() {
         listItems.removeAllViews();
-        JSONArray a;
+        JSONArray a,b = new JSONArray();
         if (idCalle == 0) a = db.getAllBuses();
         else a = db.busInStop(idCalle,idInter);
+        if (idCalle != 0) {
+            try {
+                JSONObject o = new JSONObject();
+                o.put("name", " - TODOS - ");
+                o.put("id", 0);
+                b.put(o);
+                for(int i = 0;i < a.length();i++)  {
+                    b.put(a.get(i));
+                }
+            } catch (Exception e) {}
+        }
+
         Log.d("colectivoSearch", "Tamaño = " + a.length());
-        AddSimpleRows(a);
+        AddSimpleRows(b);
     }
 
     public void AddSimpleRows(JSONArray a)
@@ -64,6 +89,7 @@ public class colectivoSearch extends ActionBarActivity {
                 t.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        TextView tt = (TextView) view;
                         JSONObject o = (JSONObject) view.getTag();
                         if (accion.equals("bus")) { // elegir Calles ahora
                             try {
@@ -74,9 +100,15 @@ public class colectivoSearch extends ActionBarActivity {
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         } else { // Elegir paradas
-
+                            Intent i = new Intent(colectivoSearch.this, paradasinfo.class);
+                            String colec = "";
+                            if (!tt.getText().equals(" - TODOS - ")) colec = tt.getText().toString();
+                            i.putExtra("calle",idCalle);
+                            i.putExtra("colectivos",colec );
+                            i.putExtra("interseccion",idInter);
+                            i.putExtra("accion",accion);
+                            startActivity(i);
                         }
-
                     }
                 });
 
@@ -90,22 +122,18 @@ public class colectivoSearch extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.colectivo_search, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 
 }

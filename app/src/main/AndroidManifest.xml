@@ -24,6 +24,10 @@
             android:name="com.samsoft.cuandollega.colectivoSearch"
             android:label="@string/title_activity_colectivo_search" >
         </activity>
+        <activity
+            android:name="com.samsoft.cuandollega.paradasinfo"
+            android:label="@string/title_activity_paradasinfo" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

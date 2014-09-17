@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_calle_search">Seleccione calle</string>
     <string name="title_activity_colectivo_search">Colectivos</string>
+    <string name="title_activity_paradasinfo">Cuando Llega</string>
 
 </resources>

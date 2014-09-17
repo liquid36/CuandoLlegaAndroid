@@ -41,8 +41,6 @@ public class CLMain extends ActionBarActivity {
         setContentView(R.layout.activity_clmain);
         listItems = (LinearLayout) findViewById(R.id.aaa);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.waitingrow,null);
-        listItems.addView(v);
 
         if (!getStat()) {
             progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);

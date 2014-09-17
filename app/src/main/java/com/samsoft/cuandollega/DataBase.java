@@ -208,11 +208,16 @@ public class DataBase  {
         Cursor c = null;
         JSONArray arr = new JSONArray();
         try {
+            String [] variables = {Integer.toString(idCalle), Integer.toString(idInter)};
+            String query = "";
+            if (!bus.isEmpty()) {
+                variables = new String[]{bus,Integer.toString(idCalle), Integer.toString(idInter)};
+                query = " colectivos.name = ? AND ";
+            }
             c = db.rawQuery("SELECT idColectivo, desc,parada,name,bandera FROM paradas " +
-                    "INNER JOIN colectivos ON idColectivo = colectivos.id " +
-                    "WHERE colectivos.name = ? AND idCalle = ? AND idInter = ?  " +
-                    "GROUP BY colectivos.name ORDER BY colectivos.name "
-                    , new String[]{bus, Integer.toString(idCalle), Integer.toString(idInter)});
+                    "INNER JOIN colectivos ON idColectivo = colectivos.id WHERE " +
+                    query + " idCalle = ? AND idInter = ?  " +
+                    "GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , variables);
             while (c.moveToNext()) {
                 JSONObject o = new JSONObject();
                 o.put("idColectivo", c.getInt(c.getColumnIndex("idColectivo")));
