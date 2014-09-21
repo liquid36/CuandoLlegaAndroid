@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
@@ -69,7 +70,7 @@ public class paradasinfo extends ActionBarActivity {
                 dest.setText(o.getString("desc"));
                 listItems.addView(v);
                 AskTime ask = new AskTime(v,getApplicationContext());
-                ask.doInBackground(o);
+                ask.execute(o);
             } catch (Exception e) {e.printStackTrace();}
         }
     }
@@ -116,7 +117,6 @@ public class paradasinfo extends ActionBarActivity {
             InputStream content = null;
             JSONObject stop = stops[0];
             try {
-                Log.d("ASKBUS", "Bajando info");
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httppost = new HttpPost(url);
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -126,8 +126,6 @@ public class paradasinfo extends ActionBarActivity {
                 HttpResponse response = httpclient.execute(httppost);
                 content = response.getEntity().getContent();
                 datos = InputStreamToString(content);
-                Log.d("ASKBUS", "Bajando info  " + datos);
-                onPostExecute(true);
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -142,8 +140,7 @@ public class paradasinfo extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            //if (result) {
-                Log.d("ASKBUS", "Datos " + datos);
+            if (result) {
                 String [] lineas = datos.substring(11).split("-");
                 for(int i = 0; i < lineas.length; i++) {
                     TextView t = new TextView(contex);
@@ -151,9 +148,11 @@ public class paradasinfo extends ActionBarActivity {
                     t.setTextColor(Color.WHITE);
                     //t.setTextSize(30);
                     LinearLayout list = (LinearLayout) v;
+                    ProgressBar bar = (ProgressBar) list.findViewById(R.id.waitingbar);
+                    bar.setVisibility(View.GONE);
                     list.addView(t);
                 }
-            //}
+            }
             return;
         }
     }

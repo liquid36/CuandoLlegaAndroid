@@ -72,9 +72,9 @@ public class colectivoSearch extends ActionBarActivity {
                     b.put(a.get(i));
                 }
             } catch (Exception e) {}
-        }
+        } else b = a;
 
-        Log.d("colectivoSearch", "Tamaño = " + a.length());
+        Log.d("colectivoSearch", "Tamaño = " + b.length());
         AddSimpleRows(b);
     }
 

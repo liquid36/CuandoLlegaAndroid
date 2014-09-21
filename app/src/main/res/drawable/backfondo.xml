@@ -2,17 +2,17 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
    <item android:state_pressed="true">
         <shape>
-            <gradient android:endColor="#AD1F2D" android:startColor="#AD1F2D" />
+            <gradient android:endColor="#ff8eba75" android:startColor="#ff8eba75" />
         </shape>
     </item>
     <item android:state_focused="true">
         <shape>
-        <gradient android:endColor="#ff4b46" android:startColor="#ff4b46" />
+            <gradient android:endColor="#ff8eba75" android:startColor="#ff8eba75" />
         </shape>
     </item>
     <item>
         <shape>
-            <gradient android:endColor="#ff4b46" android:startColor="#ff4b46" />
+            <gradient android:endColor="#ffc6fffa" android:startColor="#ffc6fffa" />
         </shape>
     </item>
 </selector>

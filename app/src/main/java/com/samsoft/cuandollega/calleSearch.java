@@ -65,17 +65,16 @@ public class calleSearch extends ActionBarActivity {
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        JSONObject o = (JSONObject) view.getTag();
                         if (idCalle == 0) { // Tengo que seleccionar otra calle
-                            JSONObject o = (JSONObject) view.getTag();
                             Intent i = new Intent(calleSearch.this, calleSearch.class);
                             try {
                                 i.putExtra("calle",o.getInt("id"));
-                                i.putExtra("colectivos","");
+                                i.putExtra("colectivos",idColectivo);
                                 i.putExtra("accion",accion);
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         } else if (accion.equalsIgnoreCase("street")) { // Tengo que elegir el colectivo
-                            JSONObject o = (JSONObject) view.getTag();
                             Intent i = new Intent(calleSearch.this, colectivoSearch.class);
                             try {
                                 i.putExtra("calle",idCalle);
@@ -84,9 +83,14 @@ public class calleSearch extends ActionBarActivity {
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         } else { // Ya elegí colectivo y las calles. Tocan las paradas
-                            Log.d("DEBUG","LLEGO ACA"+ accion);
-
-
+                            try {
+                                Intent i = new Intent(calleSearch.this, paradasinfo.class);
+                                i.putExtra("calle", idCalle);
+                                i.putExtra("colectivos", idColectivo);
+                                i.putExtra("interseccion", o.getInt("id"));
+                                i.putExtra("accion", accion);
+                                startActivity(i);
+                            } catch (Exception e) {e.printStackTrace();}
                         }
                     }
                 });

@@ -90,6 +90,13 @@ public class CLMain extends ActionBarActivity {
         startActivity(i);
     }
 
+    public void refreshClick(View v)
+    {
+        progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
+        LoadDataBase run = new LoadDataBase();
+        run.execute();
+    }
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
