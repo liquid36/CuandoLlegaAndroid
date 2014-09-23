@@ -1,5 +1,6 @@
 package com.samsoft.cuandollega;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -21,12 +22,17 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 
 
 public class CLMain extends ActionBarActivity {
@@ -34,6 +40,9 @@ public class CLMain extends ActionBarActivity {
     private LinearLayout listItems;
     private DataBase db;
     private LayoutInflater inflater;
+
+    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +53,7 @@ public class CLMain extends ActionBarActivity {
 
         if (!getStat()) {
             progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-            LoadDataBase run = new LoadDataBase();
+            LoadDataBase run = new LoadDataBase(false);
             run.execute();
         }
     }
@@ -92,14 +101,11 @@ public class CLMain extends ActionBarActivity {
 
     public void refreshClick(View v)
     {
-        progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-        LoadDataBase run = new LoadDataBase();
-        run.execute();
+        String url = "https://rawgit.com/liquid36/CLDownload/master/test.db";
+        new DownloadFileAsync().execute(url);
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 
     private String streamToString(InputStream i)
     {
@@ -119,14 +125,25 @@ public class CLMain extends ActionBarActivity {
         }
     }
 
-    public boolean LoadFromFile() {
+    public void CopiarBaseDatos()
+    {
+        progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
+        LoadDataBase run = new LoadDataBase(false);
+        run.execute();
+    }
+
+    public boolean LoadFromFile(Boolean rawFile) {
         try {
             File dbfile = getApplicationContext().getDatabasePath("CuandoLLega.db");
             if (!dbfile.exists()) {
                 boolean b = dbfile.getParentFile().mkdirs();
             }
-            InputStream in = getResources().openRawResource(R.raw.test);
+
+            InputStream in;
+            if (rawFile) in = getResources().openRawResource(R.raw.test);
+            else in  = new FileInputStream(getDatabasePath("test.db"));
             FileOutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
+
             byte[] buff = new byte[1024];
             int read = 0;
             try {
@@ -145,9 +162,30 @@ public class CLMain extends ActionBarActivity {
 
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        switch (id) {
+            case DIALOG_DOWNLOAD_PROGRESS:
+                mProgressDialog = new ProgressDialog(this);
+                mProgressDialog.setMessage("Downloading file..");
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
+                return mProgressDialog;
+            default:
+                return null;
+        }
+    }
+
+    // COPIA ARCHIVOS ******************************************************************************
     private class LoadDataBase extends AsyncTask<String, Integer, Boolean> {
+        private Boolean rawFile;
+        LoadDataBase(Boolean b) {
+            rawFile = b;
+        }
+
         protected Boolean doInBackground(String... urls) {
-            return LoadFromFile();
+            return LoadFromFile(rawFile);
 
         }
 
@@ -162,4 +200,59 @@ public class CLMain extends ActionBarActivity {
         }
     }
 
+    // BAJA ARCHIVOS DE INTERNET *******************************************************************
+    class DownloadFileAsync extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showDialog(DIALOG_DOWNLOAD_PROGRESS);
+
+        }
+
+        @Override
+        protected String doInBackground(String... aurl) {
+            int count;
+            try {
+                URL url = new URL(aurl[0]);
+                URLConnection conexion = url.openConnection();
+                conexion.connect();
+
+                int lenghtOfFile = conexion.getContentLength();
+                Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+
+                InputStream input = new BufferedInputStream(url.openStream());
+                OutputStream output = new FileOutputStream(getDatabasePath("test.db"));
+
+                byte data[] = new byte[1024];
+                long total = 0;
+
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress(""+(int)((total*100)/lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+
+                output.flush();
+                output.close();
+                input.close();
+            } catch (Exception e) {}
+            return null;
+
+        }
+        protected void onProgressUpdate(String... progress) {
+            Log.d("ANDRO_ASYNC",progress[0]);
+            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+        @Override
+        protected void onPostExecute(String unused) {
+            dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
+            removeDialog(DIALOG_DOWNLOAD_PROGRESS);
+            mProgressDialog.dismiss();
+            mProgressDialog.cancel();
+            CopiarBaseDatos();
+
+        }
+    }
 }

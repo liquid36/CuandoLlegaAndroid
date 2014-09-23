@@ -105,7 +105,11 @@ public class DataBase  {
         try {
             //db = this.openDatabase(NAME);
             if (Colectivo.trim().isEmpty())
-                c = db.rawQuery("SELECT * FROM " + TCALLES + " WHERE desc LIKE '%" + name + "%'  ORDER BY desc"  , new String[] {});
+                //c = db.rawQuery("SELECT * FROM " + TCALLES + " WHERE desc LIKE '%" + name + "%'  ORDER BY desc"  , new String[] {});
+                c = db.rawQuery("SELECT calles.id AS id, calles.desc AS desc FROM paradas " +
+                    "INNER JOIN calles  ON calles.id = idCalle " +
+                    "WHERE calles.desc LIKE '%" + name + "%'" +
+                    " GROUP BY calles.id  ORDER BY calles.desc" , new String[] {});
             else
                 c = db.rawQuery("SELECT calles.id AS id, calles.desc AS desc FROM paradas " +
                         "INNER JOIN calles     ON calles.id = idCalle " +
@@ -320,3 +324,10 @@ public class DataBase  {
     }
 
 }
+
+/*
+db.setTransactionSuccessful();
+        db.endTransaction();
+        db.execSQL("ATTACH DATABASE ? AS names",new String[]{namesDb});
+        db.beginTransaction();
+  */

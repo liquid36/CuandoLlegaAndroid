@@ -14,7 +14,7 @@
         android:id="@+id/label"
         android:textSize="25dp"
         android:textStyle="bold"
-        android:textColor="#ff000000"
+        android:textColor="#fffff1ff"
         android:clickable="false"
         android:layout_marginLeft="30dp"
         android:layout_gravity="center_vertical"

@@ -12,7 +12,7 @@
     </item>
     <item>
         <shape>
-            <gradient android:endColor="#ffc6fffa" android:startColor="#ffc6fffa" />
+            <gradient android:endColor="#ff9455" android:startColor="#ff9455" />
         </shape>
     </item>
 </selector>
