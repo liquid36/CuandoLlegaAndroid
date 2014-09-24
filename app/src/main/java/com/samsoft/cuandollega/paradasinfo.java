@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,23 @@ public class paradasinfo extends ActionBarActivity {
 
     }
 
+    public static String stripAccents(String s)
+    {
+        s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replaceAll("[èéêë]","e");
+        s = s.replaceAll("[ûù]","u");
+        s = s.replaceAll("[ïî]","i");
+        s = s.replaceAll("[àâ]","a");
+        s = s.replaceAll("Ô","o");
+
+        s = s.replaceAll("[ÈÉÊË]","E");
+        s = s.replaceAll("[ÛÙ]","U");
+        s = s.replaceAll("[ÏÎ]","I");
+        s = s.replaceAll("[ÀÂ]","A");
+        s = s.replaceAll("Ô","O");
+        return s;
+    }
+
     public void ShowParadas()
     {
         JSONArray a = db.getStops(Bus,idCalle,idInter);
@@ -67,7 +85,7 @@ public class paradasinfo extends ActionBarActivity {
                 TextView bus  = (TextView) v.findViewById(R.id.txtBus);
                 TextView dest = (TextView) v.findViewById(R.id.txtDest);
                 bus.setText(o.getString("name"));
-                dest.setText(o.getString("desc"));
+                dest.setText(stripAccents(o.getString("desc")));
                 listItems.addView(v);
                 AskTime ask = new AskTime(v,getApplicationContext());
                 ask.execute(o);

@@ -1,5 +1,8 @@
 package com.samsoft.cuandollega;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -16,6 +19,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -56,6 +62,7 @@ public class CLMain extends ActionBarActivity {
             LoadDataBase run = new LoadDataBase(false);
             run.execute();
         }
+
     }
 
     @Override
@@ -103,6 +110,47 @@ public class CLMain extends ActionBarActivity {
     {
         String url = "https://rawgit.com/liquid36/CLDownload/master/test.db";
         new DownloadFileAsync().execute(url);
+
+        /*ObjectAnimator fadeOut = ObjectAnimator.ofFloat(v, "alpha", 1f, .3f);
+        fadeOut.setDuration(2000);
+        final AnimatorSet mAnimationSet = new AnimatorSet();
+        mAnimationSet.play(fadeOut);
+        mAnimationSet.start();*/
+
+        //View vv = findViewById(R.id.probando);
+        //expand(vv);
+
+    }
+
+    private void expand(View summary) {
+        //set Visible
+        summary.setVisibility(View.VISIBLE);
+
+        final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        summary.measure(widthSpec, 70);
+
+        ValueAnimator mAnimator = slideAnimator(0, 70, summary);
+        mAnimator.setDuration(2000);
+        mAnimator.start();
+    }
+
+    private ValueAnimator slideAnimator(int start, int end, final View summary) {
+
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+
+
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //Update Height
+                int value = (Integer) valueAnimator.getAnimatedValue();
+
+                ViewGroup.LayoutParams layoutParams = summary.getLayoutParams();
+                layoutParams.height = value;
+                summary.setLayoutParams(layoutParams);
+            }
+        });
+        return animator;
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -255,4 +303,5 @@ public class CLMain extends ActionBarActivity {
 
         }
     }
+
 }
