@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v4.view.MenuItemCompat;
@@ -59,9 +60,12 @@ public class CLMain extends ActionBarActivity {
 
         if (!getStat()) {
             progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-            LoadDataBase run = new LoadDataBase(false);
+            LoadDataBase run = new LoadDataBase(true);
             run.execute();
         }
+        View msg = findViewById(R.id.msgLay);
+        if (!isOnline())
+            ExpandAnimation.expand(msg,100,1000);
 
     }
 
@@ -69,6 +73,12 @@ public class CLMain extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean isOnline() {
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     public boolean getStat()
@@ -117,40 +127,8 @@ public class CLMain extends ActionBarActivity {
         mAnimationSet.play(fadeOut);
         mAnimationSet.start();*/
 
-        //View vv = findViewById(R.id.probando);
-        //expand(vv);
-
-    }
-
-    private void expand(View summary) {
-        //set Visible
-        summary.setVisibility(View.VISIBLE);
-
-        final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        summary.measure(widthSpec, 70);
-
-        ValueAnimator mAnimator = slideAnimator(0, 70, summary);
-        mAnimator.setDuration(2000);
-        mAnimator.start();
-    }
-
-    private ValueAnimator slideAnimator(int start, int end, final View summary) {
-
-        ValueAnimator animator = ValueAnimator.ofInt(start, end);
-
-
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                //Update Height
-                int value = (Integer) valueAnimator.getAnimatedValue();
-
-                ViewGroup.LayoutParams layoutParams = summary.getLayoutParams();
-                layoutParams.height = value;
-                summary.setLayoutParams(layoutParams);
-            }
-        });
-        return animator;
+        View vv = findViewById(R.id.probando);
+        ExpandAnimation.expand(vv, 70, 1500);
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -190,6 +168,7 @@ public class CLMain extends ActionBarActivity {
             InputStream in;
             if (rawFile) in = getResources().openRawResource(R.raw.test);
             else in  = new FileInputStream(getDatabasePath("test.db"));
+
             FileOutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
 
             byte[] buff = new byte[1024];

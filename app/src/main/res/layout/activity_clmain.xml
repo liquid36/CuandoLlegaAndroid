@@ -7,6 +7,23 @@
     android:background="@color/fondo"
     android:id="@+id/aaa">
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:background="#ff42abff"
+        android:id="@+id/msgLay">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="No hay conexion"
+            android:id="@+id/textView"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="60dp" />
+    </LinearLayout>
+
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
