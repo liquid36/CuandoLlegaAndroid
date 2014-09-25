@@ -121,12 +121,6 @@ public class CLMain extends ActionBarActivity {
     {
         String url = "https://rawgit.com/liquid36/CLDownload/master/test.db";
         new DownloadFileAsync().execute(url);
-
-        /*ObjectAnimator fadeOut = ObjectAnimator.ofFloat(v, "alpha", 1f, .3f);
-        fadeOut.setDuration(2000);
-        final AnimatorSet mAnimationSet = new AnimatorSet();
-        mAnimationSet.play(fadeOut);
-        mAnimationSet.start();*/
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

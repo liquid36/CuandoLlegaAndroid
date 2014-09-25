@@ -1,5 +1,7 @@
 package com.samsoft.cuandollega;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.view.View;
@@ -36,4 +38,11 @@ public class ExpandAnimation {
         return animator;
     }
 
+    public static void Fade(View v, float a,float b) {
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(v, "alpha", a, b);
+        fadeOut.setDuration(2000);
+        final AnimatorSet mAnimationSet = new AnimatorSet();
+        mAnimationSet.play(fadeOut);
+        mAnimationSet.start();
+    }
 }
