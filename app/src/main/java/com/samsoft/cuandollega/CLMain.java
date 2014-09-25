@@ -57,6 +57,7 @@ public class CLMain extends ActionBarActivity {
         setContentView(R.layout.activity_clmain);
         listItems = (LinearLayout) findViewById(R.id.aaa);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        db = new DataBase(getApplicationContext());
 
         if (!getStat()) {
             progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
@@ -126,9 +127,6 @@ public class CLMain extends ActionBarActivity {
         final AnimatorSet mAnimationSet = new AnimatorSet();
         mAnimationSet.play(fadeOut);
         mAnimationSet.start();*/
-
-        View vv = findViewById(R.id.probando);
-        ExpandAnimation.expand(vv, 70, 1500);
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -278,8 +276,10 @@ public class CLMain extends ActionBarActivity {
             removeDialog(DIALOG_DOWNLOAD_PROGRESS);
             mProgressDialog.dismiss();
             mProgressDialog.cancel();
-            CopiarBaseDatos();
-
+            //CopiarBaseDatos();
+            db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
+            db.Close();
+            getDatabasePath("test.db").delete();
         }
     }
 

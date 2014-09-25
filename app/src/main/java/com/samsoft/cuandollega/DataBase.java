@@ -323,6 +323,23 @@ public class DataBase  {
         return iso8601Format.format(date);
     }
 
+
+    public void AttachDB(String name)
+    {
+        //db.setTransactionSuccessful();
+        //db.endTransaction();
+        db.execSQL("ATTACH DATABASE ? AS DB1",new String[]{name});
+        db.beginTransaction();
+        db.execSQL("DELETE FROM colectivos");
+        db.execSQL("DELETE FROM paradas");
+        db.execSQL("DELETE FROM calles");
+        db.execSQL("INSERT INTO Colectivos SELECT * FROM DB1.Colectivos");
+        db.execSQL("INSERT INTO paradas SELECT * FROM DB1.paradas");
+        db.execSQL("INSERT INTO calles SELECT * FROM DB1.calles");
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
 }
 
 /*

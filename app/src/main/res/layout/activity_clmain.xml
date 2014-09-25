@@ -12,7 +12,8 @@
         android:layout_width="fill_parent"
         android:layout_height="70dp"
         android:background="#ff42abff"
-        android:id="@+id/msgLay">
+        android:id="@+id/msgLay"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,16 +36,6 @@
         android:background="@drawable/custon_button"
         android:layout_margin="10dp" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Actualizar Base de Datos"
-        android:id="@+id/probando"
-        android:layout_gravity="center_horizontal"
-        android:onClick="refreshClick"
-        android:background="@drawable/custon_button"
-        android:layout_margin="10dp"
-        android:visibility="gone" />
 
     <Button
         android:layout_width="match_parent"
