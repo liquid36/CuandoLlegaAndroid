@@ -7,6 +7,9 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 /**
  * Created by sam on 24/09/14.
  */
@@ -44,5 +47,19 @@ public class ExpandAnimation {
         final AnimatorSet mAnimationSet = new AnimatorSet();
         mAnimationSet.play(fadeOut);
         mAnimationSet.start();
+    }
+
+
+    public static boolean CopyFile(InputStream in,OutputStream out)
+    {
+        try {
+            byte[] buff = new byte[1024];
+            int read = 0;
+            while ((read = in.read(buff)) > 0)
+                out.write(buff, 0, read);
+            in.close();
+            out.close();
+            return true;
+        } catch (Exception e) {e.printStackTrace(); return  false;}
     }
 }

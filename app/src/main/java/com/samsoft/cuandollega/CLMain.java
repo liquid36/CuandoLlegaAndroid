@@ -60,13 +60,12 @@ public class CLMain extends ActionBarActivity {
         db = new DataBase(getApplicationContext());
 
         if (!getStat()) {
-            progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-            LoadDataBase run = new LoadDataBase(true);
-            run.execute();
+            CopiarBaseDatos(true);
         }
-        View msg = findViewById(R.id.msgLay);
-        if (!isOnline())
-            ExpandAnimation.expand(msg,100,1000);
+
+        //View msg = findViewById(R.id.msgLay);
+        //if (!isOnline())
+        //    ExpandAnimation.expand(msg,100,1000);
 
     }
 
@@ -120,7 +119,9 @@ public class CLMain extends ActionBarActivity {
     public void refreshClick(View v)
     {
         String url = "https://rawgit.com/liquid36/CLDownload/master/test.db";
-        new DownloadFileAsync().execute(url);
+        String url2 = "https://raw.githubusercontent.com/liquid36/CLDownload/master/db.md5";
+
+        new DownloadFileAsync(getApplicationContext(),false).execute(url,url2);
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -143,43 +144,13 @@ public class CLMain extends ActionBarActivity {
         }
     }
 
-    public void CopiarBaseDatos()
+    public void CopiarBaseDatos(boolean fromRaw)
     {
         progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-        LoadDataBase run = new LoadDataBase(false);
+        UpdateDB run = new UpdateDB(getApplicationContext(),fromRaw);
         run.execute();
     }
 
-    public boolean LoadFromFile(Boolean rawFile) {
-        try {
-            File dbfile = getApplicationContext().getDatabasePath("CuandoLLega.db");
-            if (!dbfile.exists()) {
-                boolean b = dbfile.getParentFile().mkdirs();
-            }
-
-            InputStream in;
-            if (rawFile) in = getResources().openRawResource(R.raw.test);
-            else in  = new FileInputStream(getDatabasePath("test.db"));
-
-            FileOutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
-
-            byte[] buff = new byte[1024];
-            int read = 0;
-            try {
-                while ((read = in.read(buff)) > 0)
-                    out.write(buff, 0, read);
-            } finally {
-                in.close();
-                out.close();
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-
-    }
 
     @Override
     protected Dialog onCreateDialog(int id) {
@@ -197,10 +168,35 @@ public class CLMain extends ActionBarActivity {
     }
 
     // COPIA ARCHIVOS ******************************************************************************
-    private class LoadDataBase extends AsyncTask<String, Integer, Boolean> {
+    private class UpdateDB extends AsyncTask<String, Integer, Boolean> {
         private Boolean rawFile;
-        LoadDataBase(Boolean b) {
-            rawFile = b;
+        private  Context contex;
+        UpdateDB(Context c, Boolean b) {
+            rawFile = b; contex = c;
+        }
+
+        public boolean LoadFromFile(Boolean rawFile) {
+            try {
+                File dbfile = contex.getDatabasePath("test.db");
+                File md5 = contex.getDatabasePath("test.md5");
+
+                if (rawFile) {
+                    InputStream in   = contex.getResources().openRawResource(R.raw.test);
+                    OutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
+                    ExpandAnimation.CopyFile(in,out);
+                    in = contex.getResources().openRawResource(R.raw.db);
+                    out = new FileOutputStream(md5.getAbsolutePath(),false);
+                    ExpandAnimation.CopyFile(in,out);
+                }
+
+                db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
+                db.Close();
+                getDatabasePath("test.db").delete();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
 
         protected Boolean doInBackground(String... urls) {
@@ -221,11 +217,17 @@ public class CLMain extends ActionBarActivity {
 
     // BAJA ARCHIVOS DE INTERNET *******************************************************************
     class DownloadFileAsync extends AsyncTask<String, String, String> {
+        private Context contex;
+        private boolean hideDialog;
+        DownloadFileAsync(Context c,boolean hD) {
+            contex = c;
+            hideDialog = hD;
+        }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            showDialog(DIALOG_DOWNLOAD_PROGRESS);
+            if (!hideDialog) showDialog(DIALOG_DOWNLOAD_PROGRESS);
 
         }
 
@@ -233,47 +235,51 @@ public class CLMain extends ActionBarActivity {
         protected String doInBackground(String... aurl) {
             int count;
             try {
-                URL url = new URL(aurl[0]);
-                URLConnection conexion = url.openConnection();
-                conexion.connect();
+                for(int i = 0; i < aurl.length; i++) {
+                    URL url = new URL(aurl[i]);
+                    URLConnection conexion = url.openConnection();
+                    //conexion.set("GET");
+                    conexion.setDoOutput(true);
+                    conexion.connect();
+                    String name = aurl[i].substring(aurl[i].lastIndexOf("/") + 1);
 
-                int lenghtOfFile = conexion.getContentLength();
-                Log.d("ANDRO_ASYNC", "Lenght of file: " + lenghtOfFile);
+                    int lenghtOfFile = conexion.getContentLength();
+                    Log.d("ANDRO_ASYNC", "Lenght of file: " + name + "  " + lenghtOfFile);
 
-                InputStream input = new BufferedInputStream(url.openStream());
-                OutputStream output = new FileOutputStream(getDatabasePath("test.db"));
+                    InputStream input = new BufferedInputStream(url.openStream());
+                    OutputStream output = new FileOutputStream(contex.getDatabasePath(name));
 
-                byte data[] = new byte[1024];
-                long total = 0;
+                    byte data[] = new byte[1024];
+                    long total = 0;
 
-                while ((count = input.read(data)) != -1) {
-                    total += count;
-                    publishProgress(""+(int)((total*100)/lenghtOfFile));
-                    output.write(data, 0, count);
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+                        publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                        output.write(data, 0, count);
+                    }
+                    Log.d("ANDRO_ASYNC", "Count: " + count);
+                    output.flush();
+                    output.close();
+                    input.close();
                 }
-
-                output.flush();
-                output.close();
-                input.close();
             } catch (Exception e) {}
             return null;
 
         }
         protected void onProgressUpdate(String... progress) {
             Log.d("ANDRO_ASYNC",progress[0]);
-            mProgressDialog.setProgress(Integer.parseInt(progress[0]));
+            if (!hideDialog) mProgressDialog.setProgress(Integer.parseInt(progress[0]));
         }
 
         @Override
         protected void onPostExecute(String unused) {
-            dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
-            removeDialog(DIALOG_DOWNLOAD_PROGRESS);
-            mProgressDialog.dismiss();
-            mProgressDialog.cancel();
-            //CopiarBaseDatos();
-            db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
-            db.Close();
-            getDatabasePath("test.db").delete();
+            if (!hideDialog) {
+                dismissDialog(DIALOG_DOWNLOAD_PROGRESS);
+                removeDialog(DIALOG_DOWNLOAD_PROGRESS);
+                mProgressDialog.dismiss();
+                mProgressDialog.cancel();
+            }
+            CopiarBaseDatos(false);
         }
     }
 
