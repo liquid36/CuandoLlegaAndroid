@@ -61,24 +61,16 @@ public class CLMain extends ActionBarActivity {
 
         if (!getStat()) {
             CopiarBaseDatos(true);
+        } else {
+            String url2 = "https://raw.githubusercontent.com/liquid36/CLDownload/master/db.md5";
+            new DownloadFileAsync(getApplicationContext(),true).execute(url2);
         }
-
-        //View msg = findViewById(R.id.msgLay);
-        //if (!isOnline())
-        //    ExpandAnimation.expand(msg,100,1000);
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
-    }
-
-    public boolean isOnline() {
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     public boolean getStat()
@@ -149,8 +141,15 @@ public class CLMain extends ActionBarActivity {
         progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
         UpdateDB run = new UpdateDB(getApplicationContext(),fromRaw);
         run.execute();
+        View v = findViewById(R.id.msgLay);
+        v.setVisibility(View.GONE);
     }
 
+    public void ShowUpdateMessage()
+    {
+        View v = findViewById(R.id.msgLay);
+        ExpandAnimation.expand(v,110,1500);
+    }
 
     @Override
     protected Dialog onCreateDialog(int id) {
@@ -236,12 +235,14 @@ public class CLMain extends ActionBarActivity {
             int count;
             try {
                 for(int i = 0; i < aurl.length; i++) {
+                    String name = aurl[i].substring(aurl[i].lastIndexOf("/") + 1);
+                    if (hideDialog) name = "temp.md5";
+
                     URL url = new URL(aurl[i]);
                     URLConnection conexion = url.openConnection();
-                    //conexion.set("GET");
-                    conexion.setDoOutput(true);
+                    if (!name.equals("test.db")) conexion.setDoOutput(true);
                     conexion.connect();
-                    String name = aurl[i].substring(aurl[i].lastIndexOf("/") + 1);
+
 
                     int lenghtOfFile = conexion.getContentLength();
                     Log.d("ANDRO_ASYNC", "Lenght of file: " + name + "  " + lenghtOfFile);
@@ -257,7 +258,6 @@ public class CLMain extends ActionBarActivity {
                         publishProgress("" + (int) ((total * 100) / lenghtOfFile));
                         output.write(data, 0, count);
                     }
-                    Log.d("ANDRO_ASYNC", "Count: " + count);
                     output.flush();
                     output.close();
                     input.close();
@@ -278,8 +278,21 @@ public class CLMain extends ActionBarActivity {
                 removeDialog(DIALOG_DOWNLOAD_PROGRESS);
                 mProgressDialog.dismiss();
                 mProgressDialog.cancel();
+                CopiarBaseDatos(false);
+            } else {
+                try {
+                    BufferedReader a = new BufferedReader(new InputStreamReader(new FileInputStream(contex.getDatabasePath("temp.md5"))));
+                    BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(contex.getDatabasePath("db.md5"))));
+                    String sa = a.readLine();
+                    String sb = b.readLine();
+                    Log.d("CUANDO LLEGA","MD5 actual " + sb );
+                    Log.d("CUANDO LLEGA","MD5 Nuevo " + sa );
+                    if (!sa.equals(sb)) {
+                        Log.d("CUANDO LLEGA","Atencion cambio la base de datos");
+                        ShowUpdateMessage();
+                    }
+                }catch (Exception e) {e.printStackTrace();}
             }
-            CopiarBaseDatos(false);
         }
     }
 

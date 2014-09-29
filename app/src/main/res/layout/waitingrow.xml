@@ -9,7 +9,18 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/actionIcon"
+            android:src="@drawable/ic_action_not_important"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.23"
+            android:visibility="gone"
+            android:clickable="true" />
 
         <ProgressBar
             android:layout_width="wrap_content"

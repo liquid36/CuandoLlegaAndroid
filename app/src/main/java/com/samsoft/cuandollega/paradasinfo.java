@@ -3,6 +3,7 @@ package com.samsoft.cuandollega;
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -40,6 +42,7 @@ public class paradasinfo extends ActionBarActivity {
     private LinearLayout listItems;
     private DataBase db;
     private LayoutInflater inflater;
+    private boolean online;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +57,11 @@ public class paradasinfo extends ActionBarActivity {
         idInter = datos.getInt("interseccion");
         Bus = datos.getString("colectivos");
 
+        online = isOnline();
+        if (!online) {
+            View v = findViewById(R.id.msgLay);
+            ExpandAnimation.expand(v,100,1400);
+        }
         ShowParadas();
 
     }
@@ -86,13 +94,26 @@ public class paradasinfo extends ActionBarActivity {
                 TextView dest = (TextView) v.findViewById(R.id.txtDest);
                 bus.setText(o.getString("name"));
                 dest.setText(stripAccents(o.getString("desc")));
+                if (online) {
+                    AskTime ask = new AskTime(v,getApplicationContext());
+                    ask.execute(o);
+                } else {
+                    ProgressBar bar = (ProgressBar) v.findViewById(R.id.waitingbar);
+                    ImageView img = (ImageView) v.findViewById(R.id.actionIcon);
+                    bar.setVisibility(View.GONE);
+                    img.setVisibility(View.VISIBLE);
+                    img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_mail));
+                }
                 listItems.addView(v);
-                AskTime ask = new AskTime(v,getApplicationContext());
-                ask.execute(o);
             } catch (Exception e) {e.printStackTrace();}
         }
     }
 
+    public boolean isOnline()
+    {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,16 +181,17 @@ public class paradasinfo extends ActionBarActivity {
         protected void onPostExecute(Boolean result) {
             if (result) {
                 String [] lineas = datos.substring(11).split("-");
+                LinearLayout list = (LinearLayout) v;
                 for(int i = 0; i < lineas.length; i++) {
                     TextView t = new TextView(contex);
                     t.setText(lineas[i]);
                     t.setTextColor(Color.WHITE);
-                    //t.setTextSize(30);
-                    LinearLayout list = (LinearLayout) v;
-                    ProgressBar bar = (ProgressBar) list.findViewById(R.id.waitingbar);
-                    bar.setVisibility(View.GONE);
                     list.addView(t);
                 }
+                ProgressBar bar = (ProgressBar) list.findViewById(R.id.waitingbar);
+                ImageView img = (ImageView) list.findViewById(R.id.actionIcon);
+                bar.setVisibility(View.GONE);
+                img.setVisibility(View.VISIBLE);
             }
             return;
         }

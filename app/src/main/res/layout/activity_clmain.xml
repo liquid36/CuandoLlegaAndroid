@@ -13,16 +13,19 @@
         android:layout_height="70dp"
         android:background="#ff42abff"
         android:id="@+id/msgLay"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:clickable="true"
+        android:onClick="refreshClick">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="No hay conexion"
+            android:text="Actualizacion disponible\nClick para actualizar... "
             android:id="@+id/textView"
             android:layout_gravity="center_vertical"
-            android:paddingLeft="60dp" />
+            android:paddingLeft="60dp"
+            android:clickable="false" />
     </LinearLayout>
 
     <Button
@@ -55,7 +58,8 @@
         android:layout_gravity="center_horizontal"
         android:onClick="refreshClick"
         android:background="@drawable/custon_button"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        android:visibility="visible" />
 
 
 
