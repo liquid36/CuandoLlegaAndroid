@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,11 +20,13 @@ public class ExpandAnimation {
     public static void expand(View summary,int width, int time) {
         //set Visible
         summary.setVisibility(View.VISIBLE);
-        final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        summary.measure(widthSpec, width);
-        ValueAnimator mAnimator = slideAnimator(0, width, summary);
-        mAnimator.setDuration(time);
-        mAnimator.start();
+        if (Build.VERSION.SDK_INT >= 11) {
+            final int widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            summary.measure(widthSpec, width);
+            ValueAnimator mAnimator = slideAnimator(0, width, summary);
+            mAnimator.setDuration(time);
+            mAnimator.start();
+        }
     }
 
     public static ValueAnimator slideAnimator(int start, int end, final View summary) {
@@ -42,11 +45,15 @@ public class ExpandAnimation {
     }
 
     public static void Fade(View v, float a,float b) {
-        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(v, "alpha", a, b);
-        fadeOut.setDuration(2000);
-        final AnimatorSet mAnimationSet = new AnimatorSet();
-        mAnimationSet.play(fadeOut);
-        mAnimationSet.start();
+        if (Build.VERSION.SDK_INT >= 11) {
+            ObjectAnimator fadeOut = ObjectAnimator.ofFloat(v, "alpha", a, b);
+            fadeOut.setDuration(2000);
+            final AnimatorSet mAnimationSet = new AnimatorSet();
+            mAnimationSet.play(fadeOut);
+            mAnimationSet.start();
+        } else {
+            v.setAlpha(b);
+        }
     }
 
 

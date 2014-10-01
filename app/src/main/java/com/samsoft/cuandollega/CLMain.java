@@ -62,8 +62,10 @@ public class CLMain extends ActionBarActivity {
         if (!getStat()) {
             CopiarBaseDatos(true);
         } else {
-            String url2 = "https://raw.githubusercontent.com/liquid36/CLDownload/master/db.md5";
-            new DownloadFileAsync(getApplicationContext(),true).execute(url2);
+            if (isOnline()) {
+                String url2 = "https://raw.githubusercontent.com/liquid36/CLDownload/master/db.md5";
+                new DownloadFileAsync(getApplicationContext(), true).execute(url2);
+            }
         }
     }
 
@@ -71,6 +73,12 @@ public class CLMain extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean isOnline()
+    {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
     public boolean getStat()
@@ -241,6 +249,7 @@ public class CLMain extends ActionBarActivity {
                     URL url = new URL(aurl[i]);
                     URLConnection conexion = url.openConnection();
                     if (!name.equals("test.db")) conexion.setDoOutput(true);
+                    if (conexion != null) Log.d("CUADNOLLEGA","Funciono");
                     conexion.connect();
 
 
@@ -262,7 +271,7 @@ public class CLMain extends ActionBarActivity {
                     output.close();
                     input.close();
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {e.printStackTrace();}
             return null;
 
         }
@@ -291,7 +300,7 @@ public class CLMain extends ActionBarActivity {
                         Log.d("CUANDO LLEGA","Atencion cambio la base de datos");
                         ShowUpdateMessage();
                     }
-                }catch (Exception e) {e.printStackTrace();}
+                }catch (Exception e) {e.printStackTrace();ShowUpdateMessage();}
             }
         }
     }

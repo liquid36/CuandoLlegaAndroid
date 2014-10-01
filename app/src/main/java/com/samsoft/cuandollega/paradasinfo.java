@@ -1,12 +1,15 @@
 package com.samsoft.cuandollega;
 
+import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.samsoft.cuandollega.extra.SMSDialog;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -103,6 +108,15 @@ public class paradasinfo extends ActionBarActivity {
                     bar.setVisibility(View.GONE);
                     img.setVisibility(View.VISIBLE);
                     img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_mail));
+                    String mensaje = "TUP " + o.getString("parada") + " " + o.getString("name") ;
+                    img.setTag(mensaje);
+                    img.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String m = (String) view.getTag();
+                            new SMSDialog(paradasinfo.this,m).AskSend();
+                        }
+                    });
                 }
                 listItems.addView(v);
             } catch (Exception e) {e.printStackTrace();}
@@ -131,6 +145,8 @@ public class paradasinfo extends ActionBarActivity {
         private View v;
         private String datos;
         private Context contex;
+        private String linea;
+        private Integer parada;
         public AskTime(View vv,Context c)
         {
             contex = c;
@@ -156,6 +172,8 @@ public class paradasinfo extends ActionBarActivity {
             InputStream content = null;
             JSONObject stop = stops[0];
             try {
+                parada = stop.getInt("parada");
+                linea = stop.getString("name");
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httppost = new HttpPost(url);
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
@@ -192,6 +210,33 @@ public class paradasinfo extends ActionBarActivity {
                 ImageView img = (ImageView) list.findViewById(R.id.actionIcon);
                 bar.setVisibility(View.GONE);
                 img.setVisibility(View.VISIBLE);
+                boolean fav = db.chekcFavorito(linea,parada);
+                Log.d("PARADA " , "Es o no es favorito: " + fav);
+                if (fav) {
+                    img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
+                    img.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            db.deleteFavorito(linea,parada);
+                            ImageView img = (ImageView) view;
+                            img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
+                        }
+                    });
+                }
+                else {
+                    img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
+                    img.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            db.insertFavorito(linea,parada);
+                            ImageView img = (ImageView) view;
+                            img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
+                        }
+                    });
+                }
+
+
+
             }
             return;
         }

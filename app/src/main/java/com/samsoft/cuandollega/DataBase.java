@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
@@ -49,10 +50,65 @@ public class DataBase  {
         mydb.execSQL("CREATE TABLE IF NOT EXISTS colectivos (id INTEGER, name TEXT, bandera TEXT , linea TEXT)");
         mydb.execSQL("CREATE TABLE IF NOT EXISTS calles (id INTEGER, desc TEXT)");
         mydb.execSQL("CREATE TABLE IF NOT EXISTS paradas (idColectivo INTEGER, idCalle INTEGER,idInter INTEGER, parada INTEGER , desc TEXT)");
+
+        mydb.execSQL("CREATE TABLE IF NOT EXISTS favoritos (linea TEXT, parada INTEGER)");
         return mydb;
     }
 
+    //**********************************************************************************************
+    //**********************************************************************************************
+    //**********************************************************************************************
 
+    public void insertFavorito(String linea, Integer parada)
+    {
+        db.beginTransaction();
+        db.execSQL("INSERT INTO favoritos VALUES (?,?)", new Object[]{linea, parada});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public JSONArray getFavoritos()
+    {
+        Cursor c = null;
+        JSONArray arr = new JSONArray();
+        try {
+            c = db.rawQuery("SELECT * FROM FAVORITOS", new String[]{});
+            while (c.moveToNext()) {
+                JSONObject o = new JSONObject();
+                o.put("linea", c.getString(0));
+                o.put("parada", c.getInt(1));
+                arr.put(o);
+            }
+        } catch (Exception ee) {ee.printStackTrace();
+        } finally {
+            if (c != null) c.close();
+        }
+        return arr;
+    }
+
+    public void deleteFavorito(String linea, Integer parada)
+    {
+
+        db.beginTransaction();
+        db.execSQL("DELETE FROM favoritos WHERE linea ='" + linea + "' AND parada = " + parada  , new String[]{});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+
+    public boolean chekcFavorito(String linea, Integer parada)
+    {
+        boolean res = false;
+        Cursor c = db.rawQuery("SELECT * FROM FAVORITOS WHERE linea ='" + linea + "' AND parada = " + parada  , new String[]{});
+        if (c.moveToNext()) res = true;
+        c.close();
+        return res;
+    }
+
+
+    //**********************************************************************************************
+    //**********************************************************************************************
+    //**********************************************************************************************
     public void insertLinea(JSONObject o)
     {
         //SQLiteDatabase db = this.openDatabase(NAME);
@@ -238,6 +294,9 @@ public class DataBase  {
         return arr;
     }
 
+    //**********************************************************************************************
+    //**********************************************************************************************
+    //**********************************************************************************************
 
     private JSONObject hydrateLinea(Cursor c) {
         try {

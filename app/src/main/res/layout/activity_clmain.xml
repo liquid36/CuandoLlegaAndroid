@@ -59,7 +59,7 @@
         android:onClick="refreshClick"
         android:background="@drawable/custon_button"
         android:layout_margin="10dp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 
 
