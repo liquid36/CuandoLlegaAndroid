@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.samsoft.cuandollega.extra.SMSDialog;
 
@@ -48,6 +49,7 @@ public class paradasinfo extends ActionBarActivity {
     private DataBase db;
     private LayoutInflater inflater;
     private boolean online;
+    private String accion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,18 +57,23 @@ public class paradasinfo extends ActionBarActivity {
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Bundle datos = getIntent().getExtras();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         listItems = (LinearLayout) findViewById(R.id.listItems);
         db =  new DataBase(getApplicationContext());
 
         idCalle = datos.getInt("calle");
         idInter = datos.getInt("interseccion");
         Bus = datos.getString("colectivos");
+        accion = datos.getString("accion");
 
         online = isOnline();
         if (!online) {
             View v = findViewById(R.id.msgLay);
             ExpandAnimation.expand(v,100,1400);
         }
+        Log.d("PARADAINFO", "lenghthththt : " + db.getStopsFromFavorite().length());
+
         ShowParadas();
 
     }
@@ -90,7 +97,10 @@ public class paradasinfo extends ActionBarActivity {
 
     public void ShowParadas()
     {
-        JSONArray a = db.getStops(Bus,idCalle,idInter);
+        JSONArray a;
+        if (accion.equals("favorite")) a = db.getStopsFromFavorite();
+        else a = db.getStops(Bus,idCalle,idInter);
+
         for(int i = 0;i < a.length();i++) {
             try {
                 JSONObject o = a.getJSONObject(i);
@@ -99,6 +109,14 @@ public class paradasinfo extends ActionBarActivity {
                 TextView dest = (TextView) v.findViewById(R.id.txtDest);
                 bus.setText(o.getString("name"));
                 dest.setText(stripAccents(o.getString("desc")));
+                if (accion.equals("favorite")) {
+                    String txtcalle = db.getCalleName(o.getInt("idCalle"));
+                    String txtinter = db.getCalleName(o.getInt("idInter"));
+                    TextView lugar = (TextView) v.findViewById(R.id.txtLugar);
+                    lugar.setVisibility(View.VISIBLE);
+                    lugar.setText(txtcalle + " Y " + txtinter);
+                }
+
                 if (online) {
                     AskTime ask = new AskTime(v,getApplicationContext());
                     ask.execute(o);
@@ -138,8 +156,24 @@ public class paradasinfo extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == R.id.act_refresh && isOnline()) {
+            listItems.removeAllViews();
+            ShowParadas();
+        } else if (id == android.R.id.home) {
+            super.onBackPressed();
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    public void makeToast(String s) {
+        Context context = getApplicationContext();
+        CharSequence text = s;
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+        return;
+    }
+
 
     private class AskTime extends AsyncTask<JSONObject, Integer, Boolean> {
         private View v;
@@ -202,40 +236,37 @@ public class paradasinfo extends ActionBarActivity {
                 LinearLayout list = (LinearLayout) v;
                 for(int i = 0; i < lineas.length; i++) {
                     TextView t = new TextView(contex);
-                    t.setText(lineas[i]);
+                    t.setText(lineas[i].substring(6));
                     t.setTextColor(Color.WHITE);
                     list.addView(t);
                 }
+
                 ProgressBar bar = (ProgressBar) list.findViewById(R.id.waitingbar);
                 ImageView img = (ImageView) list.findViewById(R.id.actionIcon);
                 bar.setVisibility(View.GONE);
                 img.setVisibility(View.VISIBLE);
-                boolean fav = db.chekcFavorito(linea,parada);
-                Log.d("PARADA " , "Es o no es favorito: " + fav);
-                if (fav) {
-                    img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
-                    img.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+
+                img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean fav = db.chekcFavorito(linea,parada);
+                        ImageView img = (ImageView) view;
+                        Log.d("PARADA " , "Es o no es favorito: " + fav);
+                        if (fav) {
+                            makeToast("Deleting from Favorite");
                             db.deleteFavorito(linea,parada);
-                            ImageView img = (ImageView) view;
                             img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
-                        }
-                    });
-                }
-                else {
-                    img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
-                    img.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+                        } else {
+                            makeToast("Adding to Favorite");
                             db.insertFavorito(linea,parada);
-                            ImageView img = (ImageView) view;
                             img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
                         }
-                    });
-                }
+                    }
+                });
 
-
+                boolean fav = db.chekcFavorito(linea,parada);
+                if (fav) img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
+                else img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
 
             }
             return;

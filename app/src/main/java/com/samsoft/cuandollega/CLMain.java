@@ -124,6 +124,16 @@ public class CLMain extends ActionBarActivity {
         new DownloadFileAsync(getApplicationContext(),false).execute(url,url2);
     }
 
+    public void favClick(View v)
+    {
+        Intent i = new Intent(CLMain.this, paradasinfo.class);
+        i.putExtra("calle",0);
+        i.putExtra("interseccion",0);
+        i.putExtra("colectivos","");
+        i.putExtra("accion","favorite");
+        startActivity(i);
+    }
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     private String streamToString(InputStream i)

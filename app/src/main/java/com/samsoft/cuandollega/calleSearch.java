@@ -30,6 +30,7 @@ public class calleSearch extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.simple_list);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Bundle datos = getIntent().getExtras();
 
@@ -132,6 +133,7 @@ public class calleSearch extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == android.R.id.home) super.onBackPressed();
         return super.onOptionsItemSelected(item);
     }
 

@@ -105,6 +105,33 @@ public class DataBase  {
         return res;
     }
 
+    public JSONArray getStopsFromFavorite() {
+        Cursor c = null;
+        JSONArray arr = new JSONArray();
+        try {
+
+            c = db.rawQuery("SELECT idColectivo, desc,paradas.parada AS parada ,name,bandera, idCalle, idInter FROM paradas " +
+                    "INNER JOIN colectivos ON idColectivo = colectivos.id " +
+                    "INNER JOIN favoritos ON favoritos.linea = colectivos.name AND favoritos.parada = paradas.parada " +
+                    "GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , new String[]{});
+            while (c.moveToNext()) {
+                JSONObject o = new JSONObject();
+                o.put("idColectivo", c.getInt(c.getColumnIndex("idColectivo")));
+                o.put("parada", c.getInt(c.getColumnIndex("parada")));
+                o.put("desc", c.getString(c.getColumnIndex("desc")));
+                o.put("name", c.getString(c.getColumnIndex("name")));
+                o.put("bandera", c.getString(c.getColumnIndex("bandera")));
+                o.put("idCalle", c.getInt(c.getColumnIndex("idCalle")));
+                o.put("idInter", c.getInt(c.getColumnIndex("idInter")));
+                if (o != null) arr.put(o);
+            }
+        }catch (Exception e) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return arr;
+    }
+
 
     //**********************************************************************************************
     //**********************************************************************************************
@@ -152,6 +179,16 @@ public class DataBase  {
         db.setTransactionSuccessful();
         db.endTransaction();
         //db.close();
+    }
+
+    public String getCalleName(Integer idCalle) {
+        Cursor c = null;
+        String res = "";
+        try {
+            c = db.rawQuery("SELECT desc FROM calles where id = ?"  , new String[] { idCalle.toString() });
+            if (c.moveToNext()) res = c.getString(0);
+        } finally {if (c != null) c.close();}
+        return res;
     }
 
     public JSONArray getCalles(String Colectivo,String name) {

@@ -13,14 +13,17 @@
         android:weightSum="1">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:id="@+id/actionIcon"
             android:src="@drawable/ic_action_not_important"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center_vertical|top"
             android:layout_weight="0.23"
-            android:visibility="gone"
-            android:clickable="true" />
+            android:clickable="true"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:scaleType="fitXY"
+            android:visibility="gone" />
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -40,14 +43,33 @@
             android:textSize="30dp"
             android:enabled="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Cementerio la Piedad"
-            android:id="@+id/txtDest"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="10dp" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:id="@+id/laycalles" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Cementerio la Piedad"
+                android:id="@+id/txtDest"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Medium Text"
+                android:id="@+id/txtLugar"
+                android:layout_gravity="left"
+                android:layout_marginLeft="30dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
