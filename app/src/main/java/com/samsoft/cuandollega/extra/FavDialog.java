@@ -39,6 +39,7 @@ public class FavDialog extends  AlertDialog.Builder
                 Integer id = (Integer) ar.getJSONObject(i).getInt("id") ;
                 items[i] = ar.getJSONObject(i).getString("name");
                 cbool[i] = db.isFavCheck(id,linea,parada);
+                if (cbool[i]) seletedItems.add(i);
             }
 
         } catch (Exception e) {}

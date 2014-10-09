@@ -243,7 +243,8 @@ public class paradasinfo extends ActionBarActivity {
                 LinearLayout list = (LinearLayout) v;
                 for(int i = 0; i < lineas.length; i++) {
                     TextView t = new TextView(contex);
-                    t.setText(lineas[i].substring(6));
+                    //t.setText(lineas[i].substring(6));
+                    t.setText(lineas[i]);
                     t.setTextColor(Color.WHITE);
                     list.addView(t);
                 }
@@ -262,7 +263,7 @@ public class paradasinfo extends ActionBarActivity {
                         ImageView img = (ImageView) view;
                         if (db.chekcFavorito(linea,parada)) img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
                         else img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
-
+                        img.invalidate();
                     }
                 });
 
