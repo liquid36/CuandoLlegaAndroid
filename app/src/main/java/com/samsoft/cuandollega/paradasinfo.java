@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -21,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.extra.FavDialog;
 import com.samsoft.cuandollega.extra.SMSDialog;
 
 import org.apache.http.HttpResponse;
@@ -50,6 +52,7 @@ public class paradasinfo extends ActionBarActivity {
     private LayoutInflater inflater;
     private boolean online;
     private String accion;
+    private Integer idFav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,7 @@ public class paradasinfo extends ActionBarActivity {
         idCalle = datos.getInt("calle");
         idInter = datos.getInt("interseccion");
         Bus = datos.getString("colectivos");
+        idFav = datos.getInt("favorito",0);
         accion = datos.getString("accion");
 
         online = isOnline();
@@ -72,7 +76,7 @@ public class paradasinfo extends ActionBarActivity {
             View v = findViewById(R.id.msgLay);
             ExpandAnimation.expand(v,100,1400);
         }
-        Log.d("PARADAINFO", "lenghthththt : " + db.getStopsFromFavorite().length());
+        //Log.d("PARADAINFO", "lenghthththt : " + db.getStopsFromFavorite().length());
 
         ShowParadas();
 
@@ -98,7 +102,7 @@ public class paradasinfo extends ActionBarActivity {
     public void ShowParadas()
     {
         JSONArray a;
-        if (accion.equals("favorite")) a = db.getStopsFromFavorite();
+        if (accion.equals("favorite")) a = db.getStopsFromFavorite(idFav);
         else a = db.getStops(Bus,idCalle,idInter);
 
         for(int i = 0;i < a.length();i++) {
@@ -160,7 +164,10 @@ public class paradasinfo extends ActionBarActivity {
             listItems.removeAllViews();
             ShowParadas();
         } else if (id == android.R.id.home) {
-            super.onBackPressed();
+            //super.onBackPressed();
+            Intent intent = new Intent(paradasinfo.this, CLMain.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -249,18 +256,13 @@ public class paradasinfo extends ActionBarActivity {
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        boolean fav = db.chekcFavorito(linea,parada);
+                        FavDialog d = new FavDialog(paradasinfo.this,db,linea,parada);
+                        d.Show();
+
                         ImageView img = (ImageView) view;
-                        Log.d("PARADA " , "Es o no es favorito: " + fav);
-                        if (fav) {
-                            makeToast("Deleting from Favorite");
-                            db.deleteFavorito(linea,parada);
-                            img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
-                        } else {
-                            makeToast("Adding to Favorite");
-                            db.insertFavorito(linea,parada);
-                            img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
-                        }
+                        if (db.chekcFavorito(linea,parada)) img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
+                        else img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
+
                     }
                 });
 

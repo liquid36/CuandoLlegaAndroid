@@ -28,6 +28,10 @@
             android:name="com.samsoft.cuandollega.paradasinfo"
             android:label="@string/title_activity_paradasinfo" >
         </activity>
+        <activity
+            android:name="com.samsoft.cuandollega.favoriteScreen"
+            android:label="@string/title_activity_favorite_screen" >
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

@@ -51,7 +51,8 @@ public class DataBase  {
         mydb.execSQL("CREATE TABLE IF NOT EXISTS calles (id INTEGER, desc TEXT)");
         mydb.execSQL("CREATE TABLE IF NOT EXISTS paradas (idColectivo INTEGER, idCalle INTEGER,idInter INTEGER, parada INTEGER , desc TEXT)");
 
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS favoritos (linea TEXT, parada INTEGER)");
+        mydb.execSQL("CREATE TABLE IF NOT EXISTS favlist (idFav INTEGER, linea TEXT, parada INTEGER)");
+        mydb.execSQL("CREATE TABLE IF NOT EXISTS favoritos (fav INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
         return mydb;
     }
 
@@ -59,10 +60,20 @@ public class DataBase  {
     //**********************************************************************************************
     //**********************************************************************************************
 
-    public void insertFavorito(String linea, Integer parada)
+    public void addFavorito(String name)
     {
         db.beginTransaction();
-        db.execSQL("INSERT INTO favoritos VALUES (?,?)", new Object[]{linea, parada});
+        db.execSQL("INSERT INTO favoritos (name) VALUES (?)", new Object[]{name});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void removeFavorito(Integer fav)
+    {
+
+        db.beginTransaction();
+        db.execSQL("DELETE FROM favList   WHERE idfav = ? ", new String[]{fav.toString()});
+        db.execSQL("DELETE FROM favoritos WHERE fav = ? ", new String[]{fav.toString()});
         db.setTransactionSuccessful();
         db.endTransaction();
     }
@@ -75,8 +86,8 @@ public class DataBase  {
             c = db.rawQuery("SELECT * FROM FAVORITOS", new String[]{});
             while (c.moveToNext()) {
                 JSONObject o = new JSONObject();
-                o.put("linea", c.getString(0));
-                o.put("parada", c.getInt(1));
+                o.put("id", c.getInt(0));
+                o.put("name", c.getString(1));
                 arr.put(o);
             }
         } catch (Exception ee) {ee.printStackTrace();
@@ -86,11 +97,19 @@ public class DataBase  {
         return arr;
     }
 
+    public void insertFavList(Integer fav,String linea, Integer parada)
+    {
+        db.beginTransaction();
+        db.execSQL("INSERT INTO favlist VALUES (?,?,?)", new Object[]{fav,linea, parada});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
     public void deleteFavorito(String linea, Integer parada)
     {
 
         db.beginTransaction();
-        db.execSQL("DELETE FROM favoritos WHERE linea ='" + linea + "' AND parada = " + parada  , new String[]{});
+        db.execSQL("DELETE FROM favList WHERE linea ='" + linea + "' AND parada = " + parada , new String[]{});
         db.setTransactionSuccessful();
         db.endTransaction();
     }
@@ -99,21 +118,30 @@ public class DataBase  {
     public boolean chekcFavorito(String linea, Integer parada)
     {
         boolean res = false;
-        Cursor c = db.rawQuery("SELECT * FROM FAVORITOS WHERE linea ='" + linea + "' AND parada = " + parada  , new String[]{});
+        Cursor c = db.rawQuery("SELECT * FROM favList WHERE linea ='" + linea + "' AND parada = " + parada  , new String[]{});
         if (c.moveToNext()) res = true;
         c.close();
         return res;
     }
 
-    public JSONArray getStopsFromFavorite() {
+    public boolean isFavCheck(Integer id,String linea, Integer parada)
+    {
+        boolean res = false;
+        Cursor c = db.rawQuery("SELECT * FROM favList WHERE linea ='" + linea + "' AND parada = " + parada + " AND idFav = " + id , new String[]{});
+        if (c.moveToNext()) res = true;
+        c.close();
+        return res;
+    }
+
+    public JSONArray getStopsFromFavorite(Integer fav) {
         Cursor c = null;
         JSONArray arr = new JSONArray();
         try {
 
             c = db.rawQuery("SELECT idColectivo, desc,paradas.parada AS parada ,name,bandera, idCalle, idInter FROM paradas " +
                     "INNER JOIN colectivos ON idColectivo = colectivos.id " +
-                    "INNER JOIN favoritos ON favoritos.linea = colectivos.name AND favoritos.parada = paradas.parada " +
-                    "GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , new String[]{});
+                    "INNER JOIN favList ON favList.linea = colectivos.name AND favList.parada = paradas.parada AND favList.idFav = " + fav +
+                    " GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , new String[]{});
             while (c.moveToNext()) {
                 JSONObject o = new JSONObject();
                 o.put("idColectivo", c.getInt(c.getColumnIndex("idColectivo")));

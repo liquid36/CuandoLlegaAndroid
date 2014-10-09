@@ -5,6 +5,8 @@
     tools:context="com.samsoft.cuandollega.calleSearch"
     android:background="@color/fondo"
     android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     >
 
     <LinearLayout

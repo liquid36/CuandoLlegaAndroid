@@ -133,7 +133,12 @@ public class colectivoSearch extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home) super.onBackPressed();
+        if (id == android.R.id.home) {
+            //super.onBackPressed();
+            Intent intent = new Intent(colectivoSearch.this, CLMain.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 

@@ -13,7 +13,7 @@
         android:weightSum="1">
 
         <ImageView
-            android:layout_width="56dp"
+            android:layout_width="72dp"
             android:layout_height="56dp"
             android:id="@+id/actionIcon"
             android:src="@drawable/ic_action_not_important"
