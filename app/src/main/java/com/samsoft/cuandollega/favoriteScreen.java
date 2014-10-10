@@ -14,6 +14,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.samsoft.cuandollega.extra.Action;
+import com.samsoft.cuandollega.extra.DialogAccion;
+import com.samsoft.cuandollega.extra.FavAction;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,22 +52,32 @@ public class favoriteScreen extends ActionBarActivity {
         Log.d("FAVORITES", "Length de favorites: " + l.length());
         for(int i = 0;i < l.length();i++) {
             try {
-                JSONObject o = l.getJSONObject(i);
+                final JSONObject o = l.getJSONObject(i);
+                final Integer id = o.getInt("id");
+                final String name = o.getString("name");
                 View v = inflater.inflate(R.layout.rowsimple, null);
                 TextView t = (TextView) v.findViewById(R.id.label);
-                t.setText(o.getString("name"));
-                v.setTag(o.getInt("id"));
+                t.setText(name);
+                v.setTag(id);
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Integer id = (Integer) view.getTag();
                         Intent i = new Intent(favoriteScreen.this, paradasinfo.class);
-                        i.putExtra("calle",0);
-                        i.putExtra("interseccion",0);
-                        i.putExtra("colectivos","");
+                        i.putExtra("calle", 0);
+                        i.putExtra("interseccion", 0);
+                        i.putExtra("colectivos", "");
                         i.putExtra("favorito", id);
-                        i.putExtra("accion","favorite");
+                        i.putExtra("accion", "favorite");
                         startActivity(i);
+                    }
+                });
+                v.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        Action ac = new FavAction(id,db,favoriteScreen.this);
+                        new DialogAccion(favoriteScreen.this,"Eliminar etiqueta","Desea eliminar la etiqueta: " + name + "?","Aceptar" ,"Cancelar",ac).Show();
+                        return true;
                     }
                 });
                 listItems.addView(v);
@@ -78,8 +92,10 @@ public class favoriteScreen extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 String t = texto.getText().toString();
-                db.addFavorito(t);
-                ShowFavList();
+                if (!t.isEmpty()) {
+                    db.addFavorito(t);
+                    ShowFavList();
+                }
             }
         });
         listItems.addView(v);

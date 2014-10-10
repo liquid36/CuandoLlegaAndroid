@@ -134,10 +134,10 @@ public class calleSearch extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            //super.onBackPressed();
-            Intent intent = new Intent(calleSearch.this, CLMain.class);
+            super.onBackPressed();
+            /*Intent intent = new Intent(calleSearch.this, CLMain.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            startActivity(intent);*/
         }
         return super.onOptionsItemSelected(item);
     }

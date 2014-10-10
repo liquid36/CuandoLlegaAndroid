@@ -22,8 +22,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.extra.Action;
+import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.extra.FavDialog;
-import com.samsoft.cuandollega.extra.SMSDialog;
+import com.samsoft.cuandollega.extra.SMSAction;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -136,7 +138,8 @@ public class paradasinfo extends ActionBarActivity {
                         @Override
                         public void onClick(View view) {
                             String m = (String) view.getTag();
-                            new SMSDialog(paradasinfo.this,m).AskSend();
+                            Action ac = new SMSAction(m);
+                            new DialogAccion(paradasinfo.this,"Enviar SMS","Quieres enviar un SMS?","Enviar","Cancelar",ac).Show();
                         }
                     });
                 }
