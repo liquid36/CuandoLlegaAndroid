@@ -25,6 +25,7 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -128,15 +129,41 @@ public class CLMain extends ActionBarActivity {
     {
         Intent i = new Intent(CLMain.this, favoriteScreen.class);
         startActivity(i);
-        /*Intent i = new Intent(CLMain.this, paradasinfo.class);
-        i.putExtra("calle",0);
-        i.putExtra("interseccion",0);
-        i.putExtra("colectivos","");
-        i.putExtra("accion","favorite");
-        startActivity(i);*/
+    }
+
+    public void recienteClick(View v)
+    {
+        SharedPreferences settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
+        Log.d("CLMain","Estado para recientes:");
+        Log.d("CLMain","Accion: " + settings.getString("Uaccion", ""));
+        Log.d("CLMain","Calle: " + settings.getInt("UidCalles",0) );
+        Log.d("CLMain","idInter: " + settings.getInt("UidInter",0));
+        Log.d("CLMain","Colectivo: " + settings.getString("UColectivos", ""));
+        Log.d("CLMain","idFavorito: " + settings.getInt("UidFav", 0));
+
+        if (!settings.getString("Uaccion", "").equals(""))  {
+            Intent i = new Intent(CLMain.this, paradasinfo.class);
+            i.putExtra("calle",settings.getInt("UidCalles",0));
+            i.putExtra("favorito",settings.getInt("UidFav",0));
+            i.putExtra("interseccion",settings.getInt("UidInter",0));
+            i.putExtra("colectivos",settings.getString("UColectivos", ""));
+            i.putExtra("accion",settings.getString("Uaccion", ""));
+            startActivity(i);
+        } else {
+            makeToast("No se realizo ninguna consulta");
+        }
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    public void makeToast(String s) {
+        Context context = getApplicationContext();
+        CharSequence text = s;
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+        return;
+    }
 
     private String streamToString(InputStream i)
     {
@@ -168,7 +195,7 @@ public class CLMain extends ActionBarActivity {
     public void ShowUpdateMessage()
     {
         View v = findViewById(R.id.msgLay);
-        ExpandAnimation.expand(v,110,1500);
+        ExpandAnimation.expand(v, 110, 1500);
     }
 
     @Override

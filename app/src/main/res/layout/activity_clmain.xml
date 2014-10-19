@@ -37,7 +37,9 @@
         android:clickable="true"
         android:onClick="calleClick"
         android:background="@drawable/custon_button"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
 
 
     <Button
@@ -48,17 +50,34 @@
         android:layout_gravity="center_horizontal"
         android:onClick="busClick"
         android:background="@drawable/custon_button"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Favoritos"
+        android:text="Recientes"
+        android:id="@+id/porreciente"
+        android:layout_gravity="center_horizontal"
+        android:onClick="recienteClick"
+        android:background="@drawable/custon_button"
+        android:layout_margin="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Marcadores"
         android:id="@+id/porfavoritos"
         android:layout_gravity="center_horizontal"
         android:onClick="favClick"
         android:background="@drawable/custon_button"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
 
 
     <Button

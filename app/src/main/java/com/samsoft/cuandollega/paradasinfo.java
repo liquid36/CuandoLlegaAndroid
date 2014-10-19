@@ -5,6 +5,7 @@ import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -26,6 +27,7 @@ import com.samsoft.cuandollega.extra.Action;
 import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.extra.FavDialog;
 import com.samsoft.cuandollega.extra.SMSAction;
+import com.samsoft.cuandollega.extra.lunchFavAction;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -78,10 +80,20 @@ public class paradasinfo extends ActionBarActivity {
             View v = findViewById(R.id.msgLay);
             ExpandAnimation.expand(v,100,1400);
         }
-        //Log.d("PARADAINFO", "lenghthththt : " + db.getStopsFromFavorite().length());
-
         ShowParadas();
+        saveStat();
+    }
 
+    public void saveStat()
+    {
+        SharedPreferences settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("Uaccion", accion);
+        editor.putString("Ucolectivos", Bus);
+        editor.putInt("UidCalles",idCalle);
+        editor.putInt("UidInter",idInter);
+        editor.putInt("UidFav",idFav);
+        editor.commit();
     }
 
     public static String stripAccents(String s)
@@ -105,7 +117,11 @@ public class paradasinfo extends ActionBarActivity {
     {
         JSONArray a;
         if (accion.equals("favorite")) a = db.getStopsFromFavorite(idFav);
-        else a = db.getStops(Bus,idCalle,idInter);
+        else {
+            a = db.getStops(Bus,idCalle,idInter);
+            db.addFrequencia(idCalle);
+            db.addFrequencia(idInter);
+        }
 
         for(int i = 0;i < a.length();i++) {
             try {
@@ -260,13 +276,21 @@ public class paradasinfo extends ActionBarActivity {
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        FavDialog d = new FavDialog(paradasinfo.this,db,linea,parada);
-                        d.Show();
+                        if (db.getFavoritos().length() > 0) {
+                            FavDialog d = new FavDialog(paradasinfo.this, db, linea, parada);
+                            d.Show();
 
-                        ImageView img = (ImageView) view;
-                        if (db.chekcFavorito(linea,parada)) img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
-                        else img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
-                        img.invalidate();
+                            ImageView img = (ImageView) view;
+                            if (db.chekcFavorito(linea, parada))
+                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
+                            else
+                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
+                            img.invalidate();
+                        }else {
+                            Action ac =  new lunchFavAction(paradasinfo.this);
+                            DialogAccion da = new DialogAccion(paradasinfo.this,"No hay etiquetas","Quieres crear una nueva?","Crear","Cancelar",ac);
+                            da.Show();
+                        }
                     }
                 });
 

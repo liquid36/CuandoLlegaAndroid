@@ -53,6 +53,10 @@ public class DataBase  {
 
         mydb.execSQL("CREATE TABLE IF NOT EXISTS favlist (idFav INTEGER, linea TEXT, parada INTEGER)");
         mydb.execSQL("CREATE TABLE IF NOT EXISTS favoritos (fav INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
+
+        mydb.execSQL("CREATE TABLE IF NOT EXISTS calleFreq (id INTEGER, frecuencia INTEGER)");
+        mydb.execSQL("CREATE VIEW  IF NOT EXISTS callesF AS " +
+                     "SELECT calles.id AS id, desc,frecuencia FROM calles INNER JOIN calleFreq ON calles.id = calleFreq.id");
         return mydb;
     }
 
@@ -160,6 +164,18 @@ public class DataBase  {
         return arr;
     }
 
+    //**********************************************************************************************
+    //**********************************************************************************************
+    //**********************************************************************************************
+
+    public void addFrequencia(Integer idCalle)
+    {
+        db.beginTransaction();
+        db.execSQL("INSERT OR IGNORE INTO calleFreq VALUES (?,?)", new Object[]{idCalle,0});
+        db.execSQL("UPDATE calleFreq SET frecuencia = frecuencia + 1 WHERE id = ? ", new Object[]{idCalle});
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
 
     //**********************************************************************************************
     //**********************************************************************************************
