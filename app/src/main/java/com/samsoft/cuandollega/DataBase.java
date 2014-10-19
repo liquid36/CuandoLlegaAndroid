@@ -54,9 +54,9 @@ public class DataBase  {
         mydb.execSQL("CREATE TABLE IF NOT EXISTS favlist (idFav INTEGER, linea TEXT, parada INTEGER)");
         mydb.execSQL("CREATE TABLE IF NOT EXISTS favoritos (fav INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
 
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS calleFreq (id INTEGER, frecuencia INTEGER)");
+        mydb.execSQL("CREATE TABLE IF NOT EXISTS calleFreq (id INTEGER PRIMARY KEY, frecuencia INTEGER)");
         mydb.execSQL("CREATE VIEW  IF NOT EXISTS callesF AS " +
-                     "SELECT calles.id AS id, desc,frecuencia FROM calles INNER JOIN calleFreq ON calles.id = calleFreq.id");
+                     "SELECT calles.id AS id, desc, ifnull(frecuencia,0) AS frecuencia FROM calles LEFT OUTER JOIN calleFreq ON calles.id = calleFreq.id");
         return mydb;
     }
 
@@ -236,23 +236,22 @@ public class DataBase  {
     }
 
     public JSONArray getCalles(String Colectivo,String name) {
-        //SQLiteDatabase db = null;
         Cursor c = null;
         JSONArray arr = new JSONArray();
         try {
             //db = this.openDatabase(NAME);
             if (Colectivo.trim().isEmpty())
                 //c = db.rawQuery("SELECT * FROM " + TCALLES + " WHERE desc LIKE '%" + name + "%'  ORDER BY desc"  , new String[] {});
-                c = db.rawQuery("SELECT calles.id AS id, calles.desc AS desc FROM paradas " +
-                    "INNER JOIN calles  ON calles.id = idCalle " +
-                    "WHERE calles.desc LIKE '%" + name + "%'" +
-                    " GROUP BY calles.id  ORDER BY calles.desc" , new String[] {});
+                c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc FROM paradas " +
+                    "INNER JOIN callesF  ON callesF.id = idCalle " +
+                    "WHERE callesF.desc LIKE '%" + name + "%'" +
+                    " GROUP BY callesF.id  ORDER BY callesF.frecuencia DESC,callesF.desc" , new String[] {});
             else
-                c = db.rawQuery("SELECT calles.id AS id, calles.desc AS desc FROM paradas " +
-                        "INNER JOIN calles     ON calles.id = idCalle " +
+                c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc FROM paradas " +
+                        "INNER JOIN callesF     ON callesF.id = idCalle " +
                         "INNER JOIN colectivos ON colectivos.id = idColectivo " +
-                        "WHERE colectivos.name = ? AND calles.desc LIKE '%" + name + "%'" +
-                        " GROUP BY calles.id  ORDER BY calles.desc" , new String[] {Colectivo});
+                        "WHERE colectivos.name = ? AND callesF.desc LIKE '%" + name + "%'" +
+                        " GROUP BY callesF.id  ORDER BY callesF.frecuencia DESC,callesF.desc" , new String[] {Colectivo});
 
 
             while (c.moveToNext()) {
@@ -291,16 +290,16 @@ public class DataBase  {
         JSONArray arr = new JSONArray();
         try {
             if (Colectivo.trim().isEmpty())
-                c = db.rawQuery("SELECT calles.id, calles.desc AS desc FROM paradas " +
-                        "INNER JOIN calles ON calles.id = idInter " +
-                        "WHERE idCalle = ? AND calles.desc LIKE '%" + name + "%'" +
-                        "GROUP BY calles.id ORDER BY calles. desc" , new String[] {Integer.toString(idCalle)});
+                c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc FROM paradas " +
+                        "INNER JOIN callesF ON callesF.id = idInter " +
+                        "WHERE idCalle = ? AND callesF.desc LIKE '%" + name + "%'" +
+                        "GROUP BY callesF.id ORDER BY callesF.frecuencia DESC,callesF. desc" , new String[] {Integer.toString(idCalle)});
             else
-                c = db.rawQuery("SELECT calles.id, calles.desc AS desc FROM paradas " +
-                            "INNER JOIN calles ON calles.id = idInter " +
+                c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc FROM paradas " +
+                            "INNER JOIN callesF ON callesF.id = idInter " +
                             "INNER JOIN colectivos ON colectivos.id = idColectivo " +
-                            "WHERE colectivos.name = ? AND idCalle = ? AND calles.desc LIKE '%" + name + "%'" +
-                            "GROUP BY calles.id ORDER BY calles.desc" , new String[] {Colectivo, Integer.toString(idCalle)});
+                            "WHERE colectivos.name = ? AND idCalle = ? AND callesF.desc LIKE '%" + name + "%'" +
+                            "GROUP BY callesF.id ORDER BY callesF.frecuencia DESC,callesF.desc" , new String[] {Colectivo, Integer.toString(idCalle)});
             while (c.moveToNext()) {
                 JSONObject o = hydrateCalle(c);
                 if (o != null) arr.put(o);

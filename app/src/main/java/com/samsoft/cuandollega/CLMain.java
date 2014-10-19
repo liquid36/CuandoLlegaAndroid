@@ -224,7 +224,7 @@ public class CLMain extends ActionBarActivity {
         public boolean LoadFromFile(Boolean rawFile) {
             try {
                 File dbfile = contex.getDatabasePath("test.db");
-                File md5 = contex.getDatabasePath("test.md5");
+                File md5 = contex.getDatabasePath("db.md5");
 
                 if (rawFile) {
                     InputStream in   = contex.getResources().openRawResource(R.raw.test);
