@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.samsoft.cuandollega.DataBase;
+import com.samsoft.cuandollega.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,11 +25,15 @@ public class FavDialog extends  AlertDialog.Builder
     public String linea;
     private DataBase db;
     private JSONArray ar;
+    private ImageView img;
+    private Context cc;
     final ArrayList seletedItems=new ArrayList();
     CharSequence[] items = new CharSequence[] {};
-    public FavDialog(Context c, DataBase d, String l,Integer p)
+    public FavDialog(Context c, DataBase d, String l,Integer p,ImageView ii)
     {
         super(c);
+        cc = c;
+        img = ii;
         linea = l;
         parada = p;
         db = d;
@@ -71,6 +77,13 @@ public class FavDialog extends  AlertDialog.Builder
                         JSONObject o = ar.getJSONObject( (Integer) seletedItems.get(i));
                         db.insertFavList(o.getInt("id"),linea,parada);
                     } catch (Exception e) {}
+
+                if (db.chekcFavorito(linea, parada))
+                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.ic_action_important));
+                else
+                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.ic_action_not_important));
+                img.invalidate();
+
             }
         });
         setNegativeButton("Cancelar",null);

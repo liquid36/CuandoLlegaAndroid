@@ -131,13 +131,17 @@ public class paradasinfo extends ActionBarActivity {
                 TextView dest = (TextView) v.findViewById(R.id.txtDest);
                 bus.setText(o.getString("name"));
                 dest.setText(stripAccents(o.getString("desc")));
+
                 if (accion.equals("favorite")) {
-                    String txtcalle = db.getCalleName(o.getInt("idCalle"));
-                    String txtinter = db.getCalleName(o.getInt("idInter"));
-                    TextView lugar = (TextView) v.findViewById(R.id.txtLugar);
-                    lugar.setVisibility(View.VISIBLE);
-                    lugar.setText(txtcalle + " Y " + txtinter);
+                    idCalle = o.getInt("idCalle");
+                    idInter = o.getInt("idInter");
                 }
+                String txtcalle = db.getCalleName(idCalle);
+                String txtinter = db.getCalleName(idInter);
+                TextView lugar = (TextView) v.findViewById(R.id.txtLugar);
+                lugar.setVisibility(View.VISIBLE);
+                lugar.setText(txtcalle + " Y " + txtinter);
+
 
                 if (online) {
                     AskTime ask = new AskTime(v,getApplicationContext());
@@ -277,15 +281,9 @@ public class paradasinfo extends ActionBarActivity {
                     @Override
                     public void onClick(View view) {
                         if (db.getFavoritos().length() > 0) {
-                            FavDialog d = new FavDialog(paradasinfo.this, db, linea, parada);
-                            d.Show();
-
                             ImageView img = (ImageView) view;
-                            if (db.chekcFavorito(linea, parada))
-                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
-                            else
-                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
-                            img.invalidate();
+                            FavDialog d = new FavDialog(paradasinfo.this, db, linea, parada,img);
+                            d.Show();
                         }else {
                             Action ac =  new lunchFavAction(paradasinfo.this);
                             DialogAccion da = new DialogAccion(paradasinfo.this,"No hay etiquetas","Quieres crear una nueva?","Crear","Cancelar",ac);
@@ -297,7 +295,6 @@ public class paradasinfo extends ActionBarActivity {
                 boolean fav = db.chekcFavorito(linea,parada);
                 if (fav) img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
                 else img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
-
             }
             return;
         }
