@@ -55,6 +55,13 @@ public class calleSearch extends ActionBarActivity {
 
     public void AddSimpleRows(JSONArray a)
     {
+        if (idCalle != 0) {
+            String txtcalle = db.getCalleName(idCalle);
+            LinearLayout msgCalle = (LinearLayout) findViewById(R.id.msgCalle);
+            TextView t = (TextView) msgCalle.findViewById(R.id.labCalle);
+            t.setText(txtcalle + " Y ...");
+            msgCalle.setVisibility(View.VISIBLE);
+        }
         for(int i = 0;i < a.length();i++)  {
             try {
                 JSONObject o = a.getJSONObject(i);
