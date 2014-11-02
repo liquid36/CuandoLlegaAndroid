@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +44,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -265,11 +268,42 @@ public class paradasinfo extends ActionBarActivity {
                 String [] lineas = datos.substring(11).split("-");
                 LinearLayout list = (LinearLayout) v;
                 for(int i = 0; i < lineas.length; i++) {
-                    TextView t = new TextView(contex);
-                    //t.setText(lineas[i].substring(6));
-                    t.setText(lineas[i]);
-                    t.setTextColor(Color.WHITE);
-                    list.addView(t);
+                    if (lineas[i].length() > 6) {
+                        char b = lineas[i].charAt(lineas[i].indexOf(":") - 1);
+                        String bandera;
+                        switch (b) {
+                            case 'R':
+                                bandera = "ROJO";
+                                break;
+                            case 'V':
+                                bandera = "VERDE";
+                                break;
+                            case 'N':
+                                bandera = "NEGRO";
+                                break;
+                            default:
+                                bandera = "UNICO";
+                                break;
+                        }
+                        String steps = lineas[i].substring(lineas[i].indexOf(":") + 1);
+                        if (lineas[i].contains("Prox. serv")) {
+                            TextView t = new TextView(contex);
+                            t.setText(bandera + ":" + steps);
+                            t.setTextColor(Color.WHITE);
+                            list.addView(t);
+                        } else {
+                            String[] ll = steps.split("siguiente");
+                            for(int j = 0; j < ll.length ; j++) {
+                                SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+                                Calendar now = Calendar.getInstance();
+                                now.add(Calendar.MINUTE,ExpandAnimation.strToInteger(ll[j]));
+                                TextView t = new TextView(contex);
+                                t.setText(bandera + ":" + ll[j] + " llega " +  df.format(now.getTime()) + "Hs") ;
+                                t.setTextColor(Color.WHITE);
+                                list.addView(t);
+                            }
+                        }
+                    }
                 }
 
                 ProgressBar bar = (ProgressBar) list.findViewById(R.id.waitingbar);

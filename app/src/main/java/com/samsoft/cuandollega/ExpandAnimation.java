@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -69,4 +70,15 @@ public class ExpandAnimation {
             return true;
         } catch (Exception e) {e.printStackTrace(); return  false;}
     }
+
+    public static Integer strToInteger(String s)
+    {
+        Integer n = 0, i = 0;
+        s = s.trim();
+        while ( Character.isDigit(s.charAt(i)) ) i++;
+        if (i == 0) return 0;
+        return Integer.parseInt(s.substring(0,i));
+    }
+
 }
+
