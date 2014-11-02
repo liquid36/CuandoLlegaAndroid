@@ -91,6 +91,17 @@
         android:layout_margin="10dp"
         android:visibility="gone" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valorar App"
+        android:id="@+id/rate"
+        android:layout_gravity="center_horizontal"
+        android:onClick="rateClick"
+        android:background="@drawable/custon_button"
+        android:layout_margin="10dp"
+    />
+
 
 
 </LinearLayout>
