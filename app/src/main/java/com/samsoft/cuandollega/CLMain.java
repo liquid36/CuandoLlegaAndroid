@@ -159,7 +159,7 @@ public class CLMain extends ActionBarActivity {
             i.putExtra("calle",settings.getInt("UidCalles",0));
             i.putExtra("favorito",settings.getInt("UidFav",0));
             i.putExtra("interseccion",settings.getInt("UidInter",0));
-            i.putExtra("colectivos",settings.getString("UColectivos", ""));
+            i.putExtra("colectivos",settings.getString("Ucolectivos", ""));
             i.putExtra("accion",settings.getString("Uaccion", ""));
             startActivity(i);
         } else {

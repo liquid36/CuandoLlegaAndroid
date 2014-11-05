@@ -269,39 +269,46 @@ public class paradasinfo extends ActionBarActivity {
                 LinearLayout list = (LinearLayout) v;
                 for(int i = 0; i < lineas.length; i++) {
                     if (lineas[i].length() > 6) {
-                        char b = lineas[i].charAt(lineas[i].indexOf(":") - 1);
-                        String bandera;
-                        switch (b) {
-                            case 'R':
-                                bandera = "ROJO";
-                                break;
-                            case 'V':
-                                bandera = "VERDE";
-                                break;
-                            case 'N':
-                                bandera = "NEGRO";
-                                break;
-                            default:
-                                bandera = "UNICO";
-                                break;
-                        }
-                        String steps = lineas[i].substring(lineas[i].indexOf(":") + 1);
-                        if (lineas[i].contains("Prox. serv")) {
-                            TextView t = new TextView(contex);
-                            t.setText(bandera + ":" + steps);
-                            t.setTextColor(Color.WHITE);
-                            list.addView(t);
-                        } else {
-                            String[] ll = steps.split("siguiente");
-                            for(int j = 0; j < ll.length ; j++) {
-                                SimpleDateFormat df = new SimpleDateFormat("HH:mm");
-                                Calendar now = Calendar.getInstance();
-                                now.add(Calendar.MINUTE,ExpandAnimation.strToInteger(ll[j]));
+                        if (lineas[i].indexOf(":") > 0) {
+                            char b = lineas[i].charAt(lineas[i].indexOf(":") - 1);
+                            String bandera;
+                            switch (b) {
+                                case 'R':
+                                    bandera = "ROJO";
+                                    break;
+                                case 'V':
+                                    bandera = "VERDE";
+                                    break;
+                                case 'N':
+                                    bandera = "NEGRO";
+                                    break;
+                                default:
+                                    bandera = "UNICO";
+                                    break;
+                            }
+                            String steps = lineas[i].substring(lineas[i].indexOf(":") + 1);
+                            if (lineas[i].contains("Prox. serv")) {
                                 TextView t = new TextView(contex);
-                                t.setText(bandera + ":" + ll[j] + " llega " +  df.format(now.getTime()) + "Hs") ;
+                                t.setText(bandera + ":" + steps);
                                 t.setTextColor(Color.WHITE);
                                 list.addView(t);
+                            } else {
+                                String[] ll = steps.split("siguiente");
+                                for (int j = 0; j < ll.length; j++) {
+                                    SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+                                    Calendar now = Calendar.getInstance();
+                                    now.add(Calendar.MINUTE, ExpandAnimation.strToInteger(ll[j]));
+                                    TextView t = new TextView(contex);
+                                    t.setText(bandera + ":" + ll[j] + " llega " + df.format(now.getTime()) + "Hs");
+                                    t.setTextColor(Color.WHITE);
+                                    list.addView(t);
+                                }
                             }
+                        } else {
+                            TextView t = new TextView(contex);
+                            t.setText(lineas[i]);
+                            t.setTextColor(Color.WHITE);
+                            list.addView(t);
                         }
                     }
                 }
