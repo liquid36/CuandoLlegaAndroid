@@ -29,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.extra.DialogAccion;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,6 +55,7 @@ public class CLMain extends ActionBarActivity {
 
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private ProgressDialog mProgressDialog;
+    SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +63,23 @@ public class CLMain extends ActionBarActivity {
         setContentView(R.layout.activity_clmain);
         listItems = (LinearLayout) findViewById(R.id.aaa);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
         db = new DataBase(getApplicationContext());
 
-        if (!getStat()) {
+        int versionCode = BuildConfig.VERSION_CODE;
+        int lastCode = getLastVersion();
+        if (versionCode != lastCode) {
             CopiarBaseDatos(true);
-        } else {
+            saveLastVersion(versionCode);
+            new DialogAccion(CLMain.this,"Novedades","Bienvenidos a Cuando Llega Pro!\nHemos actualizado las base de datos de calles y colectivos. Incluimos las calles de Funes para la linea 142.\nProximamente nuevas mejoras.","Aceptar","",null).Show();
+        }
+
+        /* else {
             if (isOnline()) {
                 String url2 = "https://raw.githubusercontent.com/liquid36/CLDownload/master/db.md5";
                 new DownloadFileAsync(getApplicationContext(), true).execute(url2);
             }
-        }
+        }*/
     }
 
     @Override
@@ -84,16 +94,28 @@ public class CLMain extends ActionBarActivity {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
+    public int getLastVersion()
+    {
+        try {
+            return settings.getInt("Version", 0);
+        } catch (Exception e) {e.printStackTrace();return 0;}
+    }
+
+    public void saveLastVersion(int b)
+    {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("Version", b);
+        editor.commit();
+    }
+
     public boolean getStat()
     {
-        SharedPreferences settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
+
         return settings.getBoolean("Loaded", false);
     }
 
     public void saveStat(boolean b)
     {
-        Log.d("Preferences", "Paso por saveStat = " + b);
-        SharedPreferences settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("Loaded", b);
         editor.commit();
@@ -201,8 +223,6 @@ public class CLMain extends ActionBarActivity {
         progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
         UpdateDB run = new UpdateDB(getApplicationContext(),fromRaw);
         run.execute();
-        View v = findViewById(R.id.msgLay);
-        v.setVisibility(View.GONE);
     }
 
     public void ShowUpdateMessage()
@@ -237,17 +257,11 @@ public class CLMain extends ActionBarActivity {
         public boolean LoadFromFile(Boolean rawFile) {
             try {
                 File dbfile = contex.getDatabasePath("test.db");
-                File md5 = contex.getDatabasePath("db.md5");
-
                 if (rawFile) {
                     InputStream in   = contex.getResources().openRawResource(R.raw.test);
                     OutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
                     ExpandAnimation.CopyFile(in,out);
-                    in = contex.getResources().openRawResource(R.raw.db);
-                    out = new FileOutputStream(md5.getAbsolutePath(),false);
-                    ExpandAnimation.CopyFile(in,out);
                 }
-
                 db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
                 db.Close();
                 getDatabasePath("test.db").delete();
@@ -260,7 +274,6 @@ public class CLMain extends ActionBarActivity {
 
         protected Boolean doInBackground(String... urls) {
             return LoadFromFile(rawFile);
-
         }
 
         protected void onProgressUpdate(Integer... progress) {

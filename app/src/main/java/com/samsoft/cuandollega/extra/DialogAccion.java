@@ -17,14 +17,16 @@ public class DialogAccion extends  AlertDialog.Builder {
         this.setTitle(t);
         if (!m.isEmpty()) this.setMessage(m);
 
+
         setPositiveButton(btok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ac.Run();
+                if (ac != null) ac.Run();
                 dialog.dismiss();
             }
         });
-        setNegativeButton(btcancel,null);
+        if (!btcancel.isEmpty())
+            setNegativeButton(btcancel,null);
     }
 
     public void Show()
