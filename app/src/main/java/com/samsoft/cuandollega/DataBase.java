@@ -64,12 +64,16 @@ public class DataBase  {
     //**********************************************************************************************
     //**********************************************************************************************
 
-    public void addFavorito(String name)
+    public Integer addFavorito(String name)
     {
         db.beginTransaction();
-        db.execSQL("INSERT INTO favoritos (name) VALUES (?)", new Object[]{name});
+        ContentValues values = new ContentValues();
+        values.put("name",name);
+        long id = db.insert("favoritos",null,values);
+        //db.execSQL("INSERT INTO favoritos (name) VALUES (?)", new Object[]{name});
         db.setTransactionSuccessful();
         db.endTransaction();
+        return (int) id;
     }
 
     public void removeFavorito(Integer fav)

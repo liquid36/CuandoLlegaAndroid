@@ -6,13 +6,21 @@ import android.content.DialogInterface;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.samsoft.cuandollega.DataBase;
 import com.samsoft.cuandollega.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -27,8 +35,8 @@ public class FavDialog extends  AlertDialog.Builder
     private JSONArray ar;
     private ImageView img;
     private Context cc;
-    final ArrayList seletedItems=new ArrayList();
-    CharSequence[] items = new CharSequence[] {};
+    final ArrayList checkList = new ArrayList();
+    LinearLayout v;
     public FavDialog(Context c, DataBase d, String l,Integer p,ImageView ii)
     {
         super(c);
@@ -38,21 +46,46 @@ public class FavDialog extends  AlertDialog.Builder
         parada = p;
         db = d;
         ar = db.getFavoritos();
-        items = new CharSequence[ar.length()];
-        boolean[] cbool = new boolean[ar.length()];
+
+        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View f = (LinearLayout) inflater.inflate(R.layout.translayout,null);
+        v = (LinearLayout) f.findViewById(R.id.listItems);
+        this.setView(f);
+
         try {
             for (int i = 0; i < ar.length(); i++) {
                 Integer id = (Integer) ar.getJSONObject(i).getInt("id") ;
-                items[i] = ar.getJSONObject(i).getString("name");
-                cbool[i] = db.isFavCheck(id,linea,parada);
-                if (cbool[i]) seletedItems.add(i);
+                String item = ar.getJSONObject(i).getString("name");
+                Boolean cbool = db.isFavCheck(id,linea,parada);
+
+                LinearLayout cview = (LinearLayout) inflater.inflate(R.layout.checkrow,null);
+                TextView txt = (TextView) cview.findViewById(R.id.txtrow);
+                CheckBox cb = (CheckBox) cview.findViewById(R.id.cbrow);
+                txt.setText(item);
+                cb.setChecked(cbool);
+                cb.setTag(id);
+                checkList.add(cb);
+                v.addView(cview);
             }
 
         } catch (Exception e) {}
 
+        final LinearLayout eview = (LinearLayout) inflater.inflate(R.layout.entryrow,null);
+        ImageButton btn = (ImageButton) eview.findViewById(R.id.btn);
+        final EditText txt = (EditText) eview.findViewById(R.id.texto);
+        v.addView(eview);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String newName = txt.getText().toString();
+                v.removeView(eview);
+            }
+        });
 
         this.setTitle("Etiquetas");
-        this.setMultiChoiceItems(items, cbool,
+
+
+        /*this.setMultiChoiceItems(items, cbool,
                 new DialogInterface.OnMultiChoiceClickListener() {
                     // indexSelected contains the index of item (of which checkbox checked)
                     @Override
@@ -65,18 +98,18 @@ public class FavDialog extends  AlertDialog.Builder
                         }
                     }
                 }
-        );
+        );*/
 
         setPositiveButton("Aplicar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                db.deleteFavorito(linea,parada);
-                for(int i = 0;i < seletedItems.size();i++)
-                    try {
-                        JSONObject o = ar.getJSONObject( (Integer) seletedItems.get(i));
-                        db.insertFavList(o.getInt("id"),linea,parada);
-                    } catch (Exception e) {}
+                db.deleteFavorito(linea, parada);
+                for (int i = 0; i < checkList.size(); i++) {
+                    CheckBox cb = (CheckBox) checkList.get(i);
+                    Integer id = (Integer) cb.getTag();
+                    if (cb.isChecked()) db.insertFavList(id, linea, parada);
+                }
 
                 if (db.chekcFavorito(linea, parada))
                     img.setImageDrawable(cc.getResources().getDrawable(R.drawable.ic_action_important));
@@ -86,6 +119,7 @@ public class FavDialog extends  AlertDialog.Builder
 
             }
         });
+
         setNegativeButton("Cancelar",null);
     }
 
