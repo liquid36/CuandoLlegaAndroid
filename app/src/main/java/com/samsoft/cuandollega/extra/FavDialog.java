@@ -35,6 +35,7 @@ public class FavDialog extends  AlertDialog.Builder
     private JSONArray ar;
     private ImageView img;
     private Context cc;
+    private LayoutInflater inflater;
     final ArrayList checkList = new ArrayList();
     LinearLayout v;
     public FavDialog(Context c, DataBase d, String l,Integer p,ImageView ii)
@@ -47,7 +48,7 @@ public class FavDialog extends  AlertDialog.Builder
         db = d;
         ar = db.getFavoritos();
 
-        LayoutInflater inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View f = (LinearLayout) inflater.inflate(R.layout.translayout,null);
         v = (LinearLayout) f.findViewById(R.id.listItems);
         this.setView(f);
@@ -57,48 +58,13 @@ public class FavDialog extends  AlertDialog.Builder
                 Integer id = (Integer) ar.getJSONObject(i).getInt("id") ;
                 String item = ar.getJSONObject(i).getString("name");
                 Boolean cbool = db.isFavCheck(id,linea,parada);
-
-                LinearLayout cview = (LinearLayout) inflater.inflate(R.layout.checkrow,null);
-                TextView txt = (TextView) cview.findViewById(R.id.txtrow);
-                CheckBox cb = (CheckBox) cview.findViewById(R.id.cbrow);
-                txt.setText(item);
-                cb.setChecked(cbool);
-                cb.setTag(id);
-                checkList.add(cb);
-                v.addView(cview);
+                addCheckRow(id,item,cbool);
             }
 
         } catch (Exception e) {}
-
-        final LinearLayout eview = (LinearLayout) inflater.inflate(R.layout.entryrow,null);
-        ImageButton btn = (ImageButton) eview.findViewById(R.id.btn);
-        final EditText txt = (EditText) eview.findViewById(R.id.texto);
-        v.addView(eview);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newName = txt.getText().toString();
-                v.removeView(eview);
-            }
-        });
+        addEditRow();
 
         this.setTitle("Etiquetas");
-
-
-        /*this.setMultiChoiceItems(items, cbool,
-                new DialogInterface.OnMultiChoiceClickListener() {
-                    // indexSelected contains the index of item (of which checkbox checked)
-                    @Override
-                    public void onClick(DialogInterface dialog, int indexSelected,
-                                        boolean isChecked) {
-                        if (isChecked) {
-                            seletedItems.add(indexSelected);
-                        } else if (seletedItems.contains(indexSelected)) {
-                            seletedItems.remove(Integer.valueOf(indexSelected));
-                        }
-                    }
-                }
-        );*/
 
         setPositiveButton("Aplicar", new DialogInterface.OnClickListener() {
             @Override
@@ -110,17 +76,45 @@ public class FavDialog extends  AlertDialog.Builder
                     Integer id = (Integer) cb.getTag();
                     if (cb.isChecked()) db.insertFavList(id, linea, parada);
                 }
-
                 if (db.chekcFavorito(linea, parada))
                     img.setImageDrawable(cc.getResources().getDrawable(R.drawable.ic_action_important));
                 else
                     img.setImageDrawable(cc.getResources().getDrawable(R.drawable.ic_action_not_important));
                 img.invalidate();
-
             }
         });
 
         setNegativeButton("Cancelar",null);
+    }
+
+    public void addCheckRow(Integer id , String name, Boolean b)
+    {
+        LinearLayout cview = (LinearLayout) inflater.inflate(R.layout.checkrow,null);
+        TextView txt = (TextView) cview.findViewById(R.id.txtrow);
+        CheckBox cb = (CheckBox) cview.findViewById(R.id.cbrow);
+        txt.setText(name);
+        cb.setChecked(b);
+        cb.setTag(id);
+        checkList.add(cb);
+        v.addView(cview);
+    }
+
+    public void addEditRow()
+    {
+        final LinearLayout eview = (LinearLayout) inflater.inflate(R.layout.entryrow,null);
+        ImageButton btn = (ImageButton) eview.findViewById(R.id.btn);
+        final EditText txt = (EditText) eview.findViewById(R.id.texto);
+        v.addView(eview);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String newName = txt.getText().toString();
+                v.removeView(eview);
+                Integer id = db.addFavorito(newName);
+                addCheckRow(id,newName,true);
+                addEditRow();
+            }
+        });
     }
 
     public void Show()
@@ -128,4 +122,5 @@ public class FavDialog extends  AlertDialog.Builder
         AlertDialog a = this.create();
         a.show();
     }
+
 }
