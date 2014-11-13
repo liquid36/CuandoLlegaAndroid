@@ -49,7 +49,8 @@ public class FavDialog extends  AlertDialog.Builder
         ar = db.getFavoritos();
 
         inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View f = (LinearLayout) inflater.inflate(R.layout.translayout,null);
+        View f = (LinearLayout) inflater.inflate(R.layout.simple_list,null);
+        f.setBackgroundResource(R.drawable.whitefondo);
         v = (LinearLayout) f.findViewById(R.id.listItems);
         this.setView(f);
 
@@ -109,10 +110,12 @@ public class FavDialog extends  AlertDialog.Builder
             @Override
             public void onClick(View view) {
                 String newName = txt.getText().toString();
-                v.removeView(eview);
-                Integer id = db.addFavorito(newName);
-                addCheckRow(id,newName,true);
-                addEditRow();
+                if (!newName.isEmpty()) {
+                    v.removeView(eview);
+                    Integer id = db.addFavorito(newName);
+                    addCheckRow(id,newName,true);
+                    addEditRow();
+                }
             }
         });
     }

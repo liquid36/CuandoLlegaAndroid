@@ -71,7 +71,11 @@ public class CLMain extends ActionBarActivity {
         if (versionCode != lastCode) {
             CopiarBaseDatos(true);
             saveLastVersion(versionCode);
-            new DialogAccion(CLMain.this,"Novedades","Bienvenidos a Cuando Llega Pro!\nHemos actualizado las base de datos de calles y colectivos. Incluimos las calles de Funes para la linea 142.\nProximamente nuevas mejoras.","Aceptar","",null).Show();
+            new DialogAccion(CLMain.this,"Cuando Llega Pro",
+                    "Nuevas novedades!\n\n" +
+                    "Crea facilmente nuevas etiqueta si no existen. Haz click en la estrella para asignarlas y veras. \n\n" +
+                    "Las calles con mas frecuencia de uso se muestran arriba de todo.","Aceptar"
+                    ,"" , null).Show();
         }
 
         /* else {
