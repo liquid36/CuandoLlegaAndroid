@@ -71,13 +71,20 @@ public class ExpandAnimation {
         } catch (Exception e) {e.printStackTrace(); return  false;}
     }
 
-    public static Integer strToInteger(String s)
+    public static Integer strToInteger(String s,Integer n)
     {
-        Integer n = 0, i = 0;
+        Integer  i = 0, j = 0;
         s = s.trim();
-        while ( Character.isDigit(s.charAt(i)) ) i++;
-        if (i == 0) return 0;
-        return Integer.parseInt(s.substring(0,i));
+        Integer Valor = 0;
+        while (j < n) {
+            i = 0;
+            while (!Character.isDigit(s.charAt(0))) s = s.substring(1);
+            while (Character.isDigit(s.charAt(i))) i++;
+            Valor =  Integer.parseInt(s.substring(0, i));
+            j++;
+            s = s.substring(i+1);
+        }
+        return Valor;
     }
 
 }
