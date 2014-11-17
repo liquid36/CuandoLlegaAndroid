@@ -65,6 +65,7 @@ public class favoritaWConfigureActivity extends Activity {
             finish();
             return;
         }
+        ShowFavList();
     }
 
 

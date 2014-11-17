@@ -7,8 +7,7 @@
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme" >
         <activity
             android:name="com.samsoft.cuandollega.CLMain"
             android:configChanges="orientation|screenSize"
@@ -39,7 +38,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_favorite_screen" >
         </activity>
-        <!--
+
         <activity android:name="com.samsoft.cuandollega.widgets.favoritaWConfigureActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -54,7 +53,13 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/favorita_w_info" />
-        </receiver> -->
+        </receiver>
+
+        <service
+            android:name="com.samsoft.cuandollega.widgets.widgetUpdate"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

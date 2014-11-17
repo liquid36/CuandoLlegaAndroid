@@ -3,6 +3,7 @@ package com.samsoft.cuandollega.widgets;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import com.samsoft.cuandollega.R;
 
@@ -40,16 +41,13 @@ public class favoritaW extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-            int appWidgetId) {
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
-        //CharSequence widgetText = favoritaWConfigureActivity.loadTitlePref(context, appWidgetId);
-        // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.favorita_w);
-        //views.setTextViewText(R.id.appwidget_text, widgetText);
-
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        Intent intent = new Intent(context.getApplicationContext(),widgetUpdate.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        context.startService(intent);
+        //RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.favorita_w);
+        //appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 }
 
