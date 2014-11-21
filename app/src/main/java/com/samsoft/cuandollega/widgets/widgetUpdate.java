@@ -5,7 +5,9 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.samsoft.cuandollega.R;
@@ -36,13 +38,15 @@ public class widgetUpdate extends Service {
 
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         int favID = prefs.getInt(PREF_PREFIX_KEY + appWidgetId,0);
+        String name = prefs.getString(PREF_PREFIX_KEY + appWidgetId + "_NAME","No Name");
 
-        //remoteView.setTextViewText(R.id.appwidget_text,"Fav id " + favID);
+        Intent acti = new Intent(context, adapterList.class);
+        acti.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
+        acti.putExtra("FAVID",favID);
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-        RemoteViews waitView = new RemoteViews(context.getPackageName(), R.layout.waitingrow);
-        remoteView.addView(R.id.layout,waitView);
-        RemoteViews waitView2 = new RemoteViews(context.getPackageName(), R.layout.waitingrow);
-        remoteView.addView(R.id.layout,waitView2);
+        remoteView.setRemoteAdapter(R.id.listView, acti);
+
 
         appWidgetManager.updateAppWidget(appWidgetId, remoteView);
 

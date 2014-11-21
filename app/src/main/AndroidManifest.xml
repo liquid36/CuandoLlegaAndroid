@@ -39,6 +39,8 @@
             android:label="@string/title_activity_favorite_screen" >
         </activity>
 
+        <!-- Cosas para el widgets. No funciona muy bien -->
+
         <activity android:name="com.samsoft.cuandollega.widgets.favoritaWConfigureActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -58,8 +60,11 @@
         <service
             android:name="com.samsoft.cuandollega.widgets.widgetUpdate"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true" > </service>
+        <service
+            android:name="com.samsoft.cuandollega.widgets.adapterList"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" > </service>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

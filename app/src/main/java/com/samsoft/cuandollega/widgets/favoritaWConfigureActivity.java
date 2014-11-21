@@ -87,7 +87,7 @@ public class favoritaWConfigureActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         final Context context = favoritaWConfigureActivity.this;
-                        saveTitlePref(context,mAppWidgetId,id);
+                        saveTitlePref(context,mAppWidgetId,id,name);
                         // It is the responsibility of the configuration activity to update the app widget
                         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                         favoritaW.updateAppWidget(context, appWidgetManager, mAppWidgetId);
@@ -106,9 +106,10 @@ public class favoritaWConfigureActivity extends Activity {
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    static void saveTitlePref(Context context, int appWidgetId, int favid) {
+    static void saveTitlePref(Context context, int appWidgetId, int favid,String name) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putInt(PREF_PREFIX_KEY + appWidgetId, favid);
+        prefs.putString(PREF_PREFIX_KEY + appWidgetId + "_NAME" , name);
         prefs.commit();
     }
 
