@@ -11,9 +11,12 @@ import android.widget.RemoteViewsService;
 
 import com.samsoft.cuandollega.DataBase;
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.extra.getTimeArrive;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by sam on 20/11/14.
@@ -69,8 +72,8 @@ public class adapterList extends RemoteViewsService
         @Override
         public RemoteViews getLoadingView()
         {
-            // TODO Auto-generated method stub
-            return null;
+            RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.waitingrow);
+            return remoteView;
         }
 
         @Override
@@ -86,6 +89,10 @@ public class adapterList extends RemoteViewsService
                 String txtinter = db.getCalleName(o.getInt("idInter"));
                 remoteView.setTextViewText(R.id.txtLugar, txtcalle + " Y " + txtinter);
                 remoteView.setViewVisibility(R.id.txtLugar, View.VISIBLE);
+
+                Integer parada = o.getInt("parada");
+                String linea = o.getString("name");
+                ArrayList<String> datos = new getTimeArrive(linea,parada).run();
 
 
             } catch (Exception e) {e.printStackTrace();}

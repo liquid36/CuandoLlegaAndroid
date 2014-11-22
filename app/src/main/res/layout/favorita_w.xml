@@ -2,9 +2,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/widget_margin"
-    android:background="#09C"
+    android:background="@drawable/alphaback"
     android:id="@+id/layout"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/txttitulo"
+            android:layout_weight="0.8"
+            android:layout_marginLeft="20dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnrefresh"
+            android:src="@drawable/ic_action_refresh"
+            android:layout_marginRight="20dp" />
+    </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
