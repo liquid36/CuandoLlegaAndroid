@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.samsoft.cuandollega.objects.stopsGroup;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -107,10 +109,10 @@ public class colectivoSearch extends ActionBarActivity {
                             Intent i = new Intent(colectivoSearch.this, paradasinfo.class);
                             String colec = "";
                             if (!tt.getText().equals(" - TODOS - ")) colec = tt.getText().toString();
-                            i.putExtra("calle",idCalle);
-                            i.putExtra("colectivos",colec );
-                            i.putExtra("interseccion",idInter);
-                            i.putExtra("accion",accion);
+
+                            stopsGroup r[] = new stopsGroup[1];
+                            r[0] = new stopsGroup(idCalle,idInter,colec,0);
+                            i.putExtra("Stops",stopsGroup.stopsToString(r));
                             startActivity(i);
                         }
                     }

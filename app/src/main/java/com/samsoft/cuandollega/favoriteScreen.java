@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.samsoft.cuandollega.extra.Action;
 import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.extra.FavAction;
+import com.samsoft.cuandollega.objects.stopsGroup;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -65,11 +66,9 @@ public class favoriteScreen extends ActionBarActivity {
                     public void onClick(View view) {
                         Integer id = (Integer) view.getTag();
                         Intent i = new Intent(favoriteScreen.this, paradasinfo.class);
-                        i.putExtra("calle", 0);
-                        i.putExtra("interseccion", 0);
-                        i.putExtra("colectivos", "");
-                        i.putExtra("favorito", id);
-                        i.putExtra("accion", "favorite");
+                        stopsGroup r[] = new stopsGroup[1];
+                        r[0] = new stopsGroup(0,0,"",id);
+                        i.putExtra("Stops",stopsGroup.stopsToString(r));
                         startActivity(i);
                     }
                 });

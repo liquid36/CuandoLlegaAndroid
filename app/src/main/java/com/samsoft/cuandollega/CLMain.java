@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsoft.cuandollega.extra.DialogAccion;
+import com.samsoft.cuandollega.objects.stopsGroup;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -173,21 +174,15 @@ public class CLMain extends ActionBarActivity {
     public void recienteClick(View v)
     {
         SharedPreferences settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
-        Log.d("CLMain","Estado para recientes:");
-        Log.d("CLMain","Accion: " + settings.getString("Uaccion", ""));
-        Log.d("CLMain","Calle: " + settings.getInt("UidCalles",0) );
-        Log.d("CLMain","idInter: " + settings.getInt("UidInter",0));
-        Log.d("CLMain","Colectivo: " + settings.getString("UColectivos", ""));
-        Log.d("CLMain","idFavorito: " + settings.getInt("UidFav", 0));
 
-        if (!settings.getString("Uaccion", "").equals(""))  {
+        if (!settings.getString("Reciente", "").equals(""))  {
+            String sreciente = settings.getString("Reciente", "");
+            //stopsGroup[] stops = stopsGroup.stringtoStops(sreciente);
+
             Intent i = new Intent(CLMain.this, paradasinfo.class);
-            i.putExtra("calle",settings.getInt("UidCalles",0));
-            i.putExtra("favorito",settings.getInt("UidFav",0));
-            i.putExtra("interseccion",settings.getInt("UidInter",0));
-            i.putExtra("colectivos",settings.getString("Ucolectivos", ""));
-            i.putExtra("accion",settings.getString("Uaccion", ""));
+            i.putExtra("Stops",sreciente);
             startActivity(i);
+
         } else {
             makeToast("No se realizo ninguna consulta");
         }

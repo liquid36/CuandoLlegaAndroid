@@ -40,7 +40,7 @@
         </activity>
 
         <!-- Cosas para el widgets. No funciona muy bien -->
-
+        <!--
         <activity android:name="com.samsoft.cuandollega.widgets.favoritaWConfigureActivity" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -64,7 +64,8 @@
         <service
             android:name="com.samsoft.cuandollega.widgets.adapterList"
             android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" > </service>
+            android:permission="android.permission.BIND_REMOTEVIEWS" > </service> -->
+
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.samsoft.cuandollega.objects.stopsGroup;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -96,6 +98,10 @@ public class calleSearch extends ActionBarActivity {
                                 i.putExtra("colectivos", idColectivo);
                                 i.putExtra("interseccion", o.getInt("id"));
                                 i.putExtra("accion", accion);
+
+                                stopsGroup r[] = new stopsGroup[1];
+                                r[0] = new stopsGroup(idCalle,o.getInt("id"),idColectivo,0);
+                                i.putExtra("Stops",stopsGroup.stopsToString(r));
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         }

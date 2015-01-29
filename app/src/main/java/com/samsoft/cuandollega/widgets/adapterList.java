@@ -84,7 +84,7 @@ public class adapterList extends RemoteViewsService
                 JSONObject o = ar.getJSONObject(position);
                 remoteView.setTextViewText(R.id.txtBus, o.getString("name"));
                 remoteView.setTextViewText(R.id.txtDest, o.getString("desc"));
-                Log.d("WidgetCreatingView", o.getString("desc"));
+
                 String txtcalle = db.getCalleName(o.getInt("idCalle"));
                 String txtinter = db.getCalleName(o.getInt("idInter"));
                 remoteView.setTextViewText(R.id.txtLugar, txtcalle + " Y " + txtinter);

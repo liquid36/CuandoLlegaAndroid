@@ -30,6 +30,7 @@ import com.samsoft.cuandollega.extra.FavDialog;
 import com.samsoft.cuandollega.extra.SMSAction;
 import com.samsoft.cuandollega.extra.getTimeArrive;
 import com.samsoft.cuandollega.extra.lunchFavAction;
+import com.samsoft.cuandollega.objects.stopsGroup;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -61,23 +62,19 @@ public class paradasinfo extends ActionBarActivity {
     private boolean online;
     private String accion;
     private Integer idFav;
+
+    private stopsGroup stops[];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.simple_list);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Bundle datos = getIntent().getExtras();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         listItems = (LinearLayout) findViewById(R.id.listItems);
         db =  new DataBase(getApplicationContext());
-
-        idCalle = datos.getInt("calle");
-        idInter = datos.getInt("interseccion");
-        Bus = datos.getString("colectivos");
-        idFav = datos.getInt("favorito",0);
-        accion = datos.getString("accion");
+        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
 
         online = isOnline();
         if (!online) {
@@ -92,84 +89,79 @@ public class paradasinfo extends ActionBarActivity {
     {
         SharedPreferences settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("Uaccion", accion);
-        editor.putString("Ucolectivos", Bus);
-        editor.putInt("UidCalles",idCalle);
-        editor.putInt("UidInter",idInter);
-        editor.putInt("UidFav",idFav);
+        editor.putString("Reciente",stopsGroup.stopsToString(stops));
         editor.commit();
-    }
-
-    public static String stripAccents(String s)
-    {
-        s = Normalizer.normalize(s, Normalizer.Form.NFD);
-        s = s.replaceAll("[èéêë]","e");
-        s = s.replaceAll("[ûù]","u");
-        s = s.replaceAll("[ïî]","i");
-        s = s.replaceAll("[àâ]","a");
-        s = s.replaceAll("Ô","o");
-
-        s = s.replaceAll("[ÈÉÊË]","E");
-        s = s.replaceAll("[ÛÙ]","U");
-        s = s.replaceAll("[ÏÎ]","I");
-        s = s.replaceAll("[ÀÂ]","A");
-        s = s.replaceAll("Ô","O");
-        return s;
     }
 
     public void ShowParadas()
     {
-        JSONArray a;
-        if (accion.equals("favorite")) a = db.getStopsFromFavorite(idFav);
-        else {
-            a = db.getStops(Bus,idCalle,idInter);
-            db.addFrequencia(idCalle);
-            db.addFrequencia(idInter);
-        }
+        for(int j = 0;j<stops.length;j++) {
+            idCalle = stops[j].idCalle;
+            idInter = stops[j].idInter;
+            Bus = stops[j].Bus;
+            idFav = stops[j].idFav;
 
-        for(int i = 0;i < a.length();i++) {
-            try {
-                JSONObject o = a.getJSONObject(i);
-                View v = inflater.inflate(R.layout.waitingrow, null);
-                TextView bus  = (TextView) v.findViewById(R.id.txtBus);
-                TextView dest = (TextView) v.findViewById(R.id.txtDest);
-                bus.setText(o.getString("name"));
-                dest.setText(stripAccents(o.getString("desc")));
+            JSONArray a;
+            if (idFav != 0) a = db.getStopsFromFavorite(idFav);
+            else {
+                a = db.getStops(Bus, idCalle, idInter);
+                db.addFrequencia(idCalle);
+                db.addFrequencia(idInter);
+            }
 
-                if (accion.equals("favorite")) {
-                    idCalle = o.getInt("idCalle");
-                    idInter = o.getInt("idInter");
+            for (int i = 0; i < a.length(); i++) {
+                try {
+                    JSONObject o = a.getJSONObject(i);
+                    View v = inflater.inflate(R.layout.waitingrow, null);
+                    TextView bus = (TextView) v.findViewById(R.id.txtBus);
+                    TextView dest = (TextView) v.findViewById(R.id.txtDest);
+                    bus.setText(o.getString("name"));
+                    dest.setText(o.getString("desc"));
+
+                    if (idFav != 0) {
+                        idCalle = o.getInt("idCalle");
+                        idInter = o.getInt("idInter");
+                    }
+                    String txtcalle = db.getCalleName(idCalle);
+                    String txtinter = db.getCalleName(idInter);
+                    TextView lugar = (TextView) v.findViewById(R.id.txtLugar);
+                    lugar.setVisibility(View.VISIBLE);
+                    lugar.setText(txtcalle + " Y " + txtinter);
+
+                    if (online) {
+                        AskTime ask = new AskTime(v, getApplicationContext());
+                        ask.execute(o);
+                    } else {
+                        v = putOflineStop(v,o);
+                    }
+                    listItems.addView(v);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                String txtcalle = db.getCalleName(idCalle);
-                String txtinter = db.getCalleName(idInter);
-                TextView lugar = (TextView) v.findViewById(R.id.txtLugar);
-                lugar.setVisibility(View.VISIBLE);
-                lugar.setText(txtcalle + " Y " + txtinter);
-
-
-                if (online) {
-                    AskTime ask = new AskTime(v,getApplicationContext());
-                    ask.execute(o);
-                } else {
-                    ProgressBar bar = (ProgressBar) v.findViewById(R.id.waitingbar);
-                    ImageView img = (ImageView) v.findViewById(R.id.actionIcon);
-                    bar.setVisibility(View.GONE);
-                    img.setVisibility(View.VISIBLE);
-                    img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_mail));
-                    String mensaje = "TUP " + o.getString("parada") + " " + o.getString("name") ;
-                    img.setTag(mensaje);
-                    img.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String m = (String) view.getTag();
-                            Action ac = new SMSAction(m);
-                            new DialogAccion(paradasinfo.this,"Enviar SMS","Quieres enviar un SMS?","Enviar","Cancelar",ac).Show();
-                        }
-                    });
-                }
-                listItems.addView(v);
-            } catch (Exception e) {e.printStackTrace();}
+            }
         }
+    }
+
+    public View putOflineStop(View v , JSONObject o)
+    {
+        try {
+            ProgressBar bar = (ProgressBar) v.findViewById(R.id.waitingbar);
+            ImageView img = (ImageView) v.findViewById(R.id.actionIcon);
+            bar.setVisibility(View.GONE);
+            img.setVisibility(View.VISIBLE);
+            img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_mail));
+            String mensaje = "TUP " + o.getString("parada") + " " + o.getString("name");
+            img.setTag(mensaje);
+            img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String m = (String) view.getTag();
+                    Action ac = new SMSAction(m);
+                    new DialogAccion(paradasinfo.this, "Enviar SMS", "Quieres enviar un SMS?", "Enviar", "Cancelar", ac).Show();
+                }
+            });
+        } catch (Exception e) { e.printStackTrace();}
+        return v;
     }
 
     public boolean isOnline()
