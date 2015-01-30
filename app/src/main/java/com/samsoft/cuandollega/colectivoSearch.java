@@ -38,6 +38,8 @@ public class colectivoSearch extends ActionBarActivity {
     private int idCalle;
     private int idInter;
     private String accion;
+    private stopsGroup stops [];
+    private String SStops;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class colectivoSearch extends ActionBarActivity {
         idInter = datos.getInt("interseccion");
         accion = datos.getString("accion");
 
+        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
+        SStops = datos.getString("Stops","");
         ShowItems();
     }
 
@@ -103,6 +107,7 @@ public class colectivoSearch extends ActionBarActivity {
                                 i.putExtra("calle",0);
                                 i.putExtra("colectivos",o.getString("name"));
                                 i.putExtra("accion",accion);
+                                i.putExtra("Stops",SStops);
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         } else { // Elegir paradas
@@ -110,8 +115,7 @@ public class colectivoSearch extends ActionBarActivity {
                             String colec = "";
                             if (!tt.getText().equals(" - TODOS - ")) colec = tt.getText().toString();
 
-                            stopsGroup r[] = new stopsGroup[1];
-                            r[0] = new stopsGroup(idCalle,idInter,colec,0);
+                            stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colec,0));
                             i.putExtra("Stops",stopsGroup.stopsToString(r));
                             startActivity(i);
                         }

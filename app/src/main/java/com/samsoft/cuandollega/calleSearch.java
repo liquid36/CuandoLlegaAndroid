@@ -27,6 +27,8 @@ public class calleSearch extends ActionBarActivity {
     private int idCalle;
     private String idColectivo = "";
     private String accion = "";
+    private stopsGroup stops [];
+    private String SStops;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,8 @@ public class calleSearch extends ActionBarActivity {
         idCalle =  datos.getInt("calle",0);
         idColectivo = datos.getString("colectivos");
         accion = datos.getString("accion");
-        Log.d("DEBUG","hola " + datos.containsKey("accion") + "  " + accion);
+        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
+        SStops = datos.getString("Stops","");
         ShowCalles("");
     }
 
@@ -81,6 +84,7 @@ public class calleSearch extends ActionBarActivity {
                                 i.putExtra("calle",o.getInt("id"));
                                 i.putExtra("colectivos",idColectivo);
                                 i.putExtra("accion",accion);
+                                i.putExtra("Stops",SStops);
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         } else if (accion.equalsIgnoreCase("street")) { // Tengo que elegir el colectivo
@@ -89,6 +93,7 @@ public class calleSearch extends ActionBarActivity {
                                 i.putExtra("calle",idCalle);
                                 i.putExtra("interseccion",o.getInt("id"));
                                 i.putExtra("accion",accion);
+                                i.putExtra("Stops",SStops);
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         } else { // Ya elegí colectivo y las calles. Tocan las paradas
@@ -99,8 +104,7 @@ public class calleSearch extends ActionBarActivity {
                                 i.putExtra("interseccion", o.getInt("id"));
                                 i.putExtra("accion", accion);
 
-                                stopsGroup r[] = new stopsGroup[1];
-                                r[0] = new stopsGroup(idCalle,o.getInt("id"),idColectivo,0);
+                                stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,o.getInt("id"),idColectivo,0));
                                 i.putExtra("Stops",stopsGroup.stopsToString(r));
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}

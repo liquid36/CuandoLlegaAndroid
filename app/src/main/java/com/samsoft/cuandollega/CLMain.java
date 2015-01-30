@@ -74,8 +74,8 @@ public class CLMain extends ActionBarActivity {
             saveLastVersion(versionCode);
             new DialogAccion(CLMain.this,"Cuando Llega Pro",
                     "Nuevas novedades!\n\n" +
-                    "Crea facilmente nuevas etiqueta si no existen. Haz click en la estrella para asignarlas y veras. \n\n" +
-                    "Las calles con mas frecuencia de uso se muestran arriba de todo.","Aceptar"
+                    "Ahora puedes agregar nuevas paradas a tu consulta. Presiona en el signo mas para hacerlo.\n"
+                    + "Actualizamos las paradas de algunos colectivos.","Aceptar"
                     ,"" , null).Show();
         }
 

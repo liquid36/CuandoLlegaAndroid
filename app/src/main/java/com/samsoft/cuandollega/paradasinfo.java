@@ -1,6 +1,7 @@
 package com.samsoft.cuandollega;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -178,10 +180,61 @@ public class paradasinfo extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        int id;
+        id = item.getItemId();
         if (id == R.id.act_refresh && isOnline()) {
             listItems.removeAllViews();
             ShowParadas();
+        } else if (id == R.id.act_add) {
+            final Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.buttondialog);
+            dialog.setTitle("Agregar parada desde...");
+
+            // set the custom dialog components - text, image and button
+            Button bt1 = (Button) dialog.findViewById(R.id.bt1);
+            Button bt2 = (Button) dialog.findViewById(R.id.bt2);
+            Button bt3 = (Button) dialog.findViewById(R.id.bt3);
+            bt1.setOnClickListener(new View.OnClickListener() { // Por calle
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    Intent i = new Intent(paradasinfo.this, calleSearch.class);
+                    i.putExtra("calle",0);
+                    i.putExtra("colectivos","");
+                    i.putExtra("accion","street");
+                    i.putExtra("Stops",stopsGroup.stopsToString(stops));
+                    startActivity(i);
+                }
+            });
+
+            bt2.setOnClickListener(new View.OnClickListener() { // Por Colectivo
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    Intent i = new Intent(paradasinfo.this, colectivoSearch.class);
+                    i.putExtra("calle",0);
+                    i.putExtra("interseccion",0);
+                    i.putExtra("accion","bus");
+                    i.putExtra("Stops",stopsGroup.stopsToString(stops));
+                    startActivity(i);
+                }
+            });
+
+            bt3.setOnClickListener(new View.OnClickListener() { // Por Marcador
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    Intent i = new Intent(paradasinfo.this, favoriteScreen.class);
+                    i.putExtra("Stops",stopsGroup.stopsToString(stops));
+                    startActivity(i);
+                }
+            });
+
+            dialog.show();
+
+
+
+
         } else if (id == android.R.id.home) {
             //super.onBackPressed();
             Intent intent = new Intent(paradasinfo.this, CLMain.class);

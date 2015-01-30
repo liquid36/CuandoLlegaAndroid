@@ -30,7 +30,7 @@ public class favoriteScreen extends ActionBarActivity {
     private LinearLayout listItems;
     private DataBase db;
     private LayoutInflater inflater;
-
+    private stopsGroup stops [];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +41,8 @@ public class favoriteScreen extends ActionBarActivity {
         Bundle datos = getIntent().getExtras();
         listItems = (LinearLayout) findViewById(R.id.listItems);
         db =  new DataBase(getApplicationContext());
+
+        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
 
         ShowFavList();
 
@@ -66,8 +68,7 @@ public class favoriteScreen extends ActionBarActivity {
                     public void onClick(View view) {
                         Integer id = (Integer) view.getTag();
                         Intent i = new Intent(favoriteScreen.this, paradasinfo.class);
-                        stopsGroup r[] = new stopsGroup[1];
-                        r[0] = new stopsGroup(0,0,"",id);
+                        stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(0,0,"",id));
                         i.putExtra("Stops",stopsGroup.stopsToString(r));
                         startActivity(i);
                     }

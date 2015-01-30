@@ -5,6 +5,13 @@
 
 
     <item
+        android:id="@+id/act_add"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_new"
+        android:title="Add"/>
+
+    <item
         android:id="@+id/act_refresh"
         android:orderInCategory="200"
         app:showAsAction="ifRoom"

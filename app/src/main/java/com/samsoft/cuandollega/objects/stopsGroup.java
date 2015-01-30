@@ -60,4 +60,12 @@ public class stopsGroup {
         } catch (Exception e) {e.printStackTrace(); return new stopsGroup[0];}
 
     }
+
+    public static stopsGroup[] addItem(stopsGroup[] ls, stopsGroup item)
+    {
+        stopsGroup r[] = new stopsGroup[ls.length + 1];
+        for (int l = 0; l < ls.length;l++) r[l] = ls[l];
+        r[ls.length] = item;
+        return r;
+    }
 }
