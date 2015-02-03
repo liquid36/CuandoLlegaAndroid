@@ -31,6 +31,7 @@ public class favoriteScreen extends ActionBarActivity {
     private DataBase db;
     private LayoutInflater inflater;
     private stopsGroup stops [];
+    private Boolean NoAdd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,10 @@ public class favoriteScreen extends ActionBarActivity {
         Bundle datos = getIntent().getExtras();
         listItems = (LinearLayout) findViewById(R.id.listItems);
         db =  new DataBase(getApplicationContext());
+
+        try {
+            NoAdd = datos.getBoolean("NoAdd", false);
+        } catch (Exception e){e.printStackTrace(); NoAdd = false;}
 
         stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
 
@@ -86,20 +91,22 @@ public class favoriteScreen extends ActionBarActivity {
 
         }
 
-        View v = inflater.inflate(R.layout.entryrow, null);
-        ImageButton btn = (ImageButton) v.findViewById(R.id.btn);
-        final EditText texto = (EditText) v.findViewById(R.id.texto);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String t = texto.getText().toString();
-                if (!t.isEmpty()) {
-                    db.addFavorito(t);
-                    ShowFavList();
+        if (!NoAdd) {
+            View v = inflater.inflate(R.layout.entryrow, null);
+            ImageButton btn = (ImageButton) v.findViewById(R.id.btn);
+            final EditText texto = (EditText) v.findViewById(R.id.texto);
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String t = texto.getText().toString();
+                    if (!t.isEmpty()) {
+                        db.addFavorito(t);
+                        ShowFavList();
+                    }
                 }
-            }
-        });
-        listItems.addView(v);
+            });
+            listItems.addView(v);
+        }
 
     }
 

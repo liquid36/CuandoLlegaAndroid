@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsoft.cuandollega.extra.DialogAccion;
+import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.objects.stopsGroup;
 
 import org.json.JSONArray;
@@ -56,7 +57,7 @@ public class CLMain extends ActionBarActivity {
 
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private ProgressDialog mProgressDialog;
-    SharedPreferences settings;
+    settingRep settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,19 +65,33 @@ public class CLMain extends ActionBarActivity {
         setContentView(R.layout.activity_clmain);
         listItems = (LinearLayout) findViewById(R.id.aaa);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        settings = getApplicationContext().getSharedPreferences("CuandoLLega", MODE_PRIVATE);
+        settings = new settingRep(getApplicationContext());
         db = new DataBase(getApplicationContext());
 
         int versionCode = BuildConfig.VERSION_CODE;
-        int lastCode = getLastVersion();
-        if (versionCode != lastCode) {
+        int lastCode = settings.getInteger("Version");
+        Boolean first = settings.getBoolean("FirstLoad");
+        if (versionCode != lastCode  && first ) {
             CopiarBaseDatos(true);
-            saveLastVersion(versionCode);
+            settings.putInteger("Version",versionCode);
+            //saveLastVersion(versionCode);
             new DialogAccion(CLMain.this,"Cuando Llega Pro",
                     "Nuevas novedades!\n\n" +
                     "Ahora puedes agregar nuevas paradas a tu consulta. Presiona en el signo mas para hacerlo.\n"
-                    + "Actualizamos las paradas de algunos colectivos.","Aceptar"
-                    ,"" , null).Show();
+                    + "Actualizamos las paradas de algunos colectivos."
+                    ,"Aceptar","" , null).Show();
+        } else if (!first) {
+            CopiarBaseDatos(true);
+            settings.putInteger("Version",versionCode);
+            settings.putBoolean("FirstLoad",true);
+            new DialogAccion(CLMain.this,"Cuando Llega Pro",
+                    "Bienvenido a Cuando Llega Pro!\n\n" +
+                    "Busqueda por Calle\n" +
+                    "Busqueda por Colectivo\n" +
+                    "Marcadores de paradas\n"+
+                    "Multiples consultas"
+                    ,"Aceptar" ,"" , null).Show();
+
         }
 
         /* else {
@@ -99,7 +114,7 @@ public class CLMain extends ActionBarActivity {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public int getLastVersion()
+    /*public int getLastVersion()
     {
         try {
             return settings.getInt("Version", 0);
@@ -111,9 +126,9 @@ public class CLMain extends ActionBarActivity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt("Version", b);
         editor.commit();
-    }
+    }*/
 
-    public boolean getStat()
+    /*public boolean getStat()
     {
 
         return settings.getBoolean("Loaded", false);
@@ -124,7 +139,7 @@ public class CLMain extends ActionBarActivity {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("Loaded", b);
         editor.commit();
-    }
+    }*/
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -157,6 +172,8 @@ public class CLMain extends ActionBarActivity {
     public void favClick(View v)
     {
         Intent i = new Intent(CLMain.this, favoriteScreen.class);
+        i.putExtra("Stops","");
+        i.putExtra("NoAdd",false);
         startActivity(i);
     }
 
@@ -170,6 +187,7 @@ public class CLMain extends ActionBarActivity {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getPackageName())));
         }
     }
+
 
     public void recienteClick(View v)
     {
@@ -186,6 +204,15 @@ public class CLMain extends ActionBarActivity {
         } else {
             makeToast("No se realizo ninguna consulta");
         }
+    }
+
+    public void sharedClick(View v)
+    {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Cuando Llega Pro - https://play.google.com/store/apps/details?id=com.samsoft.cuandollega" );
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, "Cuando Llega Pro"));
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -281,7 +308,7 @@ public class CLMain extends ActionBarActivity {
 
         protected void onPostExecute(Boolean result) {
             progresDialog.dismiss();
-            saveStat(true);
+            //saveStat(true);
             return;
         }
     }

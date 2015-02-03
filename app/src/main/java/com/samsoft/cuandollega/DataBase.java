@@ -47,7 +47,7 @@ public class DataBase  {
             boolean b = dbfile.getParentFile().mkdirs();
         }
         SQLiteDatabase mydb = SQLiteDatabase.openOrCreateDatabase(dbfile.getAbsolutePath(), null);
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS colectivos (id INTEGER, name TEXT, bandera TEXT , linea TEXT)");
+        mydb.execSQL("CREATE TABLE IF NOT EXISTS colectivos (id INTEGER, name TEXT, bandera TEXT , linea TEXT, cl Boolean)");
         mydb.execSQL("CREATE TABLE IF NOT EXISTS calles (id INTEGER, desc TEXT)");
         mydb.execSQL("CREATE TABLE IF NOT EXISTS paradas (idColectivo INTEGER, idCalle INTEGER,idInter INTEGER, parada INTEGER , desc TEXT)");
 
@@ -475,6 +475,12 @@ public class DataBase  {
         db.execSQL("ATTACH DATABASE ? AS DB1",new String[]{name});
         db.beginTransaction();
         db.execSQL("DELETE FROM colectivos");
+
+        try {
+            db.execSQL("ALTER TABLE colectivos ADD COLUMN cl Boolean;");
+        }catch (Exception e) {Log.d("DATABASE","CAMBIOS YA APLICADOS");}
+
+
         db.execSQL("DELETE FROM paradas");
         db.execSQL("DELETE FROM calles");
         db.execSQL("INSERT INTO Colectivos SELECT * FROM DB1.Colectivos");

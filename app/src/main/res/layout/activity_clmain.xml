@@ -118,6 +118,21 @@
                 android:paddingBottom="10dp"
                 />
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Compartir App"
+                android:id="@+id/share"
+                android:layout_gravity="center_horizontal"
+                android:onClick="sharedClick"
+                android:background="@drawable/custon_button"
+                android:layout_margin="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                />
+
+
+
         </LinearLayout>
     </ScrollView>
 

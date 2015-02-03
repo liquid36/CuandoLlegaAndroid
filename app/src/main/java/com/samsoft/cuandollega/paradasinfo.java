@@ -226,6 +226,7 @@ public class paradasinfo extends ActionBarActivity {
                     dialog.dismiss();
                     Intent i = new Intent(paradasinfo.this, favoriteScreen.class);
                     i.putExtra("Stops",stopsGroup.stopsToString(stops));
+                    i.putExtra("NoAdd",true);
                     startActivity(i);
                 }
             });
