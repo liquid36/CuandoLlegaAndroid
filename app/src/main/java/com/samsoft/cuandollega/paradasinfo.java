@@ -76,7 +76,7 @@ public class paradasinfo extends ActionBarActivity {
 
         listItems = (LinearLayout) findViewById(R.id.listItems);
         db =  new DataBase(getApplicationContext());
-        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
+        stops = stopsGroup.stringtoStops(datos.getString("Stops"));
 
         online = isOnline();
         if (!online) {

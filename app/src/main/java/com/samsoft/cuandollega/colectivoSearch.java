@@ -57,8 +57,8 @@ public class colectivoSearch extends ActionBarActivity {
         idInter = datos.getInt("interseccion");
         accion = datos.getString("accion");
 
-        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
-        SStops = datos.getString("Stops","");
+        stops = stopsGroup.stringtoStops(datos.getString("Stops"));
+        SStops = datos.getString("Stops");
         ShowItems();
     }
 

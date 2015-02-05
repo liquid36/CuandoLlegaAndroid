@@ -44,8 +44,8 @@ public class calleSearch extends ActionBarActivity {
         idCalle =  datos.getInt("calle",0);
         idColectivo = datos.getString("colectivos");
         accion = datos.getString("accion");
-        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
-        SStops = datos.getString("Stops","");
+        stops = stopsGroup.stringtoStops(datos.getString("Stops"));
+        SStops = datos.getString("Stops");
         ShowCalles("");
     }
 

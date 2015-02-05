@@ -75,11 +75,11 @@ public class CLMain extends ActionBarActivity {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
             //saveLastVersion(versionCode);
-            new DialogAccion(CLMain.this,"Cuando Llega Pro",
+            /*new DialogAccion(CLMain.this,"Cuando Llega Pro",
                     "Nuevas novedades!\n\n" +
                     "Ahora puedes agregar nuevas paradas a tu consulta. Presiona en el signo mas para hacerlo.\n"
                     + "Actualizamos las paradas de algunos colectivos."
-                    ,"Aceptar","" , null).Show();
+                    ,"Aceptar","" , null).Show();*/
         } else if (!first) {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
@@ -149,6 +149,7 @@ public class CLMain extends ActionBarActivity {
         i.putExtra("calle",0);
         i.putExtra("colectivos","");
         i.putExtra("accion","street");
+        i.putExtra("Stops","");
         startActivity(i);
     }
 
@@ -158,6 +159,7 @@ public class CLMain extends ActionBarActivity {
         i.putExtra("calle",0);
         i.putExtra("interseccion",0);
         i.putExtra("accion","bus");
+        i.putExtra("Stops","");
         startActivity(i);
     }
 
