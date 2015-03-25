@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.samsoft.cuandollega.calleSearch"
-    android:background="@color/fondo"
+    android:background="@drawable/colectivo"
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"

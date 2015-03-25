@@ -68,13 +68,15 @@ public class CLMain extends ActionBarActivity {
         settings = new settingRep(getApplicationContext());
         db = new DataBase(getApplicationContext());
 
-        int versionCode = BuildConfig.VERSION_CODE;
+        //db.getClosePoint("-32.947392","-60.711163",500);
+
+        int versionCode = BuildConfig.VERSION_CODE ;
         int lastCode = settings.getInteger("Version");
         Boolean first = settings.getBoolean("FirstLoad");
+
         if (versionCode != lastCode  && first ) {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
-            //saveLastVersion(versionCode);
             /*new DialogAccion(CLMain.this,"Cuando Llega Pro",
                     "Nuevas novedades!\n\n" +
                     "Ahora puedes agregar nuevas paradas a tu consulta. Presiona en el signo mas para hacerlo.\n"

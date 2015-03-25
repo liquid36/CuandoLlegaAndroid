@@ -3,7 +3,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/backfondo"
     android:clickable="true"
     android:longClickable="true">
 
@@ -15,7 +14,7 @@
         android:id="@+id/label"
         android:textSize="25dp"
         android:textStyle="bold"
-        android:textColor="#fffff1ff"
+        android:textColor="#ff000000"
         android:clickable="false"
         android:layout_marginLeft="30dp"
         android:layout_gravity="center_vertical"

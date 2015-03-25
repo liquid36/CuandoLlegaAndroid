@@ -47,7 +47,7 @@ public class favoriteScreen extends ActionBarActivity {
             NoAdd = datos.getBoolean("NoAdd", false);
         } catch (Exception e){e.printStackTrace(); NoAdd = false;}
 
-        stops = stopsGroup.stringtoStops(datos.getString("Stops",""));
+        stops = stopsGroup.stringtoStops(datos.getString("Stops"));
 
         ShowFavList();
 

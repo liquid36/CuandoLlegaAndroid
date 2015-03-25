@@ -295,7 +295,7 @@ public class paradasinfo extends ActionBarActivity {
                 for (int i = 0; i < datos.size(); i++) {
                     TextView t = new TextView(contex);
                     t.setText(datos.get(i));
-                    t.setTextColor(Color.WHITE);
+                    t.setTextColor(Color.BLACK);
                     list.addView(t);
                 }
 

@@ -31,6 +31,7 @@ public class DataBase  {
     public DataBase(Context context) {
         this.context = context;
         db = openDatabase(NAME);
+        ArmarBaseDeDatos();
     }
 
     public void Close()
@@ -47,19 +48,23 @@ public class DataBase  {
             boolean b = dbfile.getParentFile().mkdirs();
         }
         SQLiteDatabase mydb = SQLiteDatabase.openOrCreateDatabase(dbfile.getAbsolutePath(), null);
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS colectivos (id INTEGER, name TEXT, bandera TEXT , linea TEXT, cl Boolean)");
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS calles (id INTEGER, desc TEXT)");
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS paradas (idColectivo INTEGER, idCalle INTEGER,idInter INTEGER, parada INTEGER , desc TEXT)");
-
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS favlist (idFav INTEGER, linea TEXT, parada INTEGER)");
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS favoritos (fav INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
-
-        mydb.execSQL("CREATE TABLE IF NOT EXISTS calleFreq (id INTEGER PRIMARY KEY, frecuencia INTEGER)");
-        mydb.execSQL("CREATE VIEW  IF NOT EXISTS callesF AS " +
-                     "SELECT calles.id AS id, desc, ifnull(frecuencia,0) AS frecuencia FROM calles LEFT OUTER JOIN calleFreq ON calles.id = calleFreq.id");
         return mydb;
     }
 
+    private void ArmarBaseDeDatos() {
+        db.execSQL("CREATE TABLE IF NOT EXISTS colectivos (id INTEGER, name TEXT, bandera TEXT , linea TEXT, cl Boolean)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS calles (id INTEGER, desc TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS paradas (idColectivo INTEGER, idCalle INTEGER,idInter INTEGER, parada INTEGER , desc TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS favlist (idFav INTEGER, linea TEXT, parada INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS favoritos (fav INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS geostreetD (idCalle INTEGER, idInter INTEGER,lat DOUBLE,lng DOUBLE, sin_lat DOUBLE , cos_lat DOUBLE , sin_lng DOUBLE, cos_lng DOUBLE)");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS calleFreq (id INTEGER PRIMARY KEY, frecuencia INTEGER)");
+        db.execSQL("CREATE VIEW  IF NOT EXISTS callesF AS " +
+                "SELECT calles.id AS id, desc, ifnull(frecuencia,0) AS frecuencia FROM calles LEFT OUTER JOIN calleFreq ON calles.id = calleFreq.id");
+
+    }
     //**********************************************************************************************
     //**********************************************************************************************
     //**********************************************************************************************
@@ -379,7 +384,48 @@ public class DataBase  {
     }
 
     //**********************************************************************************************
+    //**********      GEOLOCALIZACION                                                    ***********
     //**********************************************************************************************
+
+    public JSONArray getClosePoint(String lat,String lng,Integer distance)
+    {
+        double deg2radMultiplier = Math.PI / 180;
+        double latd = Double.parseDouble(lat) * deg2radMultiplier;
+        double lngd = Double.parseDouble(lng) * deg2radMultiplier;
+
+        double sin_lat = Math.sin(latd);
+        double cos_lat = Math.cos(latd);
+        double sin_lng = Math.sin(lngd);
+        double cos_lng = Math.cos(lngd);
+        double dist = Math.cos( ( ((double)distance) /1000.0) / 6371.0);
+
+        Cursor c = null;
+        JSONArray arr = new JSONArray();
+        try {
+            String query =  "SELECT idCalle,IdInter,lat,lng, sin_lat * " + sin_lat + " + cos_lat * " + cos_lat +
+                    " *  (cos_lng * " + cos_lng + " + sin_lng * "  + sin_lng
+                    + ") AS distance FROM geostreetD GROUP BY idCalle,idInter HAVING distance > " + dist + " ORDER BY DISTANCE DESC";
+
+            Log.d("QUERY",query);
+            c = db.rawQuery(query, new String[]{});
+
+            while (c.moveToNext()) {
+                Log.d("RESULT", c.getDouble(2) + " , " + c.getDouble(3) + " , " + c.getDouble(4) + " , " + dist);
+            }
+
+            // Math.acos(c.getDouble(4)) *  6371  * 1000
+        }catch (Exception e) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return arr;
+    }
+
+
+
+
+    //**********************************************************************************************
+    //********               HYDRATE CURSOR Y JSONS                                        *********
     //**********************************************************************************************
 
     private JSONObject hydrateLinea(Cursor c) {
@@ -483,11 +529,24 @@ public class DataBase  {
 
         db.execSQL("DELETE FROM paradas");
         db.execSQL("DELETE FROM calles");
+        db.execSQL("DELETE FROM geostreetD");
+
+        db.execSQL("DROP TABLE colectivos");
+        db.execSQL("DROP TABLE paradas");
+        db.execSQL("DROP TABLE calles");
+        db.execSQL("DROP TABLE geostreetD");
+
+        ArmarBaseDeDatos();
+
         db.execSQL("INSERT INTO Colectivos SELECT * FROM DB1.Colectivos");
         db.execSQL("INSERT INTO paradas SELECT * FROM DB1.paradas");
         db.execSQL("INSERT INTO calles SELECT * FROM DB1.calles");
+        db.execSQL("INSERT INTO geostreetD SELECT * FROM DB1.geostreetD");
+
         db.setTransactionSuccessful();
         db.endTransaction();
+
+        Log.d("DATABASE","CAMBIOS APLICADOS");
     }
 
 }

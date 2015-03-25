@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.samsoft.cuandollega.CLMain"
-    android:background="@color/fondo"
+    android:background="@drawable/colectivo"
     android:id="@+id/aaa">
 
     <LinearLayout
