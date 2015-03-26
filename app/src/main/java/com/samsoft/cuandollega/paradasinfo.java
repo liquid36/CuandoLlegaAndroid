@@ -151,7 +151,7 @@ public class paradasinfo extends ActionBarActivity {
             ImageView img = (ImageView) v.findViewById(R.id.actionIcon);
             bar.setVisibility(View.GONE);
             img.setVisibility(View.VISIBLE);
-            img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_mail));
+            img.setImageDrawable(getResources().getDrawable(R.drawable.ic_sms));
             String mensaje = "TUP " + o.getString("parada") + " " + o.getString("name");
             img.setTag(mensaje);
             img.setOnClickListener(new View.OnClickListener() {
@@ -320,8 +320,8 @@ public class paradasinfo extends ActionBarActivity {
                 });
 
                 boolean fav = db.chekcFavorito(linea,parada);
-                if (fav) img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_important));
-                else img.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_not_important));
+                if (fav) img.setImageDrawable(getResources().getDrawable(R.drawable.starfull));
+                else img.setImageDrawable(getResources().getDrawable(R.drawable.star_empty));
             }
             return;
         }

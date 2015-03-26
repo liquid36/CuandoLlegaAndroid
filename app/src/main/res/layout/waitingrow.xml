@@ -4,7 +4,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:id="@+id/wlist">
+    android:id="@+id/wlist"
+    android:paddingLeft="10dp">
 
     <LinearLayout
         android:orientation="horizontal"
