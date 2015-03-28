@@ -3,23 +3,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:id="@+id/wlist"
-    android:paddingLeft="10dp">
+    android:paddingLeft="10dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="10dp">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:weightSum="0"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
 
         <ImageView
-            android:layout_width="72dp"
-            android:layout_height="56dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/actionIcon"
             android:src="@drawable/ic_action_not_important"
             android:layout_gravity="center_vertical|top"
-            android:layout_weight="0.23"
+            android:layout_weight="1"
             android:clickable="true"
             android:adjustViewBounds="false"
             android:cropToPadding="false"
@@ -31,7 +34,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/waitingbar"
             android:indeterminate="true"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:layout_weight="1" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -42,14 +46,17 @@
             android:layout_gravity="center_vertical"
             android:textColor="#ff525252"
             android:textSize="30dp"
-            android:enabled="true" />
+            android:enabled="true"
+            android:maxLines="3"
+            android:layout_weight="3" />
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:id="@+id/laycalles" >
+            android:id="@+id/laycalles"
+            android:layout_weight="8">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -57,9 +64,10 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Cementerio la Piedad"
                 android:id="@+id/txtDest"
-                android:textColor="#ff525252"
+                android:textColor="#ff000471"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="10dp" />
+                android:paddingLeft="10dp"
+                android:maxLines="3" />
 
             <TextView
                 android:layout_width="wrap_content"

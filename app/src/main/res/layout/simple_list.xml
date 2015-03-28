@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.samsoft.cuandollega.calleSearch"
-    android:background="@drawable/colectivo"
+    android:background="@drawable/colectivo2"
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
@@ -68,10 +68,9 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:showDividers="middle"
-            android:divider="?android:listDivider"
+            android:divider="@drawable/divider"
             android:dividerPadding="3dp">
 
         </LinearLayout>
     </ScrollView>
-
 </LinearLayout>
