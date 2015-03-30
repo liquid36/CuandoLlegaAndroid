@@ -40,7 +40,141 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:showDividers="middle|end"
+            android:divider="@drawable/divider"
             >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:background="@drawable/custon_button"
+                android:paddingLeft="30dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingRight="30dp"
+                android:clickable="true"
+                android:onClick="calleClick">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Por Calle"
+                    android:layout_weight="7"
+                    android:textIsSelectable="false"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical" />
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_action_search"
+                    android:layout_weight="1"
+                    android:padding="0dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:background="@drawable/custon_button"
+                android:paddingLeft="30dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingRight="30dp"
+                android:clickable="true"
+                android:onClick="busClick">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Por Colectivo"
+                    android:layout_weight="7"
+                    android:textIsSelectable="false"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical" />
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_action_search"
+                    android:layout_weight="1"
+                    android:padding="0dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:background="@drawable/custon_button"
+                android:paddingLeft="30dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingRight="30dp"
+                android:clickable="true"
+                android:onClick="recienteClick">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Recientes"
+                    android:layout_weight="7"
+                    android:textIsSelectable="false"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical" />
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_action_refresh"
+                    android:layout_weight="1"
+                    android:padding="0dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:background="@drawable/custon_button"
+                android:paddingLeft="30dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:paddingRight="30dp"
+                android:clickable="true"
+                android:onClick="favClick">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Etiquetas"
+                    android:layout_weight="7"
+                    android:textIsSelectable="false"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical" />
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_action_important"
+                    android:layout_weight="1"
+                    android:padding="0dp" />
+
+            </LinearLayout>
 
             <Button
                 android:layout_width="match_parent"
@@ -51,9 +185,10 @@
                 android:clickable="true"
                 android:onClick="calleClick"
                 android:background="@drawable/custon_button"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingBottom="10dp"
+                android:visibility="gone" />
 
 
             <Button
@@ -64,9 +199,10 @@
                 android:layout_gravity="center_horizontal"
                 android:onClick="busClick"
                 android:background="@drawable/custon_button"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingBottom="10dp"
+                android:visibility="gone" />
 
             <Button
                 android:layout_width="match_parent"
@@ -76,9 +212,10 @@
                 android:layout_gravity="center_horizontal"
                 android:onClick="recienteClick"
                 android:background="@drawable/custon_button"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingBottom="10dp"
+                android:visibility="gone" />
 
 
             <Button
@@ -89,9 +226,10 @@
                 android:layout_gravity="center_horizontal"
                 android:onClick="favClick"
                 android:background="@drawable/custon_button"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp" />
+                android:paddingBottom="10dp"
+                android:visibility="gone" />
 
 
             <Button
@@ -116,7 +254,7 @@
                 android:layout_margin="10dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                />
+                android:visibility="gone" />
 
             <Button
                 android:layout_width="match_parent"
@@ -129,9 +267,7 @@
                 android:layout_margin="10dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                />
-
-
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

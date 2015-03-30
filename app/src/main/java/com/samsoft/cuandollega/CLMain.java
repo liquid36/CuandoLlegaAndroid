@@ -63,10 +63,22 @@ public class CLMain extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clmain);
-        listItems = (LinearLayout) findViewById(R.id.aaa);
+        listItems = (LinearLayout) findViewById(R.id.listItems);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         settings = new settingRep(getApplicationContext());
         db = new DataBase(getApplicationContext());
+
+        JSONArray favoritos = db.getFavoritos();
+        for (int i = 0; i < favoritos.length();i++) {
+            View v = inflater.inflate(R.layout.markrow, null);
+            TextView t = (TextView) v.findViewById(R.id.txtName);
+            try {
+                JSONObject o = favoritos.getJSONObject(i);
+                t.setText(o.getString("name"));
+                listItems.addView(v,i);
+                Log.d("CLMAIN","ADDING FAVORITOS");
+            } catch (Exception e) {e.printStackTrace();}
+        }
 
         //db.getClosePoint("-32.947392","-60.711163",500);
 
@@ -105,8 +117,23 @@ public class CLMain extends ActionBarActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.clmain, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == R.id.mnuVotar) {
+            rateClick(null);
+        } else if (id == R.id.mnuShare) {
+            sharedClick(null);
+        } else if (id == R.id.mnuAbout) {
+
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

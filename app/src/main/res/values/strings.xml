@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Cuando Llega</string>
+    <string name="app_name">Cuando Llega Movil</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_calle_search">Seleccione calle</string>
     <string name="title_activity_colectivo_search">Colectivos</string>
     <string name="title_activity_paradasinfo">Cuando Llega</string>
-    <string name="title_activity_favorite_screen">Marcadores</string>
+    <string name="title_activity_favorite_screen">Etiquetas</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>

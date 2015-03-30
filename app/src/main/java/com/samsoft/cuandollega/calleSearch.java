@@ -123,7 +123,7 @@ public class calleSearch extends ActionBarActivity {
     private MenuItem searchMenuItem;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.clmain, menu);
+        getMenuInflater().inflate(R.menu.calle_search, menu);
         searchMenuItem = menu.findItem(R.id.act_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
 

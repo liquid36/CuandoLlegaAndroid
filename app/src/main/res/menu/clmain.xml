@@ -4,11 +4,21 @@
     tools:context="com.samsoft.cuandollega.CLMain" >
 
     <item
-        android:id="@+id/act_search"
+        android:id="@+id/mnuVotar"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:icon="@drawable/ic_action_search"
-        android:title="Buscar"
-        app:actionViewClass="android.support.v7.widget.SearchView"/>
+        app:showAsAction="never"
+        android:title="Valorar App"/>
+
+    <item
+        android:id="@+id/mnuShare"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="Compartir App"/>
+
+    <item
+        android:id="@+id/mnuAbout"
+        android:orderInCategory="300"
+        app:showAsAction="never"
+        android:title="Acerca De..."/>
 
 </menu>

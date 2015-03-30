@@ -30,6 +30,7 @@
                 android:startColor="#6471d0ea"
                 android:endColor="#6471d0ea"
                 android:angle="270" />
+            <stroke android:width="2dp" android:color="#70ff6600"/>
             <corners  android:radius="3dp" />
 
         </shape>
