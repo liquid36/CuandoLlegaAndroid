@@ -78,9 +78,9 @@ public class FavDialog extends  AlertDialog.Builder
                     if (cb.isChecked()) db.insertFavList(id, linea, parada);
                 }
                 if (db.chekcFavorito(linea, parada))
-                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.ic_action_important));
+                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.starfull));
                 else
-                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.ic_action_not_important));
+                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.star_empty));
                 img.invalidate();
             }
         });

@@ -52,8 +52,8 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
                 android:paddingLeft="30dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingRight="30dp"
                 android:clickable="true"
                 android:onClick="calleClick">
@@ -69,8 +69,8 @@
                     android:gravity="center_vertical" />
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_action_search"
                     android:layout_weight="1"
                     android:padding="0dp" />
@@ -85,8 +85,8 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
                 android:paddingLeft="30dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingRight="30dp"
                 android:clickable="true"
                 android:onClick="busClick">
@@ -102,8 +102,8 @@
                     android:gravity="center_vertical" />
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_action_search"
                     android:layout_weight="1"
                     android:padding="0dp" />
@@ -118,8 +118,8 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
                 android:paddingLeft="30dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingRight="30dp"
                 android:clickable="true"
                 android:onClick="recienteClick">
@@ -135,8 +135,8 @@
                     android:gravity="center_vertical" />
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_action_refresh"
                     android:layout_weight="1"
                     android:padding="0dp" />
@@ -151,8 +151,8 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
                 android:paddingLeft="30dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:paddingRight="30dp"
                 android:clickable="true"
                 android:onClick="favClick">
@@ -168,8 +168,8 @@
                     android:gravity="center_vertical" />
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_action_important"
                     android:layout_weight="1"
                     android:padding="0dp" />

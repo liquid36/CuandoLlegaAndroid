@@ -12,10 +12,11 @@
         android:layout_margin="5dp"
         android:background="@drawable/custon_button"
         android:paddingLeft="30dp"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:paddingRight="30dp"
-        android:clickable="true">
+        android:clickable="true"
+        android:id="@+id/btnLayout">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,8 +30,8 @@
             android:id="@+id/txtName" />
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/ic_etiqueta"
             android:layout_weight="1"
             android:padding="4dp" />

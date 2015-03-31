@@ -59,26 +59,22 @@ public class CLMain extends ActionBarActivity {
     private ProgressDialog mProgressDialog;
     settingRep settings;
 
+
+    /** Called when the activity is about to become visible. */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        crearView();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clmain);
-        listItems = (LinearLayout) findViewById(R.id.listItems);
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         settings = new settingRep(getApplicationContext());
         db = new DataBase(getApplicationContext());
 
-        JSONArray favoritos = db.getFavoritos();
-        for (int i = 0; i < favoritos.length();i++) {
-            View v = inflater.inflate(R.layout.markrow, null);
-            TextView t = (TextView) v.findViewById(R.id.txtName);
-            try {
-                JSONObject o = favoritos.getJSONObject(i);
-                t.setText(o.getString("name"));
-                listItems.addView(v,i);
-                Log.d("CLMAIN","ADDING FAVORITOS");
-            } catch (Exception e) {e.printStackTrace();}
-        }
+        crearView();
 
         //db.getClosePoint("-32.947392","-60.711163",500);
 
@@ -143,6 +139,37 @@ public class CLMain extends ActionBarActivity {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
+    public void crearView()
+    {
+        setContentView(R.layout.activity_clmain);
+        listItems = (LinearLayout) findViewById(R.id.listItems);
+        JSONArray favoritos = db.getFavoritos();
+        for (int i = 0; i < favoritos.length();i++) {
+            View v = inflater.inflate(R.layout.markrow, null);
+            TextView t = (TextView) v.findViewById(R.id.txtName);
+            LinearLayout l = (LinearLayout) v.findViewById(R.id.btnLayout);
+            try {
+                final JSONObject o = favoritos.getJSONObject(i);
+                final Integer id = o.getInt("id");
+                t.setText(o.getString("name"));
+                l.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(CLMain.this, paradasinfo.class);
+                        stopsGroup r[] = new stopsGroup[1];
+                        r[0]=new stopsGroup(0,0,"",id);
+                        i.putExtra("Stops",stopsGroup.stopsToString(r));
+                        startActivity(i);
+                    }
+                });
+
+
+                listItems.addView(v,i);
+                Log.d("CLMAIN","ADDING FAVORITOS");
+            } catch (Exception e) {e.printStackTrace();}
+        }
+    }
+
     /*public int getLastVersion()
     {
         try {
@@ -197,7 +224,7 @@ public class CLMain extends ActionBarActivity {
         String url = "https://rawgit.com/liquid36/CLDownload/master/test.db";
         String url2 = "https://raw.githubusercontent.com/liquid36/CLDownload/master/db.md5";
 
-        new DownloadFileAsync(getApplicationContext(),false).execute(url,url2);
+        new DownloadFileAsync(getApplicationContext(),false).execute(url, url2);
     }
 
     public void favClick(View v)
