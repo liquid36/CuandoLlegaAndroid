@@ -410,10 +410,13 @@ public class DataBase  {
             c = db.rawQuery(query, new String[]{});
 
             while (c.moveToNext()) {
-                Log.d("RESULT", c.getDouble(2) + " , " + c.getDouble(3) + " , " + c.getDouble(4) + " , " + dist);
+                JSONObject o = new JSONObject();
+                o.put("idCalle", c.getInt(0));
+                o.put("idInter", c.getInt(1));
+                o.put("lat", c.getDouble(2));
+                o.put("lng", c.getDouble(3));
+                o.put("distancia", Math.acos(c.getDouble(4)) *  6371  * 1000);
             }
-
-            // Math.acos(c.getDouble(4)) *  6371  * 1000
         }catch (Exception e) {
         } finally {
             if (c != null) c.close();
@@ -422,6 +425,28 @@ public class DataBase  {
     }
 
 
+    public String [] colectivosEnEsquina(Integer idCalle, Integer idInter)
+    {
+        Cursor c = null;
+        JSONArray arr = new JSONArray();
+        try {
+            String query =  "SELECT idColectivo, name FROM paradas INNER JOIN colectivos ON id = idColectivo "
+                           + " WHERE idCalle = ? AND idInter= ?";
+            c = db.rawQuery(query, new String[]{idCalle.toString(),idInter.toString()});
+
+            int i = 0;
+            String [] res = new String[c.getCount()];
+            while (c.moveToNext()) {
+                res[i++] = c.getString(1);
+            }
+            if (c != null) c.close();
+            return res;
+        }catch (Exception e) {
+            e.printStackTrace();
+            if (c != null) c.close();
+            return new String[0];
+        }
+    }
 
 
     //**********************************************************************************************

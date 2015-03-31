@@ -2,39 +2,46 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.samsoft.cuandollega" >
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
     <!-- android:debuggable="false" ?android:listDivider -->
     <application
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
-
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="com.samsoft.cuandollega.CLMain"
+            android:name=".CLMain"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.samsoft.cuandollega.calleSearch"
+            android:name=".calleSearch"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_calle_search" >
         </activity>
         <activity
-            android:name="com.samsoft.cuandollega.colectivoSearch"
+            android:name=".colectivoSearch"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_colectivo_search" >
         </activity>
         <activity
-            android:name="com.samsoft.cuandollega.paradasinfo"
+            android:name=".paradasinfo"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_paradasinfo" >
         </activity>
         <activity
-            android:name="com.samsoft.cuandollega.favoriteScreen"
+            android:name=".favoriteScreen"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_favorite_screen" >
         </activity>
@@ -64,16 +71,13 @@
         <service
             android:name="com.samsoft.cuandollega.widgets.adapterList"
             android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" > </service> -->
+            android:permission="android.permission.BIND_REMOTEVIEWS" > </service>
+        -->
 
+        <activity
+            android:name=".geoActivity"
+            android:label="@string/title_activity_geo" >
+        </activity>
     </application>
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.SEND_SMS" />
 
 </manifest>

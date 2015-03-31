@@ -219,6 +219,16 @@ public class CLMain extends ActionBarActivity {
         startActivity(i);
     }
 
+    public void geoClick(View v)
+    {
+        Intent i = new Intent(CLMain.this, geoActivity.class);
+        i.putExtra("calle",0);
+        i.putExtra("colectivos","");
+        i.putExtra("accion","street");
+        i.putExtra("Stops","");
+        startActivity(i);
+    }
+
     public void refreshClick(View v)
     {
         String url = "https://rawgit.com/liquid36/CLDownload/master/test.db";
