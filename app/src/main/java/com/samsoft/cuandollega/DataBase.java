@@ -416,6 +416,7 @@ public class DataBase  {
                 o.put("lat", c.getDouble(2));
                 o.put("lng", c.getDouble(3));
                 o.put("distancia", Math.acos(c.getDouble(4)) *  6371  * 1000);
+                arr.put(o);
             }
         }catch (Exception e) {
         } finally {
@@ -431,7 +432,7 @@ public class DataBase  {
         JSONArray arr = new JSONArray();
         try {
             String query =  "SELECT idColectivo, name FROM paradas INNER JOIN colectivos ON id = idColectivo "
-                           + " WHERE idCalle = ? AND idInter= ?";
+                           + " WHERE idCalle = ? AND idInter= ? GROUP BY name";
             c = db.rawQuery(query, new String[]{idCalle.toString(),idInter.toString()});
 
             int i = 0;
