@@ -1,6 +1,9 @@
 package com.samsoft.cuandollega;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,21 +18,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.samsoft.cuandollega.objects.stopsGroup;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 
 public class geoActivity extends ActionBarActivity implements LocationListener {
-    private Integer d = 100;
+    private Integer d = 500;
     private TextView txtDist;
-    private Double lat,lng;
+    private Double lat=0.0,lng=0.0;
     private float precision;
     private LayoutInflater inflater;
     private LinearLayout listItems;
     private DataBase db;
+    private stopsGroup stops [];
+    private String SStops;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +52,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         txtDist = (TextView) findViewById(R.id.labDistancia);
         ImageView minus = (ImageView) findViewById(R.id.btnMinus);
         ImageView plus = (ImageView) findViewById(R.id.btnPlus);
+        txtDist.setText(d + "mts");
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,30 +66,75 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
             }
         });
 
+        Bundle datos = getIntent().getExtras();
+        stops = stopsGroup.stringtoStops(datos.getString("Stops"));
+        SStops = datos.getString("Stops");
         pedirUbicacion();
     }
 
     public void pedirUbicacion()
     {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER) && !lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+        {
+            showGPSDisabledAlertToUser();
+            return;
+        }
+
         Criteria criteria = new Criteria();
         criteria.setAltitudeRequired(false);
         criteria.setBearingRequired(false);
         criteria.setSpeedRequired(true);
         criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
 
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         lm.requestSingleUpdate(criteria, this, null);
+        listItems.removeAllViews();
+
+        ProgressBar bar = new ProgressBar(getApplicationContext());
+        bar.setIndeterminate(true);
+        bar.setIndeterminateDrawable(getResources().getDrawable(R.drawable.myprogressbar));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 20, 0,0);
+
+        listItems.addView(bar,layoutParams);
         Log.d("geoActivity", "Pidiendo ubicacion");
+
     }
+
+    private void showGPSDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Ningun metodo de localizacion esta activado. ¿Desea activar alguno?")
+                .setCancelable(false)
+                .setPositiveButton("Aceptar",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                Intent callGPSSettingIntent = new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(callGPSSettingIntent);
+                            }
+                        });
+        alertDialogBuilder.setNegativeButton("Cancelar",
+                new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
 
     public void rellenarListView()
     {
+        if (lat == 0.0 && lng == 0.0) return;
         listItems.removeAllViews();
         Log.d("geoActivity","" + d + Math.round(precision));
         JSONArray arr = db.getClosePoint(lat.toString(),lng.toString(),d + Math.round(precision));
         for(int i = 0;i < arr.length();i++) {
             try {
-                JSONObject o = arr.getJSONObject(i);
+                final JSONObject o = arr.getJSONObject(i);
                 String calle1 = db.getCalleName(o.getInt("idCalle"));
                 String calle2 = db.getCalleName(o.getInt("idInter"));
                 String [] colectivos = db.colectivosEnEsquina(o.getInt("idCalle"),o.getInt("idInter"));
@@ -94,6 +149,20 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
                     String label = "";
                     for (int j = 0; j < colectivos.length; j++) label += colectivos[j] + " ";
                     txtColectivos.setText(label);
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            try {
+                                Intent i = new Intent(geoActivity.this, colectivoSearch.class);
+                                i.putExtra("calle", o.getInt("idCalle"));
+                                i.putExtra("interseccion", o.getInt("idInter"));
+                                i.putExtra("accion","street");
+                                i.putExtra("Stops", SStops);
+                                startActivity(i);
+                            }catch (Exception e){e.printStackTrace();}
+                        }
+                    });
+
 
                     listItems.addView(v);
                 }
@@ -133,11 +202,13 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.act_refresh) {
+            pedirUbicacion();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onLocationChanged(Location l) {
@@ -145,7 +216,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         lng = l.getLongitude();
         precision =   l.getAccuracy();
         rellenarListView();
-        makeToast(l.getLatitude() + "  " + l.getLongitude() + " " + l.getProvider());
+        makeToast("Ubicacion establecida");
         Log.d("geoActivity",l.getLatitude() + "  " + l.getLongitude() + " " + l.getProvider() + " " + l.getAccuracy());
         //l.getLatitude()
         //l.getLongitude();
