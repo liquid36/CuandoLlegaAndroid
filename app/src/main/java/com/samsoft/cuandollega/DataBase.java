@@ -402,11 +402,13 @@ public class DataBase  {
         Cursor c = null;
         JSONArray arr = new JSONArray();
         try {
-            String query =  "SELECT idCalle,IdInter,lat,lng, sin_lat * " + sin_lat + " + cos_lat * " + cos_lat +
+            String query =  "SELECT geostreetD.idCalle,geostreetD.IdInter,lat,lng, sin_lat * " + sin_lat + " + cos_lat * " + cos_lat +
                     " *  (cos_lng * " + cos_lng + " + sin_lng * "  + sin_lng
-                    + ") AS distance FROM geostreetD GROUP BY idCalle,idInter HAVING distance > " + dist + " ORDER BY DISTANCE DESC";
-
-            Log.d("QUERY",query);
+                    + ") AS distance, c1.desc , c2.desc FROM geostreetD "
+                    + " INNER JOIN paradas      ON geostreetD.idCalle = paradas.idCalle AND geostreetD.idInter = paradas.idInter "
+                    + " INNER JOIN calles AS c1 ON  geostreetD.idCalle = c1.id"
+                    + " INNER JOIN calles AS c2 ON  geostreetD.idInter = c2.id"
+                    + " GROUP BY geostreetD.idCalle, geostreetD.idInter HAVING distance > " + dist + " ORDER BY DISTANCE DESC";
             c = db.rawQuery(query, new String[]{});
 
             while (c.moveToNext()) {
@@ -416,6 +418,8 @@ public class DataBase  {
                 o.put("lat", c.getDouble(2));
                 o.put("lng", c.getDouble(3));
                 o.put("distancia", Math.acos(c.getDouble(4)) *  6371  * 1000);
+                o.put("name1",c.getString(5));
+                o.put("name2",c.getString(6));
                 arr.put(o);
             }
         }catch (Exception e) {

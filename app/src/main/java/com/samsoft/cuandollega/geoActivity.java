@@ -86,6 +86,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         criteria.setBearingRequired(false);
         criteria.setSpeedRequired(true);
         criteria.setCostAllowed(true);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_HIGH);
 
 
@@ -130,13 +131,12 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
     {
         if (lat == 0.0 && lng == 0.0) return;
         listItems.removeAllViews();
-        Log.d("geoActivity","" + d + Math.round(precision));
         JSONArray arr = db.getClosePoint(lat.toString(),lng.toString(),d + Math.round(precision));
         for(int i = 0;i < arr.length();i++) {
             try {
                 final JSONObject o = arr.getJSONObject(i);
-                String calle1 = db.getCalleName(o.getInt("idCalle"));
-                String calle2 = db.getCalleName(o.getInt("idInter"));
+                String calle1 = o.getString("name1");
+                String calle2 = o.getString("name2");
                 String [] colectivos = db.colectivosEnEsquina(o.getInt("idCalle"),o.getInt("idInter"));
                 if (colectivos.length > 0) {
                     View v = inflater.inflate(R.layout.georow, null);
@@ -170,7 +170,6 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
 
         }
     }
-
 
     public void minusClick() {
         if (d > 100) {
