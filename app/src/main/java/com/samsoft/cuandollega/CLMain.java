@@ -9,6 +9,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,10 +28,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsoft.cuandollega.extra.DialogAccion;
+import com.samsoft.cuandollega.objects.locationListener;
 import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.objects.stopsGroup;
 
@@ -94,7 +98,7 @@ public class CLMain extends ActionBarActivity {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
             settings.putBoolean("FirstLoad",true);
-            new DialogAccion(CLMain.this,"Cuando Llega Pro",
+            new DialogAccion(CLMain.this,"Cuando Llega Movil",
                     "Bienvenido a Cuando Llega Pro!\n\n" +
                     "Busqueda por Calle\n" +
                     "Busqueda por Colectivo\n" +
@@ -359,6 +363,7 @@ public class CLMain extends ActionBarActivity {
                 db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
                 db.Close();
                 getDatabasePath("test.db").delete();
+                db = new DataBase(getApplicationContext());
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
