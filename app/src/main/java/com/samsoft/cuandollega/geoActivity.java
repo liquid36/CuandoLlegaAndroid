@@ -27,6 +27,8 @@ import com.samsoft.cuandollega.objects.stopsGroup;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
+
 
 public class geoActivity extends ActionBarActivity implements LocationListener {
     private Integer d = 500;
@@ -72,6 +74,27 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         pedirUbicacion();
     }
 
+    public Location getLastLocation()
+    {
+        float bestAccuracy = Float.MAX_VALUE;
+        long minTime = Long.MIN_VALUE,bestTime = Long.MIN_VALUE;
+        Location bestResult = null;
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        List<String> matchingProviders = lm.getAllProviders();
+        for (String provider: matchingProviders) {
+            Location location = lm.getLastKnownLocation(provider);
+            if (location != null) {
+                float accuracy = location.getAccuracy();
+                long time = location.getTime();
+                if (time > bestTime ){
+                    bestResult = location;
+                    bestTime = time;
+                }
+            }
+        }
+        return  bestResult;
+    }
+
     public void pedirUbicacion()
     {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -93,15 +116,21 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         lm.requestSingleUpdate(criteria, this, null);
         listItems.removeAllViews();
 
-        ProgressBar bar = new ProgressBar(getApplicationContext());
-        bar.setIndeterminate(true);
-        bar.setIndeterminateDrawable(getResources().getDrawable(R.drawable.myprogressbar));
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, 20, 0,0);
-
-        listItems.addView(bar,layoutParams);
-        Log.d("geoActivity", "Pidiendo ubicacion");
-
+        Location l = getLastLocation();
+        if (l == null) {
+            ProgressBar bar = new ProgressBar(getApplicationContext());
+            bar.setIndeterminate(true);
+            bar.setIndeterminateDrawable(getResources().getDrawable(R.drawable.myprogressbar));
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, 20, 0, 0);
+            listItems.addView(bar, layoutParams);
+            Log.d("geoActivity", "Pidiendo ubicacion");
+        } else {
+            lat = l.getLatitude();
+            lng = l.getLongitude();
+            precision =   l.getAccuracy();
+            rellenarListView();
+        }
     }
 
     private void showGPSDisabledAlertToUser(){
