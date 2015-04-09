@@ -16,12 +16,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.extra.DialogAccion;
+import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.objects.stopsGroup;
 
 import org.json.JSONArray;
@@ -40,7 +44,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
     private DataBase db;
     private stopsGroup stops [];
     private String SStops;
-
+    private settingRep settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,22 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         listItems = (LinearLayout) findViewById(R.id.listItems);
         db = new DataBase(getApplicationContext());
+        settings = new settingRep(getApplicationContext());
+        d = settings.getInteger("radio");
+        if (d == 0) {
+            d = 300;
+            settings.putInteger("radio",d);
+        }
+
+        Boolean b = settings.getBoolean("geoMSG");
+        if (!b) {
+            new DialogAccion(this,"Cuando Llega Movil",
+                    "De forma instantanea se visualiza la ultima ubicacion conocida." +
+                    " Cuando la distancia deja de parpadear se logró actualizar su ubicacion y las nuevas paradas se muestran. "
+                    ,"Aceptar" ,"" , null).Show();
+            settings.putBoolean("geoMSG",true);
+        }
+
 
         LinearLayout l = (LinearLayout) findViewById(R.id.msgDistancia);
         l.setVisibility(View.VISIBLE);
@@ -114,6 +134,14 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
 
 
         lm.requestSingleUpdate(criteria, this, null);
+
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(300); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
+        txtDist.startAnimation(anim);
+
         listItems.removeAllViews();
 
         Location l = getLastLocation();
@@ -204,6 +232,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         if (d > 100) {
             d -= 100;
             txtDist.setText(d + "mts");
+            settings.putInteger("radio",d);
             rellenarListView();
         }
     }
@@ -211,6 +240,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
     public void plusClick() {
         d += 100;
         txtDist.setText(d + "mts");
+        settings.putInteger("radio",d);
         rellenarListView();
     }
 
@@ -243,6 +273,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
         lat = l.getLatitude();
         lng = l.getLongitude();
         precision =   l.getAccuracy();
+        txtDist.clearAnimation();
         rellenarListView();
         makeToast("Ubicacion establecida");
         Log.d("geoActivity",l.getLatitude() + "  " + l.getLongitude() + " " + l.getProvider() + " " + l.getAccuracy());
