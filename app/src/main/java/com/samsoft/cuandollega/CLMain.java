@@ -36,6 +36,7 @@ import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.objects.locationListener;
 import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.objects.stopsGroup;
+import com.samsoft.cuandollega.Activities.favoriteScreen;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -282,9 +283,9 @@ public class CLMain extends ActionBarActivity {
     {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "Cuando Llega Pro - https://play.google.com/store/apps/details?id=com.samsoft.cuandollega" );
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Cuando Llega Movil - https://play.google.com/store/apps/details?id=com.samsoft.cuandollega" );
         sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sendIntent, "Cuando Llega Pro"));
+        startActivity(Intent.createChooser(sendIntent, "Cuando Llega Movil"));
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -295,7 +296,6 @@ public class CLMain extends ActionBarActivity {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-        return;
     }
 
     private String streamToString(InputStream i)

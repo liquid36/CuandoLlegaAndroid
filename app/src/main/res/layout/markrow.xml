@@ -27,7 +27,8 @@
             android:textIsSelectable="false"
             android:textSize="25dp"
             android:gravity="center_vertical"
-            android:id="@+id/txtName" />
+            android:id="@+id/txtName"
+            android:textColor="#ff000000" />
 
         <ImageView
             android:layout_width="50dp"

@@ -1,0 +1,184 @@
+package com.samsoft.cuandollega.Fragments;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v4.app.ListFragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.samsoft.cuandollega.DataBase;
+import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.extra.InputDialog;
+import com.samsoft.cuandollega.objects.favoriteAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+/**
+ * Created by sam on 16/05/15.
+ */
+
+public class favoriteList extends ListFragment {
+    private DataBase db;
+    private favoriteListListener mListener;
+    private favoriteAdapter madapter;
+    private Boolean showAdd;
+    public static final String NOT_SHOW_ADD = "NOT_SHOW_ADD";
+    /**
+     * Mandatory empty constructor for the fragment manager to instantiate the
+     * fragment (e.g. upon screen orientation changes).
+     */
+    public favoriteList() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        madapter = new favoriteAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>());
+        recalcularAdapter();
+        setListAdapter(madapter);
+        showAdd = getArguments() == null || !getArguments().containsKey(NOT_SHOW_ADD);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //getView().setBackground(getResources().getDrawable(R.drawable.colectivo2));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.favorite_list_menu, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu (Menu menu)
+    {
+        if (showAdd) {
+            menu.findItem(R.id.act_add).setVisible(true);
+        } else menu.findItem(R.id.act_add).setVisible(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.act_add:
+                InputDialog dialog = new InputDialog(getActivity(), "Marcadores","Introduzca el nombre del marcador",
+                        new InputDialog.inputDialogListener() {
+                            @Override
+                            public void onAcceptClick(String txt) {
+                                if (txt.isEmpty()) {
+                                    Toast.makeText(getActivity(),"Campo vacío" , Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                db.addFavorito(txt);
+                                recalcularAdapter();
+                            }
+
+                            @Override
+                            public void onCancelClick() {
+
+                            }
+                        });
+                dialog.show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedState) {
+        super.onActivityCreated(savedState);
+        getListView().setOnItemLongClickListener(longClick);
+    }
+
+    public void recalcularAdapter()
+    {
+        JSONArray arr = db.getFavoritos();
+        madapter.clear();
+        for(int i = 0; i < arr.length();i++)
+            try {madapter.add(arr.getJSONObject(i));} catch (Exception e) {e.printStackTrace();}
+    }
+
+    public void refreshScreen()
+    {
+        recalcularAdapter();
+        madapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        db = new DataBase(activity.getApplicationContext());
+        try {
+            mListener = (favoriteListListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        if (null != mListener) {
+            mListener.onFavoriteClick((JSONObject) getListAdapter().getItem(position));
+        }
+    }
+
+    public interface favoriteListListener {
+        public void onFavoriteClick(JSONObject id);
+    }
+
+    private AdapterView.OnItemLongClickListener longClick = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Favoritos");
+            builder.setMessage("¿Desea borrar de la lista el favorito?");
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    JSONObject o = (JSONObject) getListAdapter().getItem(position);
+                    try {
+                        db.removeFavorito(o.getInt("id"));
+                        recalcularAdapter();
+                        madapter.notifyDataSetChanged();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            builder.setNegativeButton("Cancelar",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.show();
+            return false;
+        }
+    };
+
+}
+
