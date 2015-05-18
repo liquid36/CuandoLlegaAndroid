@@ -1,7 +1,6 @@
 package com.samsoft.cuandollega.objects;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +15,14 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
- * Created by sam on 16/05/15.
+ * Created by sam on 17/05/15.
  */
-
-public class favoriteAdapter extends ArrayAdapter<JSONObject> {
+public class calleAdapter extends ArrayAdapter<JSONObject> {
     private final Context context;
-    private favoriteAdapterListener events;
+    private calleAdapterListener events;
     private List<JSONObject> values;
 
-    public favoriteAdapter(Context context, List<JSONObject> values,favoriteAdapterListener events) {
+    public calleAdapter(Context context, List<JSONObject> values,calleAdapterListener events) {
         super(context, R.layout.markrow , values);
         this.context = context;
         this.values = values;
@@ -39,17 +37,16 @@ public class favoriteAdapter extends ArrayAdapter<JSONObject> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.markrow, parent, false);
-        TextView textView = (TextView) rowView.findViewById(R.id.txtName);
-        LinearLayout btn = (LinearLayout) rowView.findViewById(R.id.btnLayout);
+        View rowView = inflater.inflate(R.layout.rowsimple, parent, false);
+        TextView textView = (TextView) rowView.findViewById(R.id.label);
         if (events != null) {
-            btn.setOnClickListener(new View.OnClickListener() {
+            rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     events.OnItemClick(position);
                 }
             });
-            btn.setOnLongClickListener(new View.OnLongClickListener() {
+            rowView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     events.OnItemLongClick(position);
@@ -59,7 +56,7 @@ public class favoriteAdapter extends ArrayAdapter<JSONObject> {
         }
 
         try {
-            textView.setText(values.get(position).getString("name"));
+            textView.setText(values.get(position).getString("desc"));
         } catch (Exception e) {
             e.printStackTrace();
             textView.setText("Error en el nombre");
@@ -67,7 +64,7 @@ public class favoriteAdapter extends ArrayAdapter<JSONObject> {
         return rowView;
     }
 
-    public interface  favoriteAdapterListener {
+    public interface  calleAdapterListener {
         public void OnItemClick(Integer position);
         public void OnItemLongClick(Integer position);
     }

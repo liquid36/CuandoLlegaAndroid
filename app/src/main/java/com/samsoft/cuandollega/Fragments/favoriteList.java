@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,7 +31,7 @@ import java.util.ArrayList;
  * Created by sam on 16/05/15.
  */
 
-public class favoriteList extends ListFragment {
+public class favoriteList extends Fragment {
     private DataBase db;
     private favoriteListListener mListener;
     private favoriteAdapter madapter;
@@ -44,17 +48,19 @@ public class favoriteList extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        madapter = new favoriteAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>());
-        recalcularAdapter();
-        setListAdapter(madapter);
         showAdd = getArguments() == null || !getArguments().containsKey(NOT_SHOW_ADD);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //getView().setBackground(getResources().getDrawable(R.drawable.colectivo2));
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.list_view, container, false);
+        ListView lw = (ListView) v.findViewById(R.id.listView);
+        madapter = new favoriteAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>(),events);
+        recalcularAdapter();
+        lw.setAdapter(madapter);
+        return v;
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -97,12 +103,6 @@ public class favoriteList extends ListFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedState) {
-        super.onActivityCreated(savedState);
-        getListView().setOnItemLongClickListener(longClick);
-    }
-
     public void recalcularAdapter()
     {
         JSONArray arr = db.getFavoritos();
@@ -137,29 +137,25 @@ public class favoriteList extends ListFragment {
     }
 
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-
-        if (null != mListener) {
-            mListener.onFavoriteClick((JSONObject) getListAdapter().getItem(position));
-        }
-    }
-
-    public interface favoriteListListener {
-        public void onFavoriteClick(JSONObject id);
-    }
-
-    private AdapterView.OnItemLongClickListener longClick = new AdapterView.OnItemLongClickListener() {
+    private favoriteAdapter.favoriteAdapterListener events = new favoriteAdapter.favoriteAdapterListener() {
         @Override
-        public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
+        public void OnItemClick(Integer position) {
+            Log.d("favoriteList","Is working");
+            if (null != mListener) {
+                mListener.onFavoriteClick((JSONObject) madapter.getItem(position));
+            }
+        }
+
+        @Override
+        public void OnItemLongClick(final Integer position) {
+            Log.d("favoriteList","Probando");
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Favoritos");
             builder.setMessage("¿Desea borrar de la lista el favorito?");
             builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    JSONObject o = (JSONObject) getListAdapter().getItem(position);
+                    JSONObject o = (JSONObject) madapter.getItem(position);
                     try {
                         db.removeFavorito(o.getInt("id"));
                         recalcularAdapter();
@@ -176,9 +172,11 @@ public class favoriteList extends ListFragment {
                 }
             });
             builder.show();
-            return false;
         }
     };
+    public interface favoriteListListener {
+        public void onFavoriteClick(JSONObject id);
+    }
 
 }
 
