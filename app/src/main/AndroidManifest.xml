@@ -50,6 +50,11 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_favorite_screen" >
         </activity>
+        <activity
+            android:name=".Activities.MainTabActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="Cuando Llega" >
+        </activity>
         <!-- Cosas para el widgets. No funciona muy bien -->
         <!--
         <activity android:name="com.samsoft.cuandollega.widgets.favoritaWConfigureActivity" >

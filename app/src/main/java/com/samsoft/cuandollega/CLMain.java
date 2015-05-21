@@ -32,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.Activities.MainTabActivity;
 import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.objects.locationListener;
 import com.samsoft.cuandollega.objects.settingRep;
@@ -131,7 +132,7 @@ public class CLMain extends ActionBarActivity {
         } else if (id == R.id.mnuShare) {
             sharedClick(null);
         } else if (id == R.id.mnuAbout) {
-
+            startActivity(new Intent(this, MainTabActivity.class));
 
         }
 
