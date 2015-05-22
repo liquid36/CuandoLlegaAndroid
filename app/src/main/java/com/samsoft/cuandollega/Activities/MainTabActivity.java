@@ -16,7 +16,7 @@ import org.json.JSONObject;
 /**
  * Created by sam on 18/05/15.
  */
-public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener, favoriteList.favoriteListListener , calleList.calleListListener {
+public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener, favoriteList.favoriteListListener {
     private ViewPager viewPager;
     private MainTabAdapter mAdapter;
     private ActionBar actionBar;
@@ -77,6 +77,4 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     }
 
     public void onFavoriteClick(JSONObject id){};
-
-    public void OnClick(JSONObject o){};
 }

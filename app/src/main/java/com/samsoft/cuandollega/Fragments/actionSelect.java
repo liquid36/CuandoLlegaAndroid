@@ -38,7 +38,6 @@ public class actionSelect extends Fragment {
         btn_close.setTag(CLOSE_CLICK);
         btn_colectivo.setTag(COLECTIVO_CLICK);
         btn_reciente.setTag(RECIENTE_CLICK);
-
         btn_calle.setOnClickListener(click);
         btn_colectivo.setOnClickListener(click);
         btn_reciente.setOnClickListener(click);
