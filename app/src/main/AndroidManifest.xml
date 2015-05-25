@@ -53,7 +53,7 @@
         <activity
             android:name=".Activities.MainTabActivity"
             android:configChanges="orientation|screenSize"
-            android:label="Cuando Llega" >
+            android:label="Cuando Llega" android:theme="@style/AppTheme" >
         </activity>
         <!-- Cosas para el widgets. No funciona muy bien -->
         <!--

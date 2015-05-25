@@ -3,4 +3,7 @@
     <color name="fondo">#ff9455</color>
     <color name="fondopar">#ffffca36</color>
     <color name="actionbar_background">#fc941d</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="tab_highlight">#ff9ecfbf</color>
 </resources>

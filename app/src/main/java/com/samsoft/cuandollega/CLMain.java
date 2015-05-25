@@ -271,6 +271,7 @@ public class CLMain extends ActionBarActivity {
             String sreciente = settings.getString("Reciente", "");
             //stopsGroup[] stops = stopsGroup.stringtoStops(sreciente);
 
+        // get item count - equal to number of tabs
             Intent i = new Intent(CLMain.this, paradasinfo.class);
             i.putExtra("Stops",sreciente);
             startActivity(i);

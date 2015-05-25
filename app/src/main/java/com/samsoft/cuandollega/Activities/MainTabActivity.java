@@ -1,17 +1,25 @@
 package com.samsoft.cuandollega.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 
 import com.samsoft.cuandollega.Fragments.calleList;
+import com.samsoft.cuandollega.Fragments.controlerSelector;
 import com.samsoft.cuandollega.Fragments.favoriteList;
 import com.samsoft.cuandollega.R;
 import com.samsoft.cuandollega.objects.MainTabAdapter;
+import com.samsoft.cuandollega.objects.stopsGroup;
+import com.samsoft.cuandollega.paradasinfo;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by sam on 18/05/15.
@@ -21,7 +29,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     private MainTabAdapter mAdapter;
     private ActionBar actionBar;
     // Tab titles
-    private String[] tabs = { "Marcadores", "Busqueda"};
+    private String[] tabs = { "Busqueda", "Marcadores"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +70,46 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     }
 
     @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() == 0) {
+            FragmentManager fm = getSupportFragmentManager();
+            if (onBackPressed(fm)) {
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
+
+    private boolean onBackPressed(FragmentManager fm) {
+        if (fm != null) {
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStack();
+                return true;
+            }
+
+            List<Fragment> fragList = fm.getFragments();
+            if (fragList != null && fragList.size() > 0) {
+                for (Fragment frag : fragList) {
+                    if (frag == null) {
+                        continue;
+                    }
+                    if (frag.isVisible()) {
+                        if (onBackPressed(frag.getChildFragmentManager())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
     }
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        // on tab selected
-        // show respected fragment view
         viewPager.setCurrentItem(tab.getPosition());
     }
 
@@ -76,5 +117,13 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
     }
 
-    public void onFavoriteClick(JSONObject id){};
+    public void onFavoriteClick(JSONObject id) {
+        try {
+            Intent i = new Intent(this, paradasinfo.class);
+            stopsGroup stops [] = new stopsGroup[]{};
+            stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(0,0,"",id.getInt("id")));
+            i.putExtra("Stops",stopsGroup.stopsToString(r));
+            startActivity(i);
+        } catch (Exception e) {e.printStackTrace();}
+    };
 }

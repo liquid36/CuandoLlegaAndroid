@@ -24,10 +24,10 @@ public class MainTabAdapter extends FragmentPagerAdapter {
         switch (index) {
             case 0:
                 // Top Rated fragment activity
-                return new favoriteList();
+                return new controlerSelector();
             case 1:
                 // Games fragment activity
-                return new controlerSelector();
+                return new favoriteList();
         }
 
         return null;
@@ -35,7 +35,6 @@ public class MainTabAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // get item count - equal to number of tabs
         return 2;
     }
 

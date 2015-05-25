@@ -4,7 +4,12 @@ package com.samsoft.cuandollega.Fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -36,7 +41,6 @@ public class calleList extends Fragment {
         mColectivo = "";
         mName = "";
         mCalle = 0;
-
     }
 
 
@@ -53,6 +57,7 @@ public class calleList extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         db = new DataBase(getActivity().getApplicationContext());
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
@@ -90,6 +95,30 @@ public class calleList extends Fragment {
     {
         recalcularAdapter(mCalle,mColectivo,mName);
         madapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.calle_search, menu);
+        final MenuItem searchMenuItem = menu.findItem(R.id.act_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+
+                if (android.os.Build.VERSION.SDK_INT >= 14) searchMenuItem.collapseActionView();
+                else MenuItemCompat.collapseActionView(searchMenuItem);
+                recalcularAdapter(mCalle,mColectivo,"");
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                recalcularAdapter(mCalle,mColectivo,s);
+                return false;
+            }
+        });
     }
 
 

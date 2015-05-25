@@ -1,5 +1,7 @@
 package com.samsoft.cuandollega.Fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -7,8 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.objects.settingRep;
+import com.samsoft.cuandollega.objects.stopsGroup;
+import com.samsoft.cuandollega.paradasinfo;
 
 import org.json.JSONObject;
 
@@ -56,16 +62,36 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
             calleList list = new calleList();
             list.setListener(this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
             transaction.replace(R.id.frame, list).commit();
             action = CALLE_ID;
         } else if (action.equals(actionSelect.COLECTIVO_CLICK)) {
             colectivoList list = new colectivoList();
             list.setListener(this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
             transaction.replace(R.id.frame, list).commit();
             action = COLECTIVOS_ID;
+        } else if (action.equals(actionSelect.RECIENTE_CLICK)) {
+            settingRep s = new settingRep(getActivity().getApplicationContext());
+            if (!s.getString("Reciente").equals(""))  {
+                String sreciente = s.getString("Reciente");
+                Intent i = new Intent(getActivity(), paradasinfo.class);
+                i.putExtra("Stops",sreciente);
+                startActivity(i);
+            } else {
+                makeToast("No se realizo ninguna consulta");
+            }
         }
 
+    }
+
+    public void makeToast(String s) {
+        Context context = getActivity().getApplicationContext();
+        CharSequence text = s;
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     public void OnCalleClick(JSONObject o)
@@ -82,22 +108,46 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
                 transaction.addToBackStack(null);
                 transaction.replace(R.id.frame, list).commit();
             } else {
+                idInter = o.getInt("id");
                 if (colectivo.isEmpty()) {
                     colectivoList list = new colectivoList();
-                    idInter = o.getInt("id");
                     list.setListener(this);
                     list.setCalles(idCalle,idInter);
                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.addToBackStack(null);
                     transaction.replace(R.id.frame, list).commit();
+                } else {
+                    Log.d(TAG,idCalle + " " + idInter + " " + colectivo);
+                    Intent i = new Intent(getActivity(), paradasinfo.class);
+                    stopsGroup stops [] = new stopsGroup[]{};
+                    stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
+                    i.putExtra("Stops",stopsGroup.stopsToString(r));
+                    startActivity(i);
                 }
-
             }
         }catch (Exception e) {e.printStackTrace();}
-
     }
 
     public void OnColectivoClick(JSONObject o){
+        try {
+            colectivo = o.getString("name");
+            if (idCalle == 0) {
+                calleList list = new calleList();
+                list.setListener(this);
+                list.setColectivo(colectivo);
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.replace(R.id.frame, list).commit();
+            } else {
+                Intent i = new Intent(getActivity(), paradasinfo.class);
+                stopsGroup stops [] = new stopsGroup[]{};
+                stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
+                i.putExtra("Stops",stopsGroup.stopsToString(r));
+                startActivity(i);
+            }
 
+        } catch (Exception e) {e.printStackTrace();}
     }
+
 }
 
