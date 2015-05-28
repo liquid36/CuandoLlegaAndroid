@@ -72,8 +72,6 @@ public class calleList extends Fragment {
             t.setText(txtcalle + " Y ...");
             msgCalle.setVisibility(View.VISIBLE);
         }
-
-
         return v;
     }
 
@@ -126,7 +124,19 @@ public class calleList extends Fragment {
         @Override
         public void OnItemClick(Integer position) {
             if (mListener != null) {
-                mListener.OnCalleClick(madapter.getItem(position));
+                JSONObject o = new JSONObject();
+                try {
+                    o.put("colectivo",mColectivo);
+                    Integer ids = madapter.getItem(position).getInt("id");
+                    if (mCalle == 0) {
+                        o.put("idCalle",ids);
+                        o.put("idInter",0);
+                    } else {
+                        o.put("idCalle",mCalle);
+                        o.put("idInter",ids);
+                    }
+                    mListener.OnCalleClick(o);
+                }catch (Exception e) {e.printStackTrace();}
             }
         }
 

@@ -1,5 +1,7 @@
 package com.samsoft.cuandollega.objects;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -47,7 +49,6 @@ public class stopsGroup {
 
     public static stopsGroup[] stringtoStops(String s)
     {
-
         try {
             JSONArray a = new JSONArray(s);
             stopsGroup [] r = new stopsGroup[a.length()];
@@ -57,7 +58,11 @@ public class stopsGroup {
                 r[i] = t;
             }
             return r;
-        } catch (Exception e) {e.printStackTrace(); return new stopsGroup[0];}
+        } catch (Exception e) {
+            Log.d("stopsGroup",s);
+            e.printStackTrace();
+            return new stopsGroup[0];
+        }
 
     }
 

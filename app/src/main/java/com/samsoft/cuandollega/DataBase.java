@@ -151,9 +151,9 @@ public class DataBase  {
         JSONArray arr = new JSONArray();
         try {
 
-            c = db.rawQuery("SELECT idColectivo, desc,paradas.parada AS parada ,name,bandera, idCalle, idInter FROM paradas " +
+            c = db.rawQuery("SELECT idColectivo, desc,paradas.parada AS parada ,name,colectivos.linea,bandera, idCalle, idInter FROM paradas " +
                     "INNER JOIN colectivos ON idColectivo = colectivos.id " +
-                    "INNER JOIN favList ON favList.linea = colectivos.name AND favList.parada = paradas.parada AND favList.idFav = " + fav +
+                    "INNER JOIN favList ON favList.linea = colectivos.linea AND favList.parada = paradas.parada AND favList.idFav = " + fav +
                     " GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , new String[]{});
             while (c.moveToNext()) {
                 JSONObject o = new JSONObject();
@@ -161,6 +161,7 @@ public class DataBase  {
                 o.put("parada", c.getInt(c.getColumnIndex("parada")));
                 o.put("desc", c.getString(c.getColumnIndex("desc")));
                 o.put("name", c.getString(c.getColumnIndex("name")));
+                o.put("linea", c.getString(c.getColumnIndex("linea")));
                 o.put("bandera", c.getString(c.getColumnIndex("bandera")));
                 o.put("idCalle", c.getInt(c.getColumnIndex("idCalle")));
                 o.put("idInter", c.getInt(c.getColumnIndex("idInter")));
@@ -259,7 +260,7 @@ public class DataBase  {
                 c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc, frecuencia != 0 as frecuencia FROM paradas " +
                         "INNER JOIN callesF     ON callesF.id = idCalle " +
                         "INNER JOIN colectivos ON colectivos.id = idColectivo " +
-                        "WHERE colectivos.name = ? AND callesF.desc LIKE '%" + name + "%'" +
+                        "WHERE colectivos.linea = ? AND callesF.desc LIKE '%" + name + "%'" +
                         " GROUP BY callesF.id  ORDER BY (callesF.frecuencia != 0) DESC,callesF.desc" , new String[] {Colectivo});
 
 
@@ -307,7 +308,7 @@ public class DataBase  {
                 c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc, frecuencia != 0 as frecuencia FROM paradas " +
                             "INNER JOIN callesF ON callesF.id = idInter " +
                             "INNER JOIN colectivos ON colectivos.id = idColectivo " +
-                            "WHERE colectivos.name = ? AND idCalle = ? AND callesF.desc LIKE '%" + name + "%'" +
+                            "WHERE colectivos.linea = ? AND idCalle = ? AND callesF.desc LIKE '%" + name + "%'" +
                             "GROUP BY callesF.id ORDER BY (callesF.frecuencia != 0) DESC,callesF.desc" , new String[] {Colectivo, Integer.toString(idCalle)});
             while (c.moveToNext()) {
                 JSONObject o = hydrateCalle(c);
@@ -361,9 +362,9 @@ public class DataBase  {
             String query = "";
             if (!bus.isEmpty()) {
                 variables = new String[]{bus,Integer.toString(idCalle), Integer.toString(idInter)};
-                query = " colectivos.name = ? AND ";
+                query = " colectivos.linea = ? AND ";
             }
-            c = db.rawQuery("SELECT idColectivo, desc,parada,name,bandera FROM paradas " +
+            c = db.rawQuery("SELECT idColectivo, desc,parada,name,bandera,linea FROM paradas " +
                     "INNER JOIN colectivos ON idColectivo = colectivos.id WHERE " +
                     query + " idCalle = ? AND idInter = ?  " +
                     "GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , variables);
@@ -374,6 +375,7 @@ public class DataBase  {
                 o.put("desc", c.getString(c.getColumnIndex("desc")));
                 o.put("name", c.getString(c.getColumnIndex("name")));
                 o.put("bandera", c.getString(c.getColumnIndex("bandera")));
+                o.put("linea", c.getString(c.getColumnIndex("linea")));
                 if (o != null) arr.put(o);
             }
         }catch (Exception e) {
@@ -430,26 +432,35 @@ public class DataBase  {
     }
 
 
-    public String [] colectivosEnEsquina(Integer idCalle, Integer idInter)
+    public String colectivosEnEsquina(Integer idCalle, Integer idInter)
     {
         Cursor c = null;
         JSONArray arr = new JSONArray();
         try {
-            String query =  "SELECT idColectivo, name FROM paradas INNER JOIN colectivos ON id = idColectivo "
-                           + " WHERE idCalle = ? AND idInter= ? GROUP BY name";
+            //String query =  "SELECT idColectivo, name FROM paradas INNER JOIN colectivos ON id = idColectivo "
+            //               + " WHERE idCalle = ? AND idInter= ? GROUP BY name";
+            String query =  "select group_concat(linea,' ') FROM " +
+                    "(SELECT DISTINCT linea FROM paradas INNER JOIN  colectivos ON id = idColectivo " +
+                    " WHERE idCalle = ? AND idInter = ? GROUP BY linea);";
             c = db.rawQuery(query, new String[]{idCalle.toString(),idInter.toString()});
 
             int i = 0;
-            String [] res = new String[c.getCount()];
+
+            String res;
+            if (c.moveToNext()) {
+                res = c.getString(0);
+            } else res =  "";
+
+            /*String [] res = new String[c.getCount()];
             while (c.moveToNext()) {
                 res[i++] = c.getString(1);
-            }
+            }*/
             if (c != null) c.close();
             return res;
         }catch (Exception e) {
             e.printStackTrace();
             if (c != null) c.close();
-            return new String[0];
+            return "";   //new String[0];
         }
     }
 

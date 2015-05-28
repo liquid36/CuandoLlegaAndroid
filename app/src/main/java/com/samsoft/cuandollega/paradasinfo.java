@@ -114,6 +114,7 @@ public class paradasinfo extends ActionBarActivity {
             for (int i = 0; i < a.length(); i++) {
                 try {
                     JSONObject o = a.getJSONObject(i);
+                    Log.d("paradasInfo",o.getString("name"));
                     View v = inflater.inflate(R.layout.waitingrow, null);
                     TextView bus = (TextView) v.findViewById(R.id.txtBus);
                     TextView dest = (TextView) v.findViewById(R.id.txtDest);
@@ -272,7 +273,7 @@ public class paradasinfo extends ActionBarActivity {
             JSONObject stop = stops[0];
             try {
                 parada = stop.getInt("parada");
-                linea = stop.getString("name");
+                linea = stop.getString("linea");
                 datos = new getTimeArrive(linea,parada).run();
                 if (datos.isEmpty()) return  false;
                 return true;

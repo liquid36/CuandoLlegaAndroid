@@ -105,19 +105,22 @@ public class colectivoSearch extends ActionBarActivity {
                             try {
                                 Intent i = new Intent(colectivoSearch.this, calleSearch.class);
                                 i.putExtra("calle",0);
-                                i.putExtra("colectivos",o.getString("name"));
+                                i.putExtra("colectivos",o.getString("linea"));
                                 i.putExtra("accion",accion);
                                 i.putExtra("Stops",SStops);
                                 startActivity(i);
                             } catch (Exception e) {e.printStackTrace();}
                         } else { // Elegir paradas
-                            Intent i = new Intent(colectivoSearch.this, paradasinfo.class);
-                            String colec = "";
-                            if (!tt.getText().equals(" - TODOS - ")) colec = tt.getText().toString();
+                            try {
+                                Intent i = new Intent(colectivoSearch.this, paradasinfo.class);
+                                String colec = "";
+                                if (!tt.getText().equals(" - TODOS - "))
+                                    colec = o.getString("linea");
 
-                            stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colec,0));
-                            i.putExtra("Stops",stopsGroup.stopsToString(r));
-                            startActivity(i);
+                                stopsGroup r[] = stopsGroup.addItem(stops, new stopsGroup(idCalle, idInter, colec, 0));
+                                i.putExtra("Stops", stopsGroup.stopsToString(r));
+                                startActivity(i);
+                            }catch(Exception ee) {ee.printStackTrace();}
                         }
                     }
                 });

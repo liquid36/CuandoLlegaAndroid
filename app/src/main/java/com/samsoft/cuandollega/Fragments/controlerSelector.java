@@ -97,9 +97,10 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
     public void OnCalleClick(JSONObject o)
     {
         try {
-            Log.d(TAG,"OnCalleClick " + o.toString());
-            if (idCalle == 0) {
-                idCalle = o.getInt("id");
+            idCalle = o.getInt("idCalle");
+            colectivo = o.getString("colectivo");
+            idInter = o.getInt("idInter");
+            if (idInter == 0) {
                 calleList list = new calleList();
                 list.setCalle(idCalle);
                 list.setColectivo(colectivo);
@@ -108,7 +109,6 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
                 transaction.addToBackStack(null);
                 transaction.replace(R.id.frame, list).commit();
             } else {
-                idInter = o.getInt("id");
                 if (colectivo.isEmpty()) {
                     colectivoList list = new colectivoList();
                     list.setListener(this);
@@ -130,7 +130,9 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
 
     public void OnColectivoClick(JSONObject o){
         try {
-            colectivo = o.getString("name");
+            idCalle = o.getInt("idCalle");
+            colectivo = o.getString("colectivo");
+            idInter = o.getInt("idInter");
             if (idCalle == 0) {
                 calleList list = new calleList();
                 list.setListener(this);

@@ -194,8 +194,8 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
                 final JSONObject o = arr.getJSONObject(i);
                 String calle1 = o.getString("name1");
                 String calle2 = o.getString("name2");
-                String [] colectivos = db.colectivosEnEsquina(o.getInt("idCalle"),o.getInt("idInter"));
-                if (colectivos.length > 0) {
+                String colectivos = db.colectivosEnEsquina(o.getInt("idCalle"),o.getInt("idInter"));
+                if (!colectivos.isEmpty()) {
                     View v = inflater.inflate(R.layout.georow, null);
                     TextView txtCalles = (TextView) v.findViewById(R.id.txtCalles);
                     TextView txtDist = (TextView) v.findViewById(R.id.txtDist);
@@ -203,9 +203,9 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
 
                     txtCalles.setText(calle1 + " y " + calle2);
                     txtDist.setText("a " + o.getInt("distancia") + "mts");
-                    String label = "";
-                    for (int j = 0; j < colectivos.length; j++) label += colectivos[j] + " ";
-                    txtColectivos.setText(label);
+                    //String label = "";
+                    //for (int j = 0; j < colectivos.length; j++) label += colectivos[j] + " ";
+                    txtColectivos.setText(colectivos);
                     v.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

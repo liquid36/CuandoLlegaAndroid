@@ -94,7 +94,14 @@ public class colectivoList extends Fragment {
         @Override
         public void OnItemClick(Integer position) {
             if (mListener != null) {
-                mListener.OnColectivoClick(madapter.getItem(position));
+                JSONObject o = new JSONObject();
+                try {
+                    String c = madapter.getItem(position).getString("linea");
+                    o.put("idCalle",idCalle);
+                    o.put("idInter",idInterseccion);
+                    o.put("colectivo",c);
+                }catch (Exception e) {e.printStackTrace();}
+                mListener.OnColectivoClick(o);
             }
         }
 
