@@ -30,6 +30,52 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/msgDistancia"
+        android:background="#6e6ffff8"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/btnMinus"
+            android:src="@drawable/ic_content_remove"
+            android:layout_weight="2"
+            android:clickable="true" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="100mts"
+            android:id="@+id/labDistancia"
+            android:textSize="35dp"
+            android:textStyle="bold"
+            android:textColor="#276b59"
+            android:clickable="false"
+            android:layout_weight="6"
+            android:gravity="center"
+            android:layout_gravity="center_vertical" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/btnPlus"
+            android:src="@drawable/ic_content_add"
+            android:layout_weight="2"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:clickable="true" />
+
+    </LinearLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

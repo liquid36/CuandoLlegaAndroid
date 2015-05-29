@@ -220,9 +220,8 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
                         }
                     });
 
-
                     listItems.addView(v);
-                }
+                } else {Log.d("VACIO","VACIO");}
             } catch (Exception e) {e.printStackTrace();}
 
         }

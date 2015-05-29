@@ -132,7 +132,7 @@ public class CLMain extends ActionBarActivity {
         } else if (id == R.id.mnuShare) {
             sharedClick(null);
         } else if (id == R.id.mnuAbout) {
-            startActivity(new Intent(this, MainTabActivity.class));
+            //startActivity(new Intent(this, MainTabActivity.class));
 
         }
 
