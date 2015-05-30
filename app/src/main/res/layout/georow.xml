@@ -38,7 +38,8 @@
             android:textSize="15dp"
             android:layout_gravity="left"
             android:layout_weight="6"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#ff000000" />
 
         <TextView
             android:layout_width="0dp"

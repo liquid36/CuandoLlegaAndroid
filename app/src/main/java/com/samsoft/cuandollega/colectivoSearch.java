@@ -71,6 +71,7 @@ public class colectivoSearch extends ActionBarActivity {
         if (idCalle != 0) {
             try {
                 JSONObject o = new JSONObject();
+                o.put("linea", " - TODOS - ");
                 o.put("name", " - TODOS - ");
                 o.put("id", 0);
                 b.put(o);

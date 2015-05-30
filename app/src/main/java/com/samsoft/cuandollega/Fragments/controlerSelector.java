@@ -23,7 +23,9 @@ import org.json.JSONObject;
  */
 public class controlerSelector extends Fragment implements  actionSelect.actionSelectListener,
                                                             calleList.calleListListener,
-                                                            colectivoList.colectivoListListener{
+                                                            colectivoList.colectivoListListener,
+                                                            geoList.geoListListener
+{
     private static final String TAG = "controlerSelector";
     private static final String MENU_ID = "MENU";
     private static final String CALLE_ID = "STREET";
@@ -72,6 +74,12 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
             transaction.addToBackStack(null);
             transaction.replace(R.id.frame, list).commit();
             action = COLECTIVOS_ID;
+        } else if (action.equals(actionSelect.CLOSE_CLICK)) {
+            geoList list = new geoList();
+            list.setListener(this);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.frame, list).commit();
         } else if (action.equals(actionSelect.RECIENTE_CLICK)) {
             settingRep s = new settingRep(getActivity().getApplicationContext());
             if (!s.getString("Reciente").equals(""))  {
@@ -132,6 +140,8 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
         try {
             idCalle = o.getInt("idCalle");
             colectivo = o.getString("colectivo");
+            if (colectivo.equals(" - TODOS - ")) colectivo = "";
+
             idInter = o.getInt("idInter");
             if (idCalle == 0) {
                 calleList list = new calleList();
@@ -151,5 +161,19 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
         } catch (Exception e) {e.printStackTrace();}
     }
 
+    public void OnGeoClick(JSONObject o)
+    {
+        try {
+            idCalle = o.getInt("idCalle");
+            colectivo = o.getString("colectivo");
+            idInter = o.getInt("idInter");
+            colectivoList list = new colectivoList();
+            list.setListener(this);
+            list.setCalles(idCalle,idInter);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.frame, list).commit();
+        } catch (Exception e) {e.printStackTrace();}
+    }
 }
 

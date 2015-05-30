@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,8 +127,19 @@ public class geoList extends Fragment {
 
     private geoAdapter.geoAdapterListener events = new geoAdapter.geoAdapterListener() {
         @Override
-        public void OnItemClick(Integer position) {
-
+        public void OnItemClick(Integer position){
+            if (mListener != null){
+                JSONObject o = mAdapter.getItem(position);
+                JSONObject ret = new JSONObject();
+                try {
+                    ret.put("colectivo", "");
+                    ret.put("idCalle", o.getInt("idCalle"));
+                    ret.put("idInter", o.getInt("idInter"));
+                    mListener.OnGeoClick(ret);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override

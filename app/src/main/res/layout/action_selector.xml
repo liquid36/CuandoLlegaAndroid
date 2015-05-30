@@ -30,7 +30,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
-                android:paddingLeft="30dp"
+                android:paddingLeft="15dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingRight="30dp"
@@ -63,7 +63,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
-                android:paddingLeft="30dp"
+                android:paddingLeft="15dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingRight="30dp"
@@ -96,7 +96,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
-                android:paddingLeft="30dp"
+                android:paddingLeft="15dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingRight="30dp"
@@ -111,7 +111,9 @@
                     android:layout_weight="7"
                     android:textIsSelectable="false"
                     android:textSize="25dp"
-                    android:gravity="center_vertical" />
+                    android:gravity="center_vertical"
+                    android:minLines="1"
+                    android:maxLines="1" />
 
                 <ImageView
                     android:layout_width="50dp"
@@ -129,7 +131,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
                 android:background="@drawable/custon_button"
-                android:paddingLeft="30dp"
+                android:paddingLeft="15dp"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:paddingRight="30dp"

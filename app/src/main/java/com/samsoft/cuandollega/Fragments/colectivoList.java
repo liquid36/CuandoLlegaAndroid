@@ -71,6 +71,7 @@ public class colectivoList extends Fragment {
         madapter.clear();
         if (idCalle != 0) {
             try {
+                o.put("linea", " - TODOS - ");
                 o.put("name", " - TODOS - ");
                 o.put("id", 0);
             } catch (Exception e) {
