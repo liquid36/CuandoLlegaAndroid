@@ -8,5 +8,5 @@
         android:orderInCategory="200"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_refresh"
-        android:title="Refresh"/>
+        android:title="Refresh" />
 </menu>

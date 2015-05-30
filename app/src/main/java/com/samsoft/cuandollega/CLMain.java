@@ -133,7 +133,6 @@ public class CLMain extends ActionBarActivity {
             sharedClick(null);
         } else if (id == R.id.mnuAbout) {
             startActivity(new Intent(this, MainTabActivity.class));
-
         }
 
         return super.onOptionsItemSelected(item);
