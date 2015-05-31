@@ -128,7 +128,7 @@ public class paradasinfo extends ActionBarActivity {
                     String txtcalle = db.getCalleName(idCalle);
                     String txtinter = db.getCalleName(idInter);
                     TextView lugar = (TextView) v.findViewById(R.id.txtLugar);
-                    lugar.setVisibility(View.VISIBLE);
+                    //lugar.setVisibility(View.VISIBLE);
                     lugar.setText(txtcalle + " Y " + txtinter);
 
                     if (online) {

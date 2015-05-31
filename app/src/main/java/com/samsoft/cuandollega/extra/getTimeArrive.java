@@ -43,7 +43,7 @@ public class getTimeArrive {
     public ArrayList<String> parserResult(String datos)
     {
         ArrayList<String> result = new ArrayList<String>();
-
+        Log.d("getTimeArrive",datos);
         String [] lineas = datos.substring(11).split("-");
         for(int i = 0; i < lineas.length; i++) {
             if (lineas[i].length() > 6) {
@@ -60,12 +60,15 @@ public class getTimeArrive {
                         case 'N':
                             bandera = "NEGRO";
                             break;
+                        case 'A':
+                            bandera = "AEROPUERTO";
+                            break;
                         default:
                             bandera = "UNICO";
                             break;
                     }
                     String steps = lineas[i].substring(lineas[i].indexOf(":") + 1);
-                    if (lineas[i].contains("Prox. serv")) {
+                    if (!lineas[i].contains("min.")) {
                         result.add(bandera + ":" + steps);
                     } else {
                         String[] ll = steps.split("siguiente");

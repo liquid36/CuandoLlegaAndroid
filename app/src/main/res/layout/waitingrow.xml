@@ -14,49 +14,37 @@
         android:layout_height="wrap_content"
         android:weightSum="0"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/actionIcon"
-            android:src="@drawable/ic_action_not_important"
-            android:layout_gravity="center_vertical|top"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:adjustViewBounds="false"
-            android:cropToPadding="false"
-            android:scaleType="fitXY"
-            android:visibility="gone" />
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/waitingbar"
-            android:indeterminate="true"
-            android:visibility="visible"
-            android:layout_weight="1" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="153"
-            android:id="@+id/txtBus"
-            android:layout_gravity="center_vertical"
-            android:textColor="#ff525252"
-            android:textSize="30dp"
-            android:enabled="true"
-            android:maxLines="3"
-            android:layout_weight="4" />
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="15dp">
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="6dp"
+            android:background="#ff0300ff"></LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:id="@+id/laycalles"
-            android:layout_weight="8">
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="153"
+                android:id="@+id/txtBus"
+                android:layout_gravity="center_vertical"
+                android:textColor="#ff525252"
+                android:textSize="30dp"
+                android:enabled="true"
+                android:maxLines="3"
+                android:layout_weight="4"
+                android:paddingLeft="5dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -66,7 +54,6 @@
                 android:id="@+id/txtDest"
                 android:textColor="#ff000471"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="5dp"
                 android:maxLines="3" />
 
             <TextView
@@ -77,10 +64,32 @@
                 android:id="@+id/txtLugar"
                 android:textColor="#ff525252"
                 android:layout_gravity="left"
-                android:layout_marginLeft="30dp"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
         </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/waitingbar"
+            android:indeterminate="true"
+            android:visibility="visible"
+            android:layout_weight="0" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/actionIcon"
+            android:src="@drawable/starfull"
+            android:layout_gravity="center_vertical|top"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:scaleType="center"
+            android:visibility="gone" />
+
+
     </LinearLayout>
 
 </LinearLayout>
