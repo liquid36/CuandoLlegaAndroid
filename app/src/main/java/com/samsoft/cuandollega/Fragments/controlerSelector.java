@@ -1,5 +1,6 @@
 package com.samsoft.cuandollega.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
     private String action;
     private Integer idCalle,idInter;
     private String colectivo;
+    private controlerSelectorListener mLister;
 
     public controlerSelector()
     {
@@ -41,6 +43,7 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
         idInter = 0;
         colectivo = "";
     }
+    public void setListener(controlerSelectorListener listener){mLister = listener;}
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -55,6 +58,16 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
         View v = inflater.inflate(R.layout.controler_selector, container, false);
         return v;
     }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+        mLister = (controlerSelectorListener) activity;
+    }
+
+    @Override
+    public void onDetach () {super.onDetach(); mLister = null;}
 
 
     public void OnActionClick(String action)
@@ -125,12 +138,12 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
                     transaction.addToBackStack(null);
                     transaction.replace(R.id.frame, list).commit();
                 } else {
-                    Log.d(TAG,idCalle + " " + idInter + " " + colectivo);
-                    Intent i = new Intent(getActivity(), paradasinfo.class);
+                    mLister.allSelect(o);
+                    /*Intent i = new Intent(getActivity(), paradasinfo.class);
                     stopsGroup stops [] = new stopsGroup[]{};
                     stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
                     i.putExtra("Stops",stopsGroup.stopsToString(r));
-                    startActivity(i);
+                    startActivity(i);*/
                 }
             }
         }catch (Exception e) {e.printStackTrace();}
@@ -151,11 +164,12 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
                 transaction.addToBackStack(null);
                 transaction.replace(R.id.frame, list).commit();
             } else {
-                Intent i = new Intent(getActivity(), paradasinfo.class);
+                mLister.allSelect(o);
+                /*Intent i = new Intent(getActivity(), paradasinfo.class);
                 stopsGroup stops [] = new stopsGroup[]{};
                 stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
                 i.putExtra("Stops",stopsGroup.stopsToString(r));
-                startActivity(i);
+                startActivity(i);*/
             }
 
         } catch (Exception e) {e.printStackTrace();}
@@ -174,6 +188,10 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
             transaction.addToBackStack(null);
             transaction.replace(R.id.frame, list).commit();
         } catch (Exception e) {e.printStackTrace();}
+    }
+
+    public interface controlerSelectorListener {
+        public void allSelect(JSONObject o);
     }
 }
 

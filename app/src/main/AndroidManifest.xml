@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".CLMain"
+            android:name=".Activities.MainTabActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,11 +50,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_favorite_screen" >
         </activity>
-        <activity
-            android:name=".Activities.MainTabActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="Cuando Llega" android:theme="@style/AppTheme" >
-        </activity>
+
         <!-- Cosas para el widgets. No funciona muy bien -->
         <!--
         <activity android:name="com.samsoft.cuandollega.widgets.favoritaWConfigureActivity" >

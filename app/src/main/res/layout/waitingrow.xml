@@ -22,7 +22,7 @@
             android:layout_width="5dp"
             android:layout_height="match_parent"
             android:layout_marginRight="6dp"
-            android:background="#ff0300ff"></LinearLayout>
+            android:background="@color/actionbar_background"></LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"

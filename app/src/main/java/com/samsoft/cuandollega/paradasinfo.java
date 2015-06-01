@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.Activities.MainTabActivity;
 import com.samsoft.cuandollega.extra.Action;
 import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.extra.FavDialog;
@@ -238,10 +239,10 @@ public class paradasinfo extends ActionBarActivity {
 
 
         } else if (id == android.R.id.home) {
-            //super.onBackPressed();
-            Intent intent = new Intent(paradasinfo.this, CLMain.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            super.onBackPressed();
+            //Intent intent = new Intent(paradasinfo.this, MainTabActivity.class);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

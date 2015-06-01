@@ -20,11 +20,14 @@ import com.samsoft.cuandollega.paradasinfo;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by sam on 18/05/15.
  */
-public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener, favoriteList.favoriteListListener {
+public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener,
+                                                                  favoriteList.favoriteListListener,
+                                                                  controlerSelector.controlerSelectorListener {
     private ViewPager viewPager;
     private MainTabAdapter mAdapter;
     private ActionBar actionBar;
@@ -125,5 +128,20 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             i.putExtra("Stops",stopsGroup.stopsToString(r));
             startActivity(i);
         } catch (Exception e) {e.printStackTrace();}
-    };
+    }
+
+    public void allSelect(JSONObject o)
+    {
+        try {
+            Integer idCalle = o.getInt("idCalle");
+            Integer idInter = o.getInt("idInter");
+            String colectivo = o.getString("colectivo");
+            if (colectivo.equals(" - TODOS - ")) colectivo = "";
+            Intent i = new Intent(this, paradasinfo.class);
+            stopsGroup stops [] = new stopsGroup[]{};
+            stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
+            i.putExtra("Stops",stopsGroup.stopsToString(r));
+            startActivity(i);
+        } catch (Exception e){e.printStackTrace();}
+    }
 }
