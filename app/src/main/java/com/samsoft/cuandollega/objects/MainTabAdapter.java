@@ -23,10 +23,8 @@ public class MainTabAdapter extends FragmentPagerAdapter {
 
         switch (index) {
             case 0:
-                // Top Rated fragment activity
                 return new controlerSelector();
             case 1:
-                // Games fragment activity
                 return new favoriteList();
         }
 

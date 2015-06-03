@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import com.samsoft.cuandollega.objects.stopsGroup;
 import com.samsoft.cuandollega.paradasinfo;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by sam on 21/05/15.
@@ -73,6 +77,7 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
     public void OnActionClick(String action)
     {
         Log.d(TAG,action);
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (action.equals(actionSelect.CALLE_CLICK)) {
             calleList list = new calleList();
             list.setListener(this);
@@ -103,6 +108,15 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
             } else {
                 makeToast("No se realizo ninguna consulta");
             }
+        }
+
+    }
+
+    public void HomeActionBarClick() {
+        FragmentManager fm = getChildFragmentManager();
+        Log.d("controlerSelector", fm.getClass() +   "Entre " + fm.getBackStackEntryCount() );
+        while (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
         }
 
     }
