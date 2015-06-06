@@ -1,8 +1,12 @@
 package com.samsoft.cuandollega.Activities;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,16 +19,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.samsoft.cuandollega.BuildConfig;
+import com.samsoft.cuandollega.DataBase;
+import com.samsoft.cuandollega.ExpandAnimation;
 import com.samsoft.cuandollega.Fragments.calleList;
 import com.samsoft.cuandollega.Fragments.controlerSelector;
 import com.samsoft.cuandollega.Fragments.favoriteList;
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.objects.MainTabAdapter;
+import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.objects.stopsGroup;
 import com.samsoft.cuandollega.paradasinfo;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -38,6 +51,10 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     private MainTabAdapter mAdapter;
     private ActionBar actionBar;
     private stopsGroup stops [];
+    private settingRep settings;
+    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
+    private ProgressDialog mProgressDialog;
+    private  ProgressDialog progresDialog;
     // Tab titles
     private String[] tabs = { "Busqueda", "Marcadores"};
 
@@ -45,10 +62,37 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_view_main);
-
+        settings = new settingRep(getApplicationContext());
         Bundle datos = getIntent().getExtras();
         if (datos != null && datos.containsKey("Stops")) stops = stopsGroup.stringtoStops(datos.getString("Stops"));
         else stops = new stopsGroup[]{};
+
+
+        int versionCode = BuildConfig.VERSION_CODE ;
+        int lastCode = settings.getInteger("Version");
+        Boolean first = settings.getBoolean("FirstLoad");
+
+        if (versionCode != lastCode  && first ) {
+            CopiarBaseDatos(true);
+            settings.putInteger("Version",versionCode);
+            /*new DialogAccion(CLMain.this,"Cuando Llega Pro",
+                    "Nuevas novedades!\n\n" +
+                    "Ahora puedes agregar nuevas paradas a tu consulta. Presiona en el signo mas para hacerlo.\n"
+                    + "Actualizamos las paradas de algunos colectivos."
+                    ,"Aceptar","" , null).Show();*/
+        } else if (!first) {
+            CopiarBaseDatos(true);
+            settings.putInteger("Version",versionCode);
+            settings.putBoolean("FirstLoad",true);
+            new DialogAccion(this,"Cuando Llega Movil",
+                    "Bienvenido a Cuando Llega Pro!\n\n" +
+                            "Busqueda por Calle\n" +
+                            "Busqueda por Colectivo\n" +
+                            "Marcadores de paradas\n"+
+                            "Multiples consultas"
+                    ,"Aceptar" ,"" , null).Show();
+
+        }
 
         // Initilization
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -104,6 +148,13 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void CopiarBaseDatos(boolean fromRaw)
+    {
+        progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
+        UpdateDB run = new UpdateDB(getApplicationContext(),new DataBase(this));
+        run.execute();
     }
 
     public void sharedClick(View v)
@@ -225,5 +276,44 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             i.putExtra("Stops",stopsGroup.stopsToString(r));
             startActivity(i);
         } catch (Exception e){e.printStackTrace();}
+    }
+
+    // COPIA ARCHIVOS ******************************************************************************
+    private class UpdateDB extends AsyncTask<String, Integer, Boolean> {
+        private Context contex;
+        private DataBase db;
+        UpdateDB(Context c, DataBase db) {
+            this.db = db; contex = c;
+        }
+
+        public boolean LoadFromFile() {
+            try {
+                File dbfile = contex.getDatabasePath("test.db");
+                InputStream in   = contex.getResources().openRawResource(R.raw.test);
+                OutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
+                ExpandAnimation.CopyFile(in, out);
+
+                db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
+                db.Close();
+                getDatabasePath("test.db").delete();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        protected Boolean doInBackground(String... urls) {
+            return LoadFromFile();
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            return;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            progresDialog.dismiss();
+            return;
+        }
     }
 }
