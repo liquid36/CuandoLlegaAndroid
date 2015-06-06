@@ -124,9 +124,9 @@ public class calleList extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        //boolean v = ((ActionBarActivity) getActivity()).getSupportActionBar().getSelectedTab().getPosition() == 0;
-        //Log.d("calleList", "Happening onPrepareOptionsMenu " + v + "  " );
-        //menu.findItem(R.id.act_search).setVisible(v);
+        boolean v = ((ActionBarActivity) getActivity()).getSupportActionBar().getSelectedTab().getPosition() == 0;
+        Log.d("calleList", "Happening onPrepareOptionsMenu " + v + "  " );
+        menu.findItem(R.id.act_search).setVisible(v);
     }
 
     private calleAdapter.calleAdapterListener events = new calleAdapter.calleAdapterListener() {
