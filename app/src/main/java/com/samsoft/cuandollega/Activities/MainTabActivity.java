@@ -139,6 +139,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     private boolean onBackPressed(FragmentManager fm) {
         if (fm != null) {
+            if (fm.getBackStackEntryCount() == 1) actionBar.setDisplayHomeAsUpEnabled(false);
             if (fm.getBackStackEntryCount() > 0) {
                 fm.popBackStack();
                 return true;

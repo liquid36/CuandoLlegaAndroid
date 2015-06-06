@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -119,6 +121,13 @@ public class calleList extends Fragment {
         });
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        //boolean v = ((ActionBarActivity) getActivity()).getSupportActionBar().getSelectedTab().getPosition() == 0;
+        //Log.d("calleList", "Happening onPrepareOptionsMenu " + v + "  " );
+        //menu.findItem(R.id.act_search).setVisible(v);
+    }
 
     private calleAdapter.calleAdapterListener events = new calleAdapter.calleAdapterListener() {
         @Override
