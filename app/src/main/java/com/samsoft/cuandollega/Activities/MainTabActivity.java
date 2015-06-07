@@ -70,27 +70,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
         int versionCode = BuildConfig.VERSION_CODE ;
         int lastCode = settings.getInteger("Version");
-        Boolean first = settings.getBoolean("FirstLoad");
 
-        if (versionCode != lastCode  && first ) {
+
+        if (versionCode != lastCode) {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
-            /*new DialogAccion(CLMain.this,"Cuando Llega Pro",
-                    "Nuevas novedades!\n\n" +
-                    "Ahora puedes agregar nuevas paradas a tu consulta. Presiona en el signo mas para hacerlo.\n"
-                    + "Actualizamos las paradas de algunos colectivos."
-                    ,"Aceptar","" , null).Show();*/
-        } else if (!first) {
-            CopiarBaseDatos(true);
-            settings.putInteger("Version",versionCode);
-            settings.putBoolean("FirstLoad",true);
-            new DialogAccion(this,"Cuando Llega Movil",
-                    "Bienvenido a Cuando Llega Pro!\n\n" +
-                            "Busqueda por Calle\n" +
-                            "Busqueda por Colectivo\n" +
-                            "Marcadores de paradas\n"+
-                            "Multiples consultas"
-                    ,"Aceptar" ,"" , null).Show();
 
         }
 
@@ -124,6 +108,23 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         });
     }
 
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        Boolean first = settings.getBoolean("FirstLoad");
+        if (!first) {
+            settings.putBoolean("FirstLoad",true);
+            new DialogAccion(MainTabActivity.this,"Cuando Llega Movil",
+                    "Bienvenido a Cuando Llega Movil!\n\n" +
+                            "Busqueda por Calle\n" +
+                            "Busqueda por Colectivo\n" +
+                            "Marcadores de paradas\n"+
+                            "Paradas Cercanas\n"+
+                            "Multiples consultas"
+                    ,"Aceptar" ,"" , null).Show();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
