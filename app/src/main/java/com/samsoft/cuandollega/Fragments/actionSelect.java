@@ -3,6 +3,7 @@ package com.samsoft.cuandollega.Fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class actionSelect extends Fragment {
     private View.OnClickListener click = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Log.d("actionSelect", "Enviando Accion " + (String) view.getTag() + "  " + mListener);
             if (mListener != null) mListener.OnActionClick((String) view.getTag());
         }
     };
