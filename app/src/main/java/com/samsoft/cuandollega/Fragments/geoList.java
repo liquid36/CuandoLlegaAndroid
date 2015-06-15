@@ -70,8 +70,13 @@ public class geoList extends Fragment implements LocationListener{
             settings.putInteger("radio",radius);
         }
         Location l = LocationHelper.getLastLocation(getActivity());
-        lat = l.getLatitude();
-        lng = l.getLongitude();
+        if (l != null) {
+            lat = l.getLatitude();
+            lng = l.getLongitude();
+        } else {
+            lat = 0.0;
+            lng = 0.0;
+        }
 
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);

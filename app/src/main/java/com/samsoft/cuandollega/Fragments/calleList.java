@@ -43,6 +43,7 @@ public class calleList extends Fragment {
         mColectivo = "";
         mName = "";
         mCalle = 0;
+        db = null;
     }
 
 
@@ -55,12 +56,13 @@ public class calleList extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         db = new DataBase(getActivity().getApplicationContext());
+        setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
         madapter = new calleAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>(),events);
@@ -79,15 +81,22 @@ public class calleList extends Fragment {
 
     public void recalcularAdapter(Integer idCalle,String colectivo,String name)
     {
+
+        if (name == null) name = "";
+        if (colectivo == null) colectivo = "";
         mCalle = idCalle;
         mColectivo = colectivo;
         mName = name;
         JSONArray arr;
-        if (idCalle == 0) arr = db.getCalles(colectivo,name);
-        else arr = db.Intersecciones(idCalle,colectivo,name);
+        if (idCalle == 0) arr = db.getCalles(colectivo, name);
+        else arr = db.Intersecciones(idCalle, colectivo, name);
         madapter.clear();
-        for(int i = 0; i < arr.length();i++)
-            try {madapter.add(arr.getJSONObject(i));} catch (Exception e) {e.printStackTrace();}
+        for (int i = 0; i < arr.length(); i++)
+            try {
+                madapter.add(arr.getJSONObject(i));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
     }
 
@@ -115,7 +124,8 @@ public class calleList extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                recalcularAdapter(mCalle,mColectivo,s);
+                if (s != null && db != null)
+                    recalcularAdapter(mCalle,mColectivo,s);
                 return false;
             }
         });

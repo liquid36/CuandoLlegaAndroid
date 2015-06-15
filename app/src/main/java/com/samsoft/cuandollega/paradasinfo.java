@@ -263,15 +263,15 @@ public class paradasinfo extends ActionBarActivity {
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (db.getFavoritos().length() > 0) {
+                        //if (db.getFavoritos().length() > 0) {
                             ImageView img = (ImageView) view;
                             FavDialog d = new FavDialog(paradasinfo.this, db, linea, parada,img);
                             d.Show();
-                        }else {
-                            Action ac =  new lunchFavAction(paradasinfo.this);
-                            DialogAccion da = new DialogAccion(paradasinfo.this,"No hay etiquetas","Quieres crear una nueva?","Crear","Cancelar",ac);
-                            da.Show();
-                        }
+                        //}else {
+                        //    Action ac =  new lunchFavAction(paradasinfo.this);
+                        //    DialogAccion da = new DialogAccion(paradasinfo.this,"No hay etiquetas","Quieres crear una nueva?","Crear","Cancelar",ac);
+                        //    da.Show();
+                        //}
                     }
                 });
 

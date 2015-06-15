@@ -42,6 +42,7 @@ public class favoriteList extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public favoriteList() {
+        showAdd = true;
     }
 
     @Override
