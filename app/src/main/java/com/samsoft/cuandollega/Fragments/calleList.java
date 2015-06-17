@@ -62,7 +62,7 @@ public class calleList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         db = new DataBase(getActivity().getApplicationContext());
-        setHasOptionsMenu(true);
+
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
         madapter = new calleAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>(),events);
@@ -76,28 +76,27 @@ public class calleList extends Fragment {
             t.setText(txtcalle + " Y ...");
             msgCalle.setVisibility(View.VISIBLE);
         }
+        setHasOptionsMenu(true);
         return v;
     }
 
     public void recalcularAdapter(Integer idCalle,String colectivo,String name)
     {
-
-        if (name == null) name = "";
-        if (colectivo == null) colectivo = "";
-        mCalle = idCalle;
-        mColectivo = colectivo;
-        mName = name;
-        JSONArray arr;
-        if (idCalle == 0) arr = db.getCalles(colectivo, name);
-        else arr = db.Intersecciones(idCalle, colectivo, name);
-        madapter.clear();
-        for (int i = 0; i < arr.length(); i++)
-            try {
-                madapter.add(arr.getJSONObject(i));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+        try {
+            mCalle = idCalle;
+            mColectivo = colectivo;
+            mName = name;
+            JSONArray arr;
+            if (idCalle == 0) arr = db.getCalles(colectivo, name);
+            else arr = db.Intersecciones(idCalle, colectivo, name);
+            madapter.clear();
+            for (int i = 0; i < arr.length(); i++)
+                try {
+                    madapter.add(arr.getJSONObject(i));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }catch (Exception e) {e.printStackTrace();}
     }
 
     public void refreshScreen()
