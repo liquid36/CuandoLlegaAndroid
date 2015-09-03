@@ -1,6 +1,5 @@
 package com.samsoft.cuandollega.Activities;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -21,12 +20,11 @@ import android.view.View;
 
 import com.samsoft.cuandollega.BuildConfig;
 import com.samsoft.cuandollega.DataBase;
-import com.samsoft.cuandollega.ExpandAnimation;
-import com.samsoft.cuandollega.Fragments.calleList;
 import com.samsoft.cuandollega.Fragments.controlerSelector;
 import com.samsoft.cuandollega.Fragments.favoriteList;
 import com.samsoft.cuandollega.R;
 import com.samsoft.cuandollega.extra.DialogAccion;
+import com.samsoft.cuandollega.extra.updateDB;
 import com.samsoft.cuandollega.objects.MainTabAdapter;
 import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.objects.stopsGroup;
@@ -39,7 +37,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by sam on 18/05/15.
@@ -154,8 +151,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     public void CopiarBaseDatos(boolean fromRaw)
     {
         progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-        UpdateDB run = new UpdateDB(getApplicationContext(),new DataBase(this));
-        run.execute();
+        updateDB run = new updateDB(getApplicationContext(),new DataBase(this));
+        run.firstLoad(progresDialog);
     }
 
     public void sharedClick(View v)
@@ -279,8 +276,9 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         } catch (Exception e){e.printStackTrace();}
     }
 
+
     // COPIA ARCHIVOS ******************************************************************************
-    private class UpdateDB extends AsyncTask<String, Integer, Boolean> {
+    /*private class UpdateDB extends AsyncTask<String, Integer, Boolean> {
         private Context contex;
         private DataBase db;
         UpdateDB(Context c, DataBase db) {
@@ -292,7 +290,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                 File dbfile = contex.getDatabasePath("test.db");
                 InputStream in   = contex.getResources().openRawResource(R.raw.test);
                 OutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
-                ExpandAnimation.CopyFile(in, out);
+                updateDB.CopyFile(in, out);
 
                 db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
                 db.Close();
@@ -316,5 +314,5 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             progresDialog.dismiss();
             return;
         }
-    }
+    }*/
 }

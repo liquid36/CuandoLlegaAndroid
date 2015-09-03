@@ -1,40 +1,28 @@
 package com.samsoft.cuandollega;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Criteria;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsoft.cuandollega.Activities.MainTabActivity;
 import com.samsoft.cuandollega.extra.DialogAccion;
-import com.samsoft.cuandollega.objects.locationListener;
+import com.samsoft.cuandollega.extra.updateDB;
 import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.objects.stopsGroup;
 import com.samsoft.cuandollega.Activities.favoriteScreen;
@@ -47,7 +35,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -359,7 +346,7 @@ public class CLMain extends ActionBarActivity {
                 if (rawFile) {
                     InputStream in   = contex.getResources().openRawResource(R.raw.test);
                     OutputStream out = new FileOutputStream(dbfile.getAbsolutePath(),false);
-                    ExpandAnimation.CopyFile(in,out);
+                    updateDB.CopyFile(in, out);
                 }
                 db.AttachDB(getDatabasePath("test.db").getAbsolutePath());
                 db.Close();
