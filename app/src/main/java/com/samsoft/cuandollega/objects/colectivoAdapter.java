@@ -20,14 +20,16 @@ public class colectivoAdapter extends ArrayAdapter<JSONObject> {
     private final Context context;
     private colectivoAdapterListener events;
     private List<JSONObject> values;
-
+    private Boolean cl;
     public colectivoAdapter(Context context, List<JSONObject> values,colectivoAdapterListener events) {
         super(context, R.layout.markrow , values);
         this.context = context;
         this.values = values;
         this.events = events;
+        this.cl = true;
     }
 
+    public void setAll(Boolean cl){this.cl = cl;}
     public void setData(List<JSONObject> list)
     {
         values = list;
@@ -55,7 +57,12 @@ public class colectivoAdapter extends ArrayAdapter<JSONObject> {
         }
 
         try {
-            textView.setText(values.get(position).getString("name"));
+            String linea = values.get(position).getString("name");
+            if (this.cl == false) {
+                String bandera = values.get(position).getString("bandera");
+                if (!bandera.equals("UNICO")) linea += " " + values.get(position).getString("bandera");
+            }
+            textView.setText(linea);
         } catch (Exception e) {
             e.printStackTrace();
             textView.setText("Error en el nombre");

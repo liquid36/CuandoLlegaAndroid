@@ -28,10 +28,16 @@ public class colectivoList extends Fragment {
     private colectivoListListener mListener;
     private Integer idCalle;
     private Integer idInterseccion;
+    private Boolean cl;
 
     public colectivoList() {
+        this.cl = true;
         idCalle = 0;
         idInterseccion = 0;
+    }
+
+    public void setAll(Boolean cl) {
+        this.cl = !cl;
     }
 
     public void setCalles(Integer idCalle,Integer idInterseccion)
@@ -54,6 +60,7 @@ public class colectivoList extends Fragment {
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
         madapter = new colectivoAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>(),events);
+        madapter.setAll(this.cl);
         recalcularAdapter(idCalle,idInterseccion);
         lw.setAdapter(madapter);
         return v;
@@ -66,7 +73,7 @@ public class colectivoList extends Fragment {
         JSONObject o = new JSONObject();
 
         if (idCalle != 0 && idInterseccion != 0) arr = db.busInStop(idCalle,idInterseccion);
-        else arr = db.getAllBuses();
+        else arr = db.getAllBuses(cl);
 
         madapter.clear();
         if (idCalle != 0) {
@@ -98,9 +105,11 @@ public class colectivoList extends Fragment {
                 JSONObject o = new JSONObject();
                 try {
                     String c = madapter.getItem(position).getString("linea");
+                    Integer i = madapter.getItem(position).getInt("id");
                     o.put("idCalle",idCalle);
                     o.put("idInter",idInterseccion);
                     o.put("colectivo",c);
+                    o.put("idColectivo",i);
                 }catch (Exception e) {e.printStackTrace();}
                 mListener.OnColectivoClick(o);
             }

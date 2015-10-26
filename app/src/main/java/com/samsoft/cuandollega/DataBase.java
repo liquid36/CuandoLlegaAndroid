@@ -154,6 +154,7 @@ public class DataBase  {
             c = db.rawQuery("SELECT idColectivo, desc,paradas.parada AS parada ,name,colectivos.linea,bandera, idCalle, idInter FROM paradas " +
                     "INNER JOIN colectivos ON idColectivo = colectivos.id " +
                     "INNER JOIN favList ON favList.linea = colectivos.linea AND favList.parada = paradas.parada AND favList.idFav = " + fav +
+                    " WHERE colectivos.cl = 1 " +
                     " GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , new String[]{});
             while (c.moveToNext()) {
                 JSONObject o = new JSONObject();
@@ -260,7 +261,7 @@ public class DataBase  {
                 c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc, frecuencia != 0 as frecuencia FROM paradas " +
                         "INNER JOIN callesF     ON callesF.id = idCalle " +
                         "INNER JOIN colectivos ON colectivos.id = idColectivo " +
-                        "WHERE colectivos.linea = ? AND callesF.desc LIKE '%" + name + "%'" +
+                        "WHERE colectivos.linea = ? AND colectivos.cl = 1 AND callesF.desc LIKE '%" + name + "%'" +
                         " GROUP BY callesF.id  ORDER BY (callesF.frecuencia != 0) DESC,callesF.desc" , new String[] {Colectivo});
 
 
@@ -308,7 +309,7 @@ public class DataBase  {
                 c = db.rawQuery("SELECT callesF.id AS id, callesF.desc AS desc, frecuencia != 0 as frecuencia FROM paradas " +
                             "INNER JOIN callesF ON callesF.id = idInter " +
                             "INNER JOIN colectivos ON colectivos.id = idColectivo " +
-                            "WHERE colectivos.linea = ? AND idCalle = ? AND callesF.desc LIKE '%" + name + "%'" +
+                            "WHERE colectivos.linea = ? AND idCalle = ? AND colectivos.cl = 1 AND callesF.desc LIKE '%" + name + "%'" +
                             "GROUP BY callesF.id ORDER BY (callesF.frecuencia != 0) DESC,callesF.desc" , new String[] {Colectivo, Integer.toString(idCalle)});
             while (c.moveToNext()) {
                 JSONObject o = hydrateCalle(c);
@@ -321,10 +322,16 @@ public class DataBase  {
     }
 
     public JSONArray getAllBuses() {
+        return getAllBuses(true);
+    }
+
+    public JSONArray getAllBuses(Boolean cl) {
         Cursor c = null;
         JSONArray arr = new JSONArray();
+        String where_clasue = "";
+        if (cl) where_clasue = " WHERE cl = 1 GROUP BY name";
         try {
-            c = db.rawQuery("SELECT * FROM colectivos GROUP BY name ORDER BY name" , new String[]{});
+            c = db.rawQuery("SELECT * FROM colectivos " + where_clasue + " ORDER BY name" , new String[]{});
             while (c.moveToNext()) {
                 JSONObject o = hydrateLinea(c);
                 if (o != null) arr.put(o);
@@ -342,7 +349,7 @@ public class DataBase  {
         try {
             c = db.rawQuery("SELECT colectivos.id AS id, colectivos.name AS name,colectivos.bandera AS bandera, colectivos.linea AS linea FROM paradas " +
                     "INNER JOIN colectivos ON paradas.idColectivo = colectivos.id " +
-                    "WHERE paradas.idCalle = ? AND paradas.idInter = ? GROUP BY colectivos.name ORDER BY colectivos.name", new String[]{Integer.toString(idCalle), Integer.toString(idInter)});
+                    "WHERE paradas.idCalle = ? AND paradas.idInter = ? AND colectivos.cl = 1  GROUP BY colectivos.name ORDER BY colectivos.name", new String[]{Integer.toString(idCalle), Integer.toString(idInter)});
             while (c.moveToNext()) {
                 JSONObject o = hydrateLinea(c);
                 if (o != null) arr.put(o);
@@ -365,7 +372,7 @@ public class DataBase  {
                 query = " colectivos.linea = ? AND ";
             }
             c = db.rawQuery("SELECT idColectivo, desc,parada,name,bandera,linea FROM paradas " +
-                    "INNER JOIN colectivos ON idColectivo = colectivos.id WHERE " +
+                    "INNER JOIN colectivos ON idColectivo = colectivos.id WHERE colectivos.cl = 1 AND " +
                     query + " idCalle = ? AND idInter = ?  " +
                     "GROUP BY colectivos.name, paradas.parada ORDER BY colectivos.name " , variables);
             while (c.moveToNext()) {

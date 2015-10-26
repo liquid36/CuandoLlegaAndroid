@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.samsoft.cuandollega.Fragments.calleList;
 import com.samsoft.cuandollega.Fragments.controlerSelector;
 import com.samsoft.cuandollega.Fragments.favoriteList;
+import com.samsoft.cuandollega.Fragments.mapControler;
 
 /**
  * Created by sam on 19/05/15.
@@ -26,6 +27,8 @@ public class MainTabAdapter extends FragmentPagerAdapter {
                 return new controlerSelector();
             case 1:
                 return new favoriteList();
+            case 2:
+                return new mapControler();
         }
 
         return null;
@@ -33,7 +36,7 @@ public class MainTabAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
 }

@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,7 +54,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     private ProgressDialog mProgressDialog;
     private  ProgressDialog progresDialog;
     // Tab titles
-    private String[] tabs = { "Busqueda", "Marcadores"};
+    private String[] tabs = { "Busqueda", "Marcadores","Mapa"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (versionCode != lastCode) {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
-
         }
 
         // Initilization
@@ -177,7 +178,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     @Override
     public void onBackPressed() {
-        if (viewPager.getCurrentItem() == 0) {
+        if (viewPager.getCurrentItem() == 0 || viewPager.getCurrentItem() == 2) {
             FragmentManager fm = getSupportFragmentManager();
             if (onBackPressed(fm)) {
                 return;
@@ -241,7 +242,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-        if (tab.getPosition() != 0) actionBar.setDisplayHomeAsUpEnabled(false);
+        if (tab.getPosition() == 1) actionBar.setDisplayHomeAsUpEnabled(false);
         else actionBar.setDisplayHomeAsUpEnabled(true);
         viewPager.setCurrentItem(tab.getPosition());
     }
