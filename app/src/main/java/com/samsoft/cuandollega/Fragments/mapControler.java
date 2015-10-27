@@ -47,7 +47,7 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
         mapActionSelector actions = new mapActionSelector();
         actions.setListener(this);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(R.id.frame, actions).commit();
+        transaction.replace(R.id.frame, actions).commit();
     }
 
     @Override
@@ -107,6 +107,15 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
         try {
             Integer idColectivo = o.getInt("idColectivo");
 
+            mapViewer list = new mapViewer();
+            Bundle datos = new Bundle();
+            datos.putString(mapViewer.ACTION_KEY,mapViewer.RECORRIDO_ACTION);
+            datos.putInt("idColectivo",idColectivo);
+            list.setArguments(datos);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.frame, list).commit();
+            action = COLECTIVOS_ID;
                 //mLister.allSelect(o);
                 /*Intent i = new Intent(getActivity(), paradasinfo.class);
                 stopsGroup stops [] = new stopsGroup[]{};

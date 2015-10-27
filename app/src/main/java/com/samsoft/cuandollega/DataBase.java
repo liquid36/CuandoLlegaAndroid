@@ -64,6 +64,10 @@ public class DataBase  {
         db.execSQL("CREATE VIEW  IF NOT EXISTS callesF AS " +
                 "SELECT calles.id AS id, desc, ifnull(frecuencia,0) AS frecuencia FROM calles LEFT OUTER JOIN calleFreq ON calles.id = calleFreq.id");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS recorridos (id INTEGER, sentido TEXT , desc TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS rcdreng (id INTEGER, sentido TEXT , num INTEGER, lat TEXT, lon TEXT)");
+
+
     }
     //**********************************************************************************************
     //**********************************************************************************************
@@ -471,6 +475,37 @@ public class DataBase  {
         }
     }
 
+    //**********************************************************************************************
+    //********               RECORRIDOS                                                    *********
+    //**********************************************************************************************
+
+    public JSONArray getRecorrido(Integer idColectivo,String sentido)
+    {
+        Cursor c = null;
+        JSONArray arr = new JSONArray();
+        try {
+            String query =  "SELECT id,sentido,num,lat,lon FROM rcdreng WHERE id = " + idColectivo + " AND sentido = '" + sentido+ "' ORDER BY num";
+            c = db.rawQuery(query, new String[]{});
+            Log.d("DataBase",query + " " + idColectivo + " " + sentido);
+            while (c.moveToNext()) {
+                JSONObject o = new JSONObject();
+                o.put("id", c.getInt(0));
+                o.put("sentido", c.getString(1));
+                o.put("num", c.getInt(2));
+                o.put("lat", c.getDouble(3));
+                o.put("lng", c.getDouble(4));
+                arr.put(o);
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (c != null) c.close();
+        }
+        return arr;
+
+    }
+
+
 
     //**********************************************************************************************
     //********               HYDRATE CURSOR Y JSONS                                        *********
@@ -590,6 +625,9 @@ public class DataBase  {
         db.execSQL("INSERT INTO paradas SELECT * FROM DB1.paradas");
         db.execSQL("INSERT INTO calles SELECT * FROM DB1.calles");
         db.execSQL("INSERT INTO geostreetD SELECT * FROM DB1.geostreetD");
+
+        db.execSQL("INSERT INTO recorridos SELECT * FROM DB1.recorridos");
+        db.execSQL("INSERT INTO rcdreng SELECT * FROM DB1.rcdreng");
 
         db.setTransactionSuccessful();
         db.endTransaction();
