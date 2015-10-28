@@ -52,11 +52,15 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.d("controlerSelector","ME voy a dormir");
-        actionSelect actions = new actionSelect();
-        actions.setListener(this);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame, actions).commit();
+        Fragment ff = getChildFragmentManager().findFragmentByTag("CONTROLLER");
+        if (ff == null) {
+            actionSelect actions = new actionSelect();
+            actions.setListener(this);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame, actions, "CONTROLLER").commit();
+        } else {
+            ((actionSelect) ff).setListener(this);
+        }
     }
 
     @Override

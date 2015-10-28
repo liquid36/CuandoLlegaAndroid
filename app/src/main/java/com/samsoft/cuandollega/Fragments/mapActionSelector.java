@@ -23,6 +23,13 @@ public class mapActionSelector extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(Bundle b)
+    {
+        super.onCreate(b);
+        Log.d("mapActionSelector","CREADO");
+    }
+
     public void setListener(actionSelectListener listener) { mListener = listener;}
 
     @Override

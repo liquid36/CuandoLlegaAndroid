@@ -6,7 +6,12 @@ package com.samsoft.cuandollega.Fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -64,15 +69,22 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     private Polyline lines;
     protected Marker mPosition;
     private DataBase db;
+
+    private Paint mPaint;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         db = new DataBase(getActivity().getApplicationContext());
+
+        //Bitmap fillBMP = BitmapFactory.decodeResource(getActivity().getApplicationContext().getResources(), R.drawable.abc_ic_search);
+        //BitmapShader fillBMPshader = new BitmapShader(fillBMP  , Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+        //this.mPaint.setShader(fillBMPshader);
 
         View v = inflater.inflate(R.layout.map_viewer_fragment, container, false);
         map = (MapView) v.findViewById(R.id.openmapview);
@@ -80,10 +92,6 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         map.setMultiTouchControls(true);
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(getActivity().getApplicationContext(), this);
         map.getOverlays().add(0, mapEventsOverlay);
-
-
-
-
 
         Bundle datos = this.getArguments();
         String action = datos.getString(ACTION_KEY);
@@ -94,8 +102,10 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
                 ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
                 Polyline recorridoOverlay = new Polyline(getActivity().getApplicationContext());
                 recorridoOverlay.setColor(Color.RED);
-
-
+                recorridoOverlay.setWidth(5.0f);
+                //recorridoOverlay.getPaint().setColor(0xFFFFFFFF);
+                //recorridoOverlay.getPaint().setStyle(Paint.Style.FILL);
+                //recorridoOverlay.getPaint().setShader(fillBMPshader);
                 for(int i = 0; i< points.length();i++) {
                     pointsList.add(new GeoPoint(points.getJSONObject(i).getDouble("lat"),points.getJSONObject(i).getDouble("lng")));
                 }
@@ -108,8 +118,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
                 ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
                 Polyline recorridoOverlay = new Polyline(getActivity().getApplicationContext());
                 recorridoOverlay.setColor(Color.BLUE);
-
-
+                recorridoOverlay.setWidth(5.0f);
                 for(int i = 0; i< points.length();i++) {
                     pointsList.add(new GeoPoint(points.getJSONObject(i).getDouble("lat"),points.getJSONObject(i).getDouble("lng")));
                 }

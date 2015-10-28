@@ -18,6 +18,7 @@ import com.samsoft.cuandollega.R;
 import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.paradasinfo;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.json.JSONObject;
 
 /**
@@ -27,7 +28,7 @@ import org.json.JSONObject;
 public class mapControler extends Fragment implements  mapActionSelector.actionSelectListener,
                                                        colectivoList.colectivoListListener
 {
-    private static final String TAG = "mapActionSelector";
+    private static final String TAG = "mapControler";
     private static final String MENU_ID = "MENU";
     private static final String CALLE_ID = "STREET";
     private static final String COLECTIVOS_ID = "BUSES";
@@ -44,14 +45,21 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mapActionSelector actions = new mapActionSelector();
-        actions.setListener(this);
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.frame, actions).commit();
+        Log.d(TAG,"onViewCreated");
+        Fragment ff = getChildFragmentManager().findFragmentByTag("CONTROLLER");
+        if (ff == null) {
+            mapActionSelector actions = new mapActionSelector();
+            actions.setListener(this);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame, actions, "CONTROLLER").commit();
+        } else {
+            ((mapActionSelector) ff).setListener(this);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        Log.d(TAG,"onCreateView");
         View v = inflater.inflate(R.layout.controler_selector, container, false);
         return v;
     }
