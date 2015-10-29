@@ -3,6 +3,7 @@ package com.samsoft.cuandollega.objects;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.samsoft.cuandollega.Fragments.calleList;
 import com.samsoft.cuandollega.Fragments.controlerSelector;
@@ -24,10 +25,13 @@ public class MainTabAdapter extends FragmentPagerAdapter {
 
         switch (index) {
             case 0:
+                Log.d("MainTabAdapter","Creo controlerSelector");
                 return new controlerSelector();
             case 1:
+                Log.d("MainTabAdapter","Creo favoriteList");
                 return new favoriteList();
             case 2:
+                Log.d("MainTabAdapter","Creo mapControler");
                 return new mapControler();
         }
 

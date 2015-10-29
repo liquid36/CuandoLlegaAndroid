@@ -17,6 +17,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -88,6 +90,11 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
 
         View v = inflater.inflate(R.layout.map_viewer_fragment, container, false);
         map = (MapView) v.findViewById(R.id.openmapview);
+        if (Build.VERSION.SDK_INT >= 11) {
+            map.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
+        map.setTilesScaledToDpi(true);
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(getActivity().getApplicationContext(), this);
@@ -97,37 +104,8 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         String action = datos.getString(ACTION_KEY);
         if (action.equals(RECORRIDO_ACTION)) {
             Integer idColectivo = datos.getInt("idColectivo");
-            try {
-                JSONArray points = db.getRecorrido(idColectivo,"ida");
-                ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
-                Polyline recorridoOverlay = new Polyline(getActivity().getApplicationContext());
-                recorridoOverlay.setColor(Color.RED);
-                recorridoOverlay.setWidth(5.0f);
-                //recorridoOverlay.getPaint().setColor(0xFFFFFFFF);
-                //recorridoOverlay.getPaint().setStyle(Paint.Style.FILL);
-                //recorridoOverlay.getPaint().setShader(fillBMPshader);
-                for(int i = 0; i< points.length();i++) {
-                    pointsList.add(new GeoPoint(points.getJSONObject(i).getDouble("lat"),points.getJSONObject(i).getDouble("lng")));
-                }
-                recorridoOverlay.setPoints(pointsList);
-                map.getOverlays().add(recorridoOverlay);
-            } catch (Exception e) {e.printStackTrace();}
-
-            try {
-                JSONArray points = db.getRecorrido(idColectivo,"vuelta");
-                ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
-                Polyline recorridoOverlay = new Polyline(getActivity().getApplicationContext());
-                recorridoOverlay.setColor(Color.BLUE);
-                recorridoOverlay.setWidth(5.0f);
-                for(int i = 0; i< points.length();i++) {
-                    pointsList.add(new GeoPoint(points.getJSONObject(i).getDouble("lat"),points.getJSONObject(i).getDouble("lng")));
-                }
-                recorridoOverlay.setPoints(pointsList);
-                map.getOverlays().add(recorridoOverlay);
-            } catch (Exception e) {e.printStackTrace();}
-
+            searchRecorrido.execute(idColectivo);
         }
-
 
         // Creo el market con la position actual
         GeoPoint p = getLastLocation();
@@ -365,4 +343,62 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         // called when the status of the GPS provider changes
     }
 
+    private AsyncTask<Integer, Integer, Boolean>  searchRecorrido = new AsyncTask<Integer, Integer, Boolean> () {
+        private Polyline recorridoIda;
+        private Polyline recorridoVuelta;
+
+        @Override
+        protected Boolean doInBackground(Integer... idCole) {
+            Integer idColectivo = idCole[0];
+            try {
+                JSONArray points = db.getRecorrido(idColectivo,"ida");
+                ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
+                recorridoIda = new Polyline(getActivity().getApplicationContext());
+                recorridoIda.setColor(Color.argb(100,255,0,0));
+                recorridoIda.setWidth(10.0f);
+                for(int i = 0; i< points.length();i++) {
+                    pointsList.add(new GeoPoint(points.getJSONObject(i).getDouble("lat"),points.getJSONObject(i).getDouble("lng")));
+                }
+                recorridoIda.setPoints(pointsList);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                JSONArray points = db.getRecorrido(idColectivo,"vuelta");
+                ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
+                recorridoVuelta = new Polyline(getActivity().getApplicationContext());
+                recorridoVuelta.setColor(Color.argb(100,0,0,255));
+                recorridoVuelta.setWidth(10.0f);
+                for(int i = 0; i< points.length();i++) {
+                    pointsList.add(new GeoPoint(points.getJSONObject(i).getDouble("lat"),points.getJSONObject(i).getDouble("lng")));
+                }
+                recorridoVuelta.setPoints(pointsList);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            return;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            map.getOverlays().add(recorridoIda);
+            map.getOverlays().add(recorridoVuelta);
+            map.invalidate();
+            return;
+        }
+
+    };
+
 }
+
+
+//recorridoOverlay.getPaint().setColor(0xFFFFFFFF);
+//recorridoOverlay.getPaint().setStyle(Paint.Style.FILL);
+//recorridoOverlay.getPaint().setShader(fillBMPshader);

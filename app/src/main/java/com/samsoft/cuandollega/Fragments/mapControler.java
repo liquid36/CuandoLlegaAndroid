@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.Activities.MainTabActivity;
 import com.samsoft.cuandollega.R;
 import com.samsoft.cuandollega.objects.settingRep;
 import com.samsoft.cuandollega.paradasinfo;
@@ -86,7 +87,7 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
             list.setListener(this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.addToBackStack(null);
-            transaction.replace(R.id.frame, list).commit();
+            transaction.replace(R.id.frame, list,"CELECTIVO").commit();
             action = COLECTIVOS_ID;
 
         } else {
@@ -96,7 +97,6 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
 
     public void HomeActionBarClick() {
         FragmentManager fm = getChildFragmentManager();
-        Log.d("controlerSelector", fm.getClass() +   "Entre " + fm.getBackStackEntryCount() );
         while (fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
         }
@@ -122,8 +122,10 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
             list.setArguments(datos);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.addToBackStack(null);
-            transaction.replace(R.id.frame, list).commit();
+            transaction.replace(R.id.frame, list,"MAPACONTROLER").commit();
             action = COLECTIVOS_ID;
+
+            ((MainTabActivity)getActivity()).setScrollView(false);
                 //mLister.allSelect(o);
                 /*Intent i = new Intent(getActivity(), paradasinfo.class);
                 stopsGroup stops [] = new stopsGroup[]{};

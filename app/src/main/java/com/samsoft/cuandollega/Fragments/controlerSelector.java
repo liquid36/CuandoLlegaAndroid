@@ -48,6 +48,7 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
         idInter = 0;
         colectivo = "";
     }
+
     public void setListener(controlerSelectorListener listener){mLister = listener;}
 
     @Override

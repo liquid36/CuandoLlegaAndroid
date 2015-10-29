@@ -24,6 +24,7 @@ import com.samsoft.cuandollega.DataBase;
 import com.samsoft.cuandollega.Fragments.controlerSelector;
 import com.samsoft.cuandollega.Fragments.favoriteList;
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.Views.CustomTabView;
 import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.extra.updateDB;
 import com.samsoft.cuandollega.objects.MainTabAdapter;
@@ -46,17 +47,16 @@ import java.util.List;
 public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener,
                                                                   favoriteList.favoriteListListener,
                                                                   controlerSelector.controlerSelectorListener {
-    private ViewPager viewPager;
+    private CustomTabView viewPager;
     private MainTabAdapter mAdapter;
     private ActionBar actionBar;
     private stopsGroup stops [];
     private settingRep settings;
-    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
     private ProgressDialog mProgressDialog;
     private  ProgressDialog progresDialog;
     // Tab titles
     private String[] tabs = { "Busqueda", "Marcadores","Mapa"};
-
+    public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,27 +78,25 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         }
 
         // Initilization
-        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (CustomTabView) findViewById(R.id.pager);
         actionBar = getSupportActionBar();
         mAdapter = new MainTabAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mAdapter);
         actionBar.setHomeButtonEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-
+        setScrollView(true);
 
         // Adding Tabs
         for (String tab_name : tabs) {
             actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
         }
 
-
-
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
+                if (position != 2) setScrollView(true);
                 actionBar.setSelectedNavigationItem(position);
             }
 
@@ -184,6 +182,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     @Override
     public void onBackPressed() {
+        setScrollView(true);
         if (viewPager.getCurrentItem() == 0 || viewPager.getCurrentItem() == 2) {
             FragmentManager fm = getSupportFragmentManager();
             if (onBackPressed(fm)) {
@@ -196,6 +195,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     private boolean onBackPressed(FragmentManager fm) {
         if (fm != null) {
             if (fm.getBackStackEntryCount() == 1) actionBar.setDisplayHomeAsUpEnabled(false);
+            Log.d("MainTabActivity","fm.getBackStackEntryCount() = " + fm.getBackStackEntryCount());
             if (fm.getBackStackEntryCount() > 0) {
                 fm.popBackStack();
                 return true;
@@ -206,8 +206,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                     if (frag == null) {
                         continue;
                     }
-                    Log.d("FRAGMENT",frag.getClass().toString());
+                    Log.d("MainTabActivity","Found fragment = " + frag.getClass().toString() + " " + frag.getTag());
+                    Log.d("MainTabActivity","Fragment Tag = " + frag.getTag());
+                    Log.d("MainTabActivity","Fragment Visible = " + frag.isVisible());
                     if (frag.isVisible()) {
+                        Log.d("MainTabActivity","Visito el Fragment");
                         if (onBackPressed(frag.getChildFragmentManager())) {
                             return true;
                         }
@@ -283,6 +286,10 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         } catch (Exception e){e.printStackTrace();}
     }
 
+    public void setScrollView(Boolean can)
+    {
+        viewPager.setPagingEnabled(can);
+    }
 
     // COPIA ARCHIVOS ******************************************************************************
     /*private class UpdateDB extends AsyncTask<String, Integer, Boolean> {
@@ -323,3 +330,14 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         }
     }*/
 }
+
+
+/*
+
+* BaseFragment con controlador de stack y open de base de datos
+* Al volver al Tab Mapa, si mapa esta visible te deja scroolear
+* Detectar el cuando un fragmente esta visible
+* Mapa cargar recorrido en background
+* Mejorar el mapa
+
+ */

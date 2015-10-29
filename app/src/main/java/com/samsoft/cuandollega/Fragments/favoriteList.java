@@ -47,6 +47,7 @@ public class favoriteList extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("favoriteList","onCreate occurs en favoriteList");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         showAdd = getArguments() == null || !getArguments().containsKey(NOT_SHOW_ADD);
