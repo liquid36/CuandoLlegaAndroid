@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
@@ -66,6 +67,7 @@ public class DataBase  {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS recorridos (id INTEGER, sentido TEXT , desc TEXT)");
         db.execSQL("CREATE TABLE IF NOT EXISTS rcdreng (id INTEGER, sentido TEXT , num INTEGER, lat TEXT, lon TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS colec_rcd (id INTEGER, name TEXT, bandera TEXT , linea TEXT)");
 
 
     }
@@ -333,9 +335,11 @@ public class DataBase  {
         Cursor c = null;
         JSONArray arr = new JSONArray();
         String where_clasue = "";
-        if (cl) where_clasue = " WHERE cl = 1 GROUP BY name";
+        if (cl) where_clasue = " WHERE cl = 1 ";
         try {
-            c = db.rawQuery("SELECT * FROM colectivos " + where_clasue + " ORDER BY name" , new String[]{});
+            if (cl) c = db.rawQuery("SELECT * FROM colectivos GROUP BY name ORDER BY name" , new String[]{});
+            else  c = db.rawQuery("SELECT * FROM colec_rcd ORDER BY name" , new String[]{});
+
             while (c.moveToNext()) {
                 JSONObject o = hydrateLinea(c);
                 if (o != null) arr.put(o);
@@ -442,6 +446,49 @@ public class DataBase  {
         return arr;
     }
 
+    public ArrayList<ContentValues> getClosePoint2(String lat,String lng,Integer distance)
+    {
+        double deg2radMultiplier = Math.PI / 180;
+        double latd = Double.parseDouble(lat) * deg2radMultiplier;
+        double lngd = Double.parseDouble(lng) * deg2radMultiplier;
+
+        double sin_lat = Math.sin(latd);
+        double cos_lat = Math.cos(latd);
+        double sin_lng = Math.sin(lngd);
+        double cos_lng = Math.cos(lngd);
+        double dist = Math.cos( ( ((double)distance) /1000.0) / 6371.0);
+
+        Cursor c = null;
+        ArrayList<ContentValues> retVal = new ArrayList<ContentValues>();
+        try {
+            String query =  "SELECT geostreetD.idCalle as idCalle,geostreetD.IdInter as idInter,lat ,lng , sin_lat * " + sin_lat + " + cos_lat * " + cos_lat +
+                    " *  (cos_lng * " + cos_lng + " + sin_lng * "  + sin_lng
+                    + ") AS distancia, c1.desc as name1 , c2.desc as name2 FROM geostreetD "
+                    + " INNER JOIN paradas      ON geostreetD.idCalle = paradas.idCalle AND geostreetD.idInter = paradas.idInter "
+                    + " INNER JOIN calles AS c1 ON  geostreetD.idCalle = c1.id"
+                    + " INNER JOIN calles AS c2 ON  geostreetD.idInter = c2.id"
+                    + " GROUP BY geostreetD.idCalle, geostreetD.idInter HAVING distancia > " + dist + " ORDER BY distancia DESC";
+            c = db.rawQuery(query, new String[]{});
+            ContentValues map;
+            if(c.moveToFirst()) {
+                do {
+                    map = new ContentValues();
+                    //Log.d("DataBase",c.getDouble(4) + "");
+                    DatabaseUtils.cursorRowToContentValues(c, map);
+                    map.put("distancia",c.getDouble(4));
+                    retVal.add(map);
+                } while(c.moveToNext());
+            }
+            //o.put("distancia", Math.acos(c.getDouble(4)) *  6371  * 1000);
+
+        }catch (Exception e) {
+        } finally {
+            if (c != null) c.close();
+        }
+        return retVal;
+    }
+
+
 
     public String colectivosEnEsquina(Integer idCalle, Integer idInter)
     {
@@ -479,30 +526,27 @@ public class DataBase  {
     //********               RECORRIDOS                                                    *********
     //**********************************************************************************************
 
-    public JSONArray getRecorrido(Integer idColectivo,String sentido)
+    public ArrayList<ContentValues> getRecorrido(Integer idColectivo,String sentido)
     {
         Cursor c = null;
-        JSONArray arr = new JSONArray();
+        ArrayList<ContentValues> retVal = new ArrayList<ContentValues>();
         try {
             String query =  "SELECT id,sentido,num,lat,lon FROM rcdreng WHERE id = " + idColectivo + " AND sentido = '" + sentido+ "' ORDER BY num";
             c = db.rawQuery(query, new String[]{});
-            Log.d("DataBase",query + " " + idColectivo + " " + sentido);
-            while (c.moveToNext()) {
-                JSONObject o = new JSONObject();
-                o.put("id", c.getInt(0));
-                o.put("sentido", c.getString(1));
-                o.put("num", c.getInt(2));
-                o.put("lat", c.getDouble(3));
-                o.put("lng", c.getDouble(4));
-                arr.put(o);
+            ContentValues map;
+            if(c.moveToFirst()) {
+                do {
+                    map = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(c, map);
+                    retVal.add(map);
+                } while(c.moveToNext());
             }
         }catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (c != null) c.close();
         }
-        return arr;
-
+        return retVal;
     }
 
 
@@ -605,19 +649,28 @@ public class DataBase  {
         db.beginTransaction();
         db.execSQL("DELETE FROM colectivos");
 
+
         try {
             db.execSQL("ALTER TABLE colectivos ADD COLUMN cl Boolean;");
         }catch (Exception e) {Log.d("DATABASE","CAMBIOS YA APLICADOS");}
 
 
+
+
         db.execSQL("DELETE FROM paradas");
         db.execSQL("DELETE FROM calles");
         db.execSQL("DELETE FROM geostreetD");
+        db.execSQL("DELETE FROM rcdreng");
+        db.execSQL("DELETE FROM recorridos");
 
         db.execSQL("DROP TABLE colectivos");
         db.execSQL("DROP TABLE paradas");
         db.execSQL("DROP TABLE calles");
         db.execSQL("DROP TABLE geostreetD");
+
+        db.execSQL("DROP TABLE colec_rcd");
+        db.execSQL("DROP TABLE recorridos");
+        db.execSQL("DROP TABLE rcdreng");
 
         ArmarBaseDeDatos();
 
@@ -627,6 +680,7 @@ public class DataBase  {
         db.execSQL("INSERT INTO geostreetD SELECT * FROM DB1.geostreetD");
 
         db.execSQL("INSERT INTO recorridos SELECT * FROM DB1.recorridos");
+        db.execSQL("INSERT INTO colec_rcd SELECT * FROM DB1.colec_rcd");
         db.execSQL("INSERT INTO rcdreng SELECT * FROM DB1.rcdreng");
 
         db.setTransactionSuccessful();

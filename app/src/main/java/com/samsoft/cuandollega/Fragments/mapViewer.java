@@ -5,6 +5,7 @@ package com.samsoft.cuandollega.Fragments;
  */
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -104,6 +105,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         String action = datos.getString(ACTION_KEY);
         if (action.equals(RECORRIDO_ACTION)) {
             Integer idColectivo = datos.getInt("idColectivo");
+            GetRecorrido searchRecorrido = new GetRecorrido();
             searchRecorrido.execute(idColectivo);
         }
 
@@ -145,7 +147,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     public void onStart()
     {
         super.onStart();
-        requestPosition();
+        //requestPosition();
     }
 
     @Override
@@ -343,7 +345,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         // called when the status of the GPS provider changes
     }
 
-    private AsyncTask<Integer, Integer, Boolean>  searchRecorrido = new AsyncTask<Integer, Integer, Boolean> () {
+    private class GetRecorrido extends AsyncTask<Integer, Integer, Boolean>  {
         private Polyline recorridoIda;
         private Polyline recorridoVuelta;
 
@@ -351,13 +353,13 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         protected Boolean doInBackground(Integer... idCole) {
             Integer idColectivo = idCole[0];
             try {
-                JSONArray points = db.getRecorrido(idColectivo,"ida");
+                ArrayList<ContentValues> points = db.getRecorrido(idColectivo,"ida");
                 ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
                 recorridoIda = new Polyline(getActivity().getApplicationContext());
                 recorridoIda.setColor(Color.argb(100,255,0,0));
                 recorridoIda.setWidth(10.0f);
-                for(int i = 0; i< points.length();i++) {
-                    pointsList.add(new GeoPoint(points.getJSONObject(i).getDouble("lat"),points.getJSONObject(i).getDouble("lng")));
+                for(int i = 0; i< points.size();i++) {
+                    pointsList.add(new GeoPoint(points.get(i).getAsDouble("lat"),points.get(i).getAsDouble("lon")));
                 }
                 recorridoIda.setPoints(pointsList);
             } catch (Exception e) {
@@ -365,6 +367,20 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
             }
 
             try {
+                ArrayList<ContentValues> points = db.getRecorrido(idColectivo,"vuelta");
+                ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
+                recorridoVuelta = new Polyline(getActivity().getApplicationContext());
+                recorridoVuelta.setColor(Color.argb(100,0,0,255));
+                recorridoVuelta.setWidth(10.0f);
+                for(int i = 0; i< points.size();i++) {
+                    pointsList.add(new GeoPoint(points.get(i).getAsDouble("lat"),points.get(i).getAsDouble("lon")));
+                }
+                recorridoVuelta.setPoints(pointsList);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            /*try {
                 JSONArray points = db.getRecorrido(idColectivo,"vuelta");
                 ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
                 recorridoVuelta = new Polyline(getActivity().getApplicationContext());
@@ -377,7 +393,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
 
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
             return null;

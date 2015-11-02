@@ -1,6 +1,8 @@
 package com.samsoft.cuandollega.objects;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +19,13 @@ import java.util.List;
 /**
  * Created by sam on 29/05/15.
  */
-public class geoAdapter extends ArrayAdapter<JSONObject> {
+public class geoAdapter extends ArrayAdapter<ContentValues> {
     private final Context context;
     private geoAdapterListener events;
-    private List<JSONObject> values;
+    private List<ContentValues> values;
     private DataBase db;
 
-    public geoAdapter(Context context, List<JSONObject> values,DataBase db,geoAdapterListener events) {
+    public geoAdapter(Context context, List<ContentValues> values,DataBase db,geoAdapterListener events) {
         super(context, R.layout.markrow , values);
         this.context = context;
         this.values = values;
@@ -31,7 +33,7 @@ public class geoAdapter extends ArrayAdapter<JSONObject> {
         this.db = db;
     }
 
-    public void setData(List<JSONObject> list)
+    public void setData(List<ContentValues> list)
     {
         values = list;
     }
@@ -41,17 +43,20 @@ public class geoAdapter extends ArrayAdapter<JSONObject> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.georow, parent, false);
         try {
-            JSONObject o = values.get(position);
-            String calle1 = o.getString("name1");
-            String calle2 = o.getString("name2");
-            String colectivos = db.colectivosEnEsquina(o.getInt("idCalle"), o.getInt("idInter"));
+            ContentValues o = values.get(position);
+            String calle1 = o.getAsString("name1");
+            String calle2 = o.getAsString("name2");
+            String colectivos = db.colectivosEnEsquina(o.getAsInteger("idCalle"), o.getAsInteger("idInter"));
 
             TextView txtCalles = (TextView) rowView.findViewById(R.id.txtCalles);
             TextView txtDist = (TextView) rowView.findViewById(R.id.txtDist);
             TextView txtColectivos = (TextView) rowView.findViewById(R.id.txtColectivos);
 
             txtCalles.setText(calle1 + " y " + calle2);
-            txtDist.setText("a " + o.getInt("distancia") + "mts");
+
+            Double distancia = Math.acos(o.getAsDouble("distancia")) *  6371.0  * 1000.0;
+            Log.d("geoAdapter", distancia + " " + o.getAsString("distancia"));
+            txtDist.setText("a " + distancia + "mts");
             txtColectivos.setText(colectivos);
 
             if (events != null) {

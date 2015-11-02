@@ -1,6 +1,7 @@
 package com.samsoft.cuandollega.Fragments;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -80,7 +81,7 @@ public class geoList extends Fragment implements LocationListener{
 
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
-        mAdapter = new geoAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>(),db,events);
+        mAdapter = new geoAdapter(getActivity().getApplicationContext(),new ArrayList<ContentValues>(),db,events);
         recalcularAdapter();
         lw.setAdapter(mAdapter);
 
@@ -109,10 +110,10 @@ public class geoList extends Fragment implements LocationListener{
 
     public void recalcularAdapter()
     {
-        JSONArray arr = db.getClosePoint(lat.toString(),lng.toString(),radius);
+        ArrayList<ContentValues> arr = db.getClosePoint2(lat.toString(),lng.toString(),radius);
         mAdapter.clear();
-        for(int i = 0; i < arr.length();i++)
-            try {mAdapter.add(arr.getJSONObject(i));} catch (Exception e) {e.printStackTrace();}
+        for(int i = 0; i < arr.size();i++)
+            try {mAdapter.add(arr.get(i));} catch (Exception e) {e.printStackTrace();}
     }
 
     public void refreshScreen()
@@ -173,12 +174,12 @@ public class geoList extends Fragment implements LocationListener{
         @Override
         public void OnItemClick(Integer position){
             if (mListener != null){
-                JSONObject o = mAdapter.getItem(position);
+                ContentValues o = mAdapter.getItem(position);
                 JSONObject ret = new JSONObject();
                 try {
                     ret.put("colectivo", "");
-                    ret.put("idCalle", o.getInt("idCalle"));
-                    ret.put("idInter", o.getInt("idInter"));
+                    ret.put("idCalle", o.getAsInteger("idCalle"));
+                    ret.put("idInter", o.getAsInteger("idInter"));
                     mListener.OnGeoClick(ret);
                 } catch (Exception e) {
                     e.printStackTrace();

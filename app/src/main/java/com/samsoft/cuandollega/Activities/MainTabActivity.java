@@ -72,10 +72,10 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         int lastCode = settings.getInteger("Version");
 
 
-        if (versionCode != lastCode) {
+        //if (versionCode != lastCode) {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
-        }
+        //}
 
         // Initilization
         viewPager = (CustomTabView) findViewById(R.id.pager);
@@ -189,6 +189,10 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                 return;
             }
         }
+        /*Fragment f = mAdapter.getItem(viewPager.getCurrentItem());
+        Log.d("MainTabActivity","Clase al vovler atras " +  f.getClass().getName());
+        if (onBackPressed(f.getChildFragmentManager())) return;*/
+
         super.onBackPressed();
     }
 
@@ -206,9 +210,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                     if (frag == null) {
                         continue;
                     }
-                    Log.d("MainTabActivity","Found fragment = " + frag.getClass().toString() + " " + frag.getTag());
-                    Log.d("MainTabActivity","Fragment Tag = " + frag.getTag());
-                    Log.d("MainTabActivity","Fragment Visible = " + frag.isVisible());
+                    Log.d("MainTabActivity",frag.getClass().getName());
                     if (frag.isVisible()) {
                         Log.d("MainTabActivity","Visito el Fragment");
                         if (onBackPressed(frag.getChildFragmentManager())) {
@@ -337,7 +339,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 * BaseFragment con controlador de stack y open de base de datos
 * Al volver al Tab Mapa, si mapa esta visible te deja scroolear
 * Detectar el cuando un fragmente esta visible
-* Mapa cargar recorrido en background
+* Mapa cargar recorrido en background LISTO
 * Mejorar el mapa
 
  */
