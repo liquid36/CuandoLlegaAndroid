@@ -125,7 +125,6 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
         while (fm.getBackStackEntryCount() > 0) {
             fm.popBackStack();
         }
-
     }
 
     public void makeToast(String s) {

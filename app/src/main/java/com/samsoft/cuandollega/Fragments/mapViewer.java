@@ -112,12 +112,16 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         // Creo el market con la position actual
         GeoPoint p = getLastLocation();
         Integer zoom = 13;
-        mPosition = new Marker(map);
-        mPosition.setPosition(getLastLocation());
-        mPosition.setDraggable(false);
-        mPosition.setIcon(getResources().getDrawable(R.drawable.ic_marker_blue));
-        mPosition.setAnchor(0.5f,1f);
-        map.getOverlays().add(mPosition);
+        if (p != null) {
+            mPosition = new Marker(map);
+            mPosition.setPosition(p);
+            mPosition.setDraggable(false);
+            mPosition.setIcon(getResources().getDrawable(R.drawable.ic_marker_blue));
+            mPosition.setAnchor(0.5f, 1f);
+            map.getOverlays().add(mPosition);
+        } else {
+            p = new GeoPoint(-32.939319, -60.661082);
+        }
 
         // Lectura de viejas condiciones
         /*if (savedInstanceState == null) requestPosition();
@@ -138,7 +142,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         }*/
 
         mapCtl = map.getController();
-        mapCtl.setCenter(p);
+        if (p != null) mapCtl.setCenter(p);
         mapCtl.setZoom(zoom);
         return v;
     }
@@ -288,7 +292,9 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
                 }
             }
         }
-        return new GeoPoint(bestResult);
+        if (bestResult != null )
+            return new GeoPoint(bestResult);
+        return null;
     }
 
 

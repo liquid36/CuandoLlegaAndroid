@@ -128,9 +128,10 @@ public class paradasinfo extends ActionBarActivity {
                     }
                     String txtcalle = db.getCalleName(idCalle);
                     String txtinter = db.getCalleName(idInter);
+                    Integer parada = o.getInt("parada");
                     TextView lugar = (TextView) v.findViewById(R.id.txtLugar);
                     //lugar.setVisibility(View.VISIBLE);
-                    lugar.setText(txtcalle + " Y " + txtinter);
+                    lugar.setText(txtcalle + " Y " + txtinter + " (" + parada + ")");
 
                     if (online) {
                         AskTime ask = new AskTime(v, getApplicationContext());
@@ -230,8 +231,7 @@ public class paradasinfo extends ActionBarActivity {
                 parada = stop.getInt("parada");
                 linea = stop.getString("linea");
                 datos = new getTimeArrive(linea,parada).run();
-                if (datos.isEmpty()) return  false;
-                return true;
+                return datos.isEmpty();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -240,9 +240,7 @@ public class paradasinfo extends ActionBarActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... progress) {
-            return;
-        }
+        protected void onProgressUpdate(Integer... progress) { }
 
         @Override
         protected void onPostExecute(Boolean result) {
@@ -279,7 +277,7 @@ public class paradasinfo extends ActionBarActivity {
                 if (fav) img.setImageDrawable(getResources().getDrawable(R.drawable.starfull));
                 else img.setImageDrawable(getResources().getDrawable(R.drawable.star_empty));
             }
-            return;
+
         }
     }
 

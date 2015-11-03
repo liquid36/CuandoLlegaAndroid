@@ -81,7 +81,6 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
         Log.d(TAG, action);
         ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (action.equals(mapActionSelector.RECORRIDO_CLICK)) {
-
             colectivoList list = new colectivoList();
             list.setAll(true);
             list.setListener(this);
@@ -89,7 +88,6 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
             transaction.addToBackStack(null);
             transaction.replace(R.id.frame, list,"CELECTIVO").commit();
             action = COLECTIVOS_ID;
-
         } else {
             makeToast("No se realizo ninguna consulta");
         }
@@ -102,6 +100,8 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
         }
 
     }
+
+
 
     public void makeToast(String s) {
         Context context = getActivity().getApplicationContext();
@@ -122,7 +122,7 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
             list.setArguments(datos);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.addToBackStack(null);
-            transaction.replace(R.id.frame, list,"MAPACONTROLER").commit();
+            transaction.replace(R.id.frame, list,"MAPA").commit();
             action = COLECTIVOS_ID;
 
             ((MainTabActivity)getActivity()).setScrollView(false);

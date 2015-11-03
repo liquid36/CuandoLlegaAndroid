@@ -55,8 +55,7 @@ public class geoAdapter extends ArrayAdapter<ContentValues> {
             txtCalles.setText(calle1 + " y " + calle2);
 
             Double distancia = Math.acos(o.getAsDouble("distancia")) *  6371.0  * 1000.0;
-            Log.d("geoAdapter", distancia + " " + o.getAsString("distancia"));
-            txtDist.setText("a " + distancia + "mts");
+            txtDist.setText("a " + Math.round(distancia) + "mts");
             txtColectivos.setText(colectivos);
 
             if (events != null) {

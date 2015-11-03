@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -72,10 +73,10 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         int lastCode = settings.getInteger("Version");
 
 
-        //if (versionCode != lastCode) {
+        if (versionCode != lastCode) {
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
-        //}
+        }
 
         // Initilization
         viewPager = (CustomTabView) findViewById(R.id.pager);
@@ -96,8 +97,24 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
             @Override
             public void onPageSelected(int position) {
-                if (position != 2) setScrollView(true);
                 actionBar.setSelectedNavigationItem(position);
+                if (position == 2) {
+                    Fragment mapCtl = searchFragment(mAdapter.getItem(position));
+                    if (mapCtl != null) {
+                        Fragment fmap = mapCtl.getChildFragmentManager().findFragmentByTag("MAPA");
+                        if (fmap != null && fmap.isVisible()) setScrollView(false);
+                    }
+                } else {
+                    setScrollView(true);
+                }
+                Fragment Ctl = searchFragment(mAdapter.getItem(position));
+                if (Ctl.getChildFragmentManager().getBackStackEntryCount() == 0) {
+                    actionBar.setDisplayHomeAsUpEnabled(false);
+                } else {
+                    actionBar.setDisplayHomeAsUpEnabled(true);
+                }
+
+
             }
 
             @Override
@@ -108,6 +125,22 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             public void onPageScrollStateChanged(int arg0) {
             }
         });
+    }
+
+
+    public Fragment searchFragment(Fragment f)
+    {
+        FragmentManager fm = getSupportFragmentManager();
+        List<Fragment> fragList = fm.getFragments();
+        if (fragList != null && fragList.size() > 0) {
+            for (Fragment frag : fragList) {
+                if (frag.getClass().getName().equals(f.getClass().getName())) {
+                    return frag;
+                }
+
+            }
+        }
+        return null;
     }
 
     @Override
@@ -144,7 +177,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         } else if (id == R.id.mnuAbout) {
 
         } else if (id == android.R.id.home) {
-            if (viewPager.getCurrentItem() == 0) {
+            if (viewPager.getCurrentItem() == 0 || viewPager.getCurrentItem() == 2) {
                 onRemoveAllBackStack(getSupportFragmentManager());
                 actionBar.setDisplayHomeAsUpEnabled(false);
             }
@@ -189,17 +222,12 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                 return;
             }
         }
-        /*Fragment f = mAdapter.getItem(viewPager.getCurrentItem());
-        Log.d("MainTabActivity","Clase al vovler atras " +  f.getClass().getName());
-        if (onBackPressed(f.getChildFragmentManager())) return;*/
-
         super.onBackPressed();
     }
 
     private boolean onBackPressed(FragmentManager fm) {
         if (fm != null) {
             if (fm.getBackStackEntryCount() == 1) actionBar.setDisplayHomeAsUpEnabled(false);
-            Log.d("MainTabActivity","fm.getBackStackEntryCount() = " + fm.getBackStackEntryCount());
             if (fm.getBackStackEntryCount() > 0) {
                 fm.popBackStack();
                 return true;
@@ -210,9 +238,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                     if (frag == null) {
                         continue;
                     }
-                    Log.d("MainTabActivity",frag.getClass().getName());
                     if (frag.isVisible()) {
-                        Log.d("MainTabActivity","Visito el Fragment");
                         if (onBackPressed(frag.getChildFragmentManager())) {
                             return true;
                         }
