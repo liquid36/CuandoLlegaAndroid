@@ -175,7 +175,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         } else if (id == R.id.mnuShare) {
             sharedClick(null);
         } else if (id == R.id.mnuAbout) {
-
+            Intent i = new Intent(this, About.class);
+            startActivity(i);
         } else if (id == android.R.id.home) {
             if (viewPager.getCurrentItem() == 0 || viewPager.getCurrentItem() == 2) {
                 onRemoveAllBackStack(getSupportFragmentManager());

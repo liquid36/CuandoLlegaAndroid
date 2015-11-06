@@ -19,6 +19,6 @@
         android:id="@+id/mnuAbout"
         android:orderInCategory="300"
         app:showAsAction="never"
-        android:title="Acerca De..."/>
+        android:title="Conocenos"/>
 
 </menu>

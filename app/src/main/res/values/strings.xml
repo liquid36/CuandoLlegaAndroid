@@ -12,5 +12,6 @@
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="title_activity_geo">Paradas Cercanas</string>
+    <string name="title_activity_about">Cuando Llega Movil</string>
 
 </resources>
