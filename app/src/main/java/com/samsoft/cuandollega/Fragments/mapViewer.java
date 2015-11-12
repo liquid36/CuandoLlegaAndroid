@@ -36,10 +36,12 @@ import android.widget.ImageButton;
 
 import com.samsoft.cuandollega.DataBase;
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.objects.Maps.MarkerWithRadius;
 
 import org.json.JSONArray;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.overlays.InfoWindow;
 import org.osmdroid.bonuspack.overlays.MapEventsOverlay;
 import org.osmdroid.bonuspack.overlays.MapEventsReceiver;
 import org.osmdroid.bonuspack.overlays.Marker;
@@ -55,6 +57,7 @@ import java.util.List;
 public class mapViewer extends Fragment implements MapEventsReceiver , LocationListener {
     public static final String ACTION_KEY = "ACTION";
     public static final String RECORRIDO_ACTION = "RECORRIDO";
+    public static final String PARADAS_ACTION = "PARADAS";
 
     public static final String MYPOSITION_LAT_ID = "MYPOSITION_LAT";
     public static final String MYPOSITION_LNG_ID = "MYPOSITION_LNG";
@@ -71,6 +74,8 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     private IMapController mapCtl;
     private Polyline lines;
     protected Marker mPosition;
+    protected MarkerWithRadius mParada;
+    private ArrayList<Marker> mPoints;
     private DataBase db;
 
     private Paint mPaint;
@@ -88,7 +93,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         //Bitmap fillBMP = BitmapFactory.decodeResource(getActivity().getApplicationContext().getResources(), R.drawable.abc_ic_search);
         //BitmapShader fillBMPshader = new BitmapShader(fillBMP  , Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         //this.mPaint.setShader(fillBMPshader);
-
+        mPoints = new ArrayList<Marker>();
         View v = inflater.inflate(R.layout.map_viewer_fragment, container, false);
         map = (MapView) v.findViewById(R.id.openmapview);
         if (Build.VERSION.SDK_INT >= 11) {
@@ -103,24 +108,33 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
 
         Bundle datos = this.getArguments();
         String action = datos.getString(ACTION_KEY);
+        GeoPoint p = getLastLocation();
+        Integer zoom = 13;
+        if (p == null) {
+            p = new GeoPoint(-32.939319, -60.661082);
+        }
+
         if (action.equals(RECORRIDO_ACTION)) {
             Integer idColectivo = datos.getInt("idColectivo");
             GetRecorrido searchRecorrido = new GetRecorrido();
             searchRecorrido.execute(idColectivo);
-        }
 
-        // Creo el market con la position actual
-        GeoPoint p = getLastLocation();
-        Integer zoom = 13;
-        if (p != null) {
             mPosition = new Marker(map);
             mPosition.setPosition(p);
             mPosition.setDraggable(false);
             mPosition.setIcon(getResources().getDrawable(R.drawable.ic_marker_blue));
             mPosition.setAnchor(0.5f, 1f);
             map.getOverlays().add(mPosition);
-        } else {
-            p = new GeoPoint(-32.939319, -60.661082);
+
+        } else if (action.equals(PARADAS_ACTION)) {
+            mParada = new MarkerWithRadius(map);
+            mParada.setPosition(p);
+            mParada.setDraggable(true);
+            mParada.setIcon(getResources().getDrawable(R.drawable.ic_marker_red));
+            mParada.setAnchor(0.5f, 1f);
+            mParada.setRadius(500);
+            map.getOverlays().add(mParada);
+            recalcularParadas(p);
         }
 
         // Lectura de viejas condiciones
@@ -294,7 +308,33 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         }
         if (bestResult != null )
             return new GeoPoint(bestResult);
+
         return null;
+    }
+
+
+    public void recalcularParadas(GeoPoint p)
+    {
+        deleteMarker();
+        ArrayList<ContentValues> paradas  = db.getClosePoint2(Double.toString(p.getLatitude()),Double.toString(p.getLongitude()),mParada.getRadius());
+        for (ContentValues e:paradas) {
+            Marker m = new Marker(map);
+            m.setPosition(new GeoPoint(e.getAsDouble("lat"),e.getAsDouble("lng")));
+            m.setDraggable(false);
+            m.setIcon(getResources().getDrawable(R.drawable.ic_marker_blue));
+            m.setAnchor(0.5f, 1f);
+            map.getOverlays().add(m);
+            mPoints.add(m);
+        }
+        map.invalidate();
+    }
+
+    public void deleteMarker()
+    {
+        for (Marker m:mPoints) {
+            map.getOverlays().remove(m);
+        }
+        mPoints.clear();
     }
 
 
@@ -304,17 +344,10 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
      */
 
     @Override public boolean singleTapConfirmedHelper(GeoPoint p) {
-        /*
-        if (mMarker == null) {
-            mMarker = new MarkerWithRadius(map);
-            mMarker.setPosition(p);
-            mMarker.setDraggable(true);
-            mMarker.setIcon(getResources().getDrawable(R.drawable.ic_marker_red));
-            mMarker.setAnchor(0.5f, 1.0f);
-            map.getOverlays().add(mMarker);
-        } else {
-            mMarker.setPosition(p);
-        }*/
+        if (mParada != null) {
+            mParada.setPosition(p);
+            recalcularParadas(p);
+        }
         map.invalidate();
         return false;
     }
@@ -350,6 +383,8 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // called when the status of the GPS provider changes
     }
+
+
 
     private class GetRecorrido extends AsyncTask<Integer, Integer, Boolean>  {
         private Polyline recorridoIda;

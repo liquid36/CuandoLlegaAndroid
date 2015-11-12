@@ -46,7 +46,6 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.d(TAG,"onViewCreated");
         Fragment ff = getChildFragmentManager().findFragmentByTag("CONTROLLER");
         if (ff == null) {
             mapActionSelector actions = new mapActionSelector();
@@ -60,7 +59,6 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        Log.d(TAG,"onCreateView");
         View v = inflater.inflate(R.layout.controler_selector, container, false);
         return v;
     }
@@ -86,8 +84,17 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
             list.setListener(this);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.addToBackStack(null);
-            transaction.replace(R.id.frame, list,"CELECTIVO").commit();
+            transaction.replace(R.id.frame, list, "CELECTIVO").commit();
             action = COLECTIVOS_ID;
+        } else if (action.equals(mapActionSelector.PARADAS_CLICK)) {
+            mapViewer list = new mapViewer();
+            Bundle datos = new Bundle();
+            datos.putString(mapViewer.ACTION_KEY,mapViewer.PARADAS_ACTION);
+            list.setArguments(datos);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.frame, list,"MAPA").commit();
+            ((MainTabActivity)getActivity()).setScrollView(false);
         } else {
             makeToast("No se realizo ninguna consulta");
         }

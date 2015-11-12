@@ -103,8 +103,6 @@ public class geoList extends Fragment implements LocationListener{
             }
         });
         txtDist.setText(radius + "mts");
-
-
         return v;
     }
 

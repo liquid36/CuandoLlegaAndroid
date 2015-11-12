@@ -55,7 +55,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     private settingRep settings;
     private ProgressDialog mProgressDialog;
     private  ProgressDialog progresDialog;
-    // Tab titles
     private String[] tabs = { "Busqueda", "Marcadores","Mapa"};
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 
@@ -68,10 +67,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (datos != null && datos.containsKey("Stops")) stops = stopsGroup.stringtoStops(datos.getString("Stops"));
         else stops = new stopsGroup[]{};
 
-
         int versionCode = BuildConfig.VERSION_CODE ;
         int lastCode = settings.getInteger("Version");
-
 
         if (versionCode != lastCode) {
             CopiarBaseDatos(true);
@@ -86,7 +83,14 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         actionBar.setHomeButtonEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        setScrollView(true);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("scrollState")) {
+            scrollState = savedInstanceState.getBoolean("scrollState");
+            setScrollView(scrollState);
+        } else{
+            scrollState = true;
+            setScrollView(true);
+        }
 
         // Adding Tabs
         for (String tab_name : tabs) {
@@ -113,8 +117,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                 } else {
                     actionBar.setDisplayHomeAsUpEnabled(true);
                 }
-
-
             }
 
             @Override
@@ -127,6 +129,12 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         });
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        Log.d("MainTabActivity","Grabo en Bundle " + scrollState);
+        savedInstanceState.putBoolean("scrollState", scrollState);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
     public Fragment searchFragment(Fragment f)
     {
@@ -276,6 +284,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        Log.d("MainTabActivity","Ocrurre onTabReselected");
     }
 
     @Override
@@ -287,6 +296,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        Log.d("MainTabActivity","Ocrurre onTabUnselected");
     }
 
 
@@ -315,9 +325,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         } catch (Exception e){e.printStackTrace();}
     }
 
+    private Boolean scrollState = true;
     public void setScrollView(Boolean can)
     {
-        viewPager.setPagingEnabled(can);
+       viewPager.setPagingEnabled(can);
+       scrollState = can;
     }
 
     // COPIA ARCHIVOS ******************************************************************************
@@ -364,9 +376,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 /*
 
 * BaseFragment con controlador de stack y open de base de datos
-* Al volver al Tab Mapa, si mapa esta visible te deja scroolear
-* Detectar el cuando un fragmente esta visible
-* Mapa cargar recorrido en background LISTO
-* Mejorar el mapa
-
- */
+*
+*
+*
+*
+*/
