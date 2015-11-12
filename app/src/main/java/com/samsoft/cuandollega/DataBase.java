@@ -404,49 +404,7 @@ public class DataBase  {
     //**********      GEOLOCALIZACION                                                    ***********
     //**********************************************************************************************
 
-    public JSONArray getClosePoint(String lat,String lng,Integer distance)
-    {
-        double deg2radMultiplier = Math.PI / 180;
-        double latd = Double.parseDouble(lat) * deg2radMultiplier;
-        double lngd = Double.parseDouble(lng) * deg2radMultiplier;
-
-        double sin_lat = Math.sin(latd);
-        double cos_lat = Math.cos(latd);
-        double sin_lng = Math.sin(lngd);
-        double cos_lng = Math.cos(lngd);
-        double dist = Math.cos( ( ((double)distance) /1000.0) / 6371.0);
-
-        Cursor c = null;
-        JSONArray arr = new JSONArray();
-        try {
-            String query =  "SELECT geostreetD.idCalle,geostreetD.IdInter,lat,lng, sin_lat * " + sin_lat + " + cos_lat * " + cos_lat +
-                    " *  (cos_lng * " + cos_lng + " + sin_lng * "  + sin_lng
-                    + ") AS distance, c1.desc , c2.desc FROM geostreetD "
-                    + " INNER JOIN paradas      ON geostreetD.idCalle = paradas.idCalle AND geostreetD.idInter = paradas.idInter "
-                    + " INNER JOIN calles AS c1 ON  geostreetD.idCalle = c1.id"
-                    + " INNER JOIN calles AS c2 ON  geostreetD.idInter = c2.id"
-                    + " GROUP BY geostreetD.idCalle, geostreetD.idInter HAVING distance > " + dist + " ORDER BY DISTANCE DESC";
-            c = db.rawQuery(query, new String[]{});
-
-            while (c.moveToNext()) {
-                JSONObject o = new JSONObject();
-                o.put("idCalle", c.getInt(0));
-                o.put("idInter", c.getInt(1));
-                o.put("lat", c.getDouble(2));
-                o.put("lng", c.getDouble(3));
-                o.put("distancia", Math.acos(c.getDouble(4)) *  6371  * 1000);
-                o.put("name1",c.getString(5));
-                o.put("name2",c.getString(6));
-                arr.put(o);
-            }
-        }catch (Exception e) {
-        } finally {
-            if (c != null) c.close();
-        }
-        return arr;
-    }
-
-    public ArrayList<ContentValues> getClosePoint2(String lat,String lng,Integer distance)
+    public ArrayList<ContentValues> getClosePoint(String lat,String lng,Integer distance)
     {
         double deg2radMultiplier = Math.PI / 180;
         double latd = Double.parseDouble(lat) * deg2radMultiplier;
@@ -473,7 +431,6 @@ public class DataBase  {
             if(c.moveToFirst()) {
                 do {
                     map = new ContentValues();
-                    //Log.d("DataBase",c.getDouble(4) + "");
                     DatabaseUtils.cursorRowToContentValues(c, map);
                     map.put("distancia",c.getDouble(4));
                     retVal.add(map);

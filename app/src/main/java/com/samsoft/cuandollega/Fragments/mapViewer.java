@@ -316,7 +316,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     public void recalcularParadas(GeoPoint p)
     {
         deleteMarker();
-        ArrayList<ContentValues> paradas  = db.getClosePoint2(Double.toString(p.getLatitude()),Double.toString(p.getLongitude()),mParada.getRadius());
+        ArrayList<ContentValues> paradas  = db.getClosePoint(Double.toString(p.getLatitude()),Double.toString(p.getLongitude()),mParada.getRadius());
         for (ContentValues e:paradas) {
             Marker m = new Marker(map);
             m.setPosition(new GeoPoint(e.getAsDouble("lat"),e.getAsDouble("lng")));

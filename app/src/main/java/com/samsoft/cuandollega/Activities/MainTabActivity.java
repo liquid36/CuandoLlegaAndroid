@@ -131,7 +131,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        Log.d("MainTabActivity","Grabo en Bundle " + scrollState);
         savedInstanceState.putBoolean("scrollState", scrollState);
         super.onSaveInstanceState(savedInstanceState);
     }
