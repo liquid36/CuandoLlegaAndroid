@@ -10,9 +10,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -131,8 +133,8 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
             mParada = new MarkerWithRadius(map);
             mParada.setPosition(p);
             mParada.setDraggable(true);
-            mParada.setIcon(getResources().getDrawable(R.drawable.ic_marker_red));
-            mParada.setAnchor(0.5f, 1f);
+            mParada.setIcon(getResources().getDrawable(R.drawable.ic_location2));
+            //mParada.setAnchor(0.5f, 1f);
             mParada.setRadius(500);
             mParada.setOnMarkerDragListener(dragEvents);
             map.getOverlays().add(mParada);
@@ -326,6 +328,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
             m.setDraggable(false);
             m.setIcon(getResources().getDrawable(R.drawable.ic_marker_blue));
             m.setAnchor(0.5f, 1f);
+            m.setRelatedObject(e);
             m.setOnMarkerClickListener(clickEvents);
             map.getOverlays().add(1,m);
             mPoints.add(m);
@@ -341,6 +344,20 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         mPoints.clear();
     }
 
+    public BitmapDrawable writeOnDrawable(int drawableId, String text){
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableId).copy(Bitmap.Config.ARGB_8888, true);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(20);
+
+        Canvas canvas = new Canvas(bm);
+        canvas.drawText(text, 0, bm.getHeight()/2, paint);
+
+        return new BitmapDrawable(bm);
+    }
 
     /*
         MAP EVENTS HANDLER
@@ -392,9 +409,9 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     private Marker.OnMarkerClickListener clickEvents = new Marker.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker, MapView mapView) {
-            colectivoDialog d = new colectivoDialog(getActivity(),db);
+            colectivoDialog d = new colectivoDialog(getActivity(),db,(ContentValues) marker.getRelatedObject());
             d.show();
-            return false;
+            return true;
         }
     };
 
