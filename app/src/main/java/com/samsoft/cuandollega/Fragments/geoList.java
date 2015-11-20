@@ -103,14 +103,12 @@ public class geoList extends Fragment implements LocationListener{
             }
         });
         txtDist.setText(radius + "mts");
-
-
         return v;
     }
 
     public void recalcularAdapter()
     {
-        ArrayList<ContentValues> arr = db.getClosePoint2(lat.toString(),lng.toString(),radius);
+        ArrayList<ContentValues> arr = db.getClosePoint(lat.toString(),lng.toString(),radius);
         mAdapter.clear();
         for(int i = 0; i < arr.size();i++)
             try {mAdapter.add(arr.get(i));} catch (Exception e) {e.printStackTrace();}

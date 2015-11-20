@@ -231,7 +231,7 @@ public class paradasinfo extends ActionBarActivity {
                 parada = stop.getInt("parada");
                 linea = stop.getString("linea");
                 datos = new getTimeArrive(linea,parada).run();
-                return datos.isEmpty();
+                return !datos.isEmpty();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -244,6 +244,7 @@ public class paradasinfo extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
+            Log.d("paradaInfo","Resultado: " + result);
             if (result) {
                 LinearLayout list = (LinearLayout) v;
                 for (int i = 0; i < datos.size(); i++) {
@@ -257,7 +258,7 @@ public class paradasinfo extends ActionBarActivity {
                 ImageView img = (ImageView) list.findViewById(R.id.actionIcon);
                 bar.setVisibility(View.GONE);
                 img.setVisibility(View.VISIBLE);
-
+                Log.d("paradaInfo",bar + " " + img);
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

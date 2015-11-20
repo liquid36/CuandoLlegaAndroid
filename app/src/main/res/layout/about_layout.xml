@@ -3,39 +3,82 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/colectivo2"
-    android:paddingTop="20dp"
     android:paddingLeft="10dp">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/logob"
-        android:scaleType="fitXY" />
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView2" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dudas  y/o  comentarios:"
-        android:textSize="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="cuandollega@movilizame.com.ar"
-        android:layout_gravity="center_horizontal"
-        android:autoLink="email"
-        android:phoneNumber="true" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dona unos pesos y permití que este proyecto siga creciendo:"
-        android:textSize="20dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="10dp"
-        android:id="@+id/textView2" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/logob"
+                android:id="@+id/imgMov" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dudas  y/o  comentarios:"
+                android:textSize="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="cuandollega@movilizame.com.ar"
+                android:layout_gravity="center_horizontal"
+                android:autoLink="email"
+                android:phoneNumber="true"
+                android:paddingBottom="10dp"
+                android:id="@+id/txtmail" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Doná unos pesos y permití que este proyecto siga creciendo:"
+                android:textSize="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:id="@+id/textView2"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="La idea de Cuando Llega Movil arrancó como un proyecto universitario; la meta principal era reorganizar los datos proveidos por la Municipalidad para poder realizar una búsqueda por calle, y no solo por colectivo."
+                android:id="@+id/textView3"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Esta aplicación es 100% al truista. Está desarrollada por un ciudadano de Rosario, que frecuenta la ciudad como cualquier otra habitante. Esto nos permite, con el uso diario de nuestra aplicación, ver las necesidades que los usuarios de colectivos tienen."
+                android:id="@+id/textView4"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="No pretendemos ser una copia directa al servicio web que ofrece la Municipalidad, sino que con esfuerzo, paciencia y voluntad pretendemos ir agregando nuevas funcionalidades que complementen el servicio. "
+                android:id="@+id/textView5"
+                android:paddingTop="10dp"
+                android:paddingBottom="50dp"
+                android:paddingRight="10dp" />
+            </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

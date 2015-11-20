@@ -188,7 +188,7 @@ public class geoActivity extends ActionBarActivity implements LocationListener {
     {
         if (lat == 0.0 && lng == 0.0) return;
         listItems.removeAllViews();
-        JSONArray arr = db.getClosePoint(lat.toString(),lng.toString(),d + Math.round(precision));
+        JSONArray arr = new JSONArray()/*db.getClosePoint(lat.toString(),lng.toString(),d + Math.round(precision))*/;
         for(int i = 0;i < arr.length();i++) {
             try {
                 final JSONObject o = arr.getJSONObject(i);

@@ -17,6 +17,7 @@ import com.samsoft.cuandollega.R;
  */
 public class mapActionSelector extends Fragment {
     public static final String RECORRIDO_CLICK = "RECORRIDOS_CLICK";
+    public static final String PARADAS_CLICK = "PARADAS_CLICK";
     public actionSelectListener mListener;
 
     public mapActionSelector() {
@@ -27,7 +28,6 @@ public class mapActionSelector extends Fragment {
     public void onCreate(Bundle b)
     {
         super.onCreate(b);
-        Log.d("mapActionSelector","CREADO");
     }
 
     public void setListener(actionSelectListener listener) { mListener = listener;}
@@ -36,8 +36,11 @@ public class mapActionSelector extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.map_action_selector, container, false);
         LinearLayout btn_recorrido = (LinearLayout) v.findViewById(R.id.btn_recorridos);
+        LinearLayout btn_geo = (LinearLayout) v.findViewById(R.id.btn_parada_cercana);
         btn_recorrido.setTag(RECORRIDO_CLICK);
+        btn_geo.setTag(PARADAS_CLICK);
         btn_recorrido.setOnClickListener(click);
+        btn_geo.setOnClickListener(click);
 
         return v;
     }
@@ -45,7 +48,6 @@ public class mapActionSelector extends Fragment {
     private View.OnClickListener click = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d("actionSelect", "Enviando Accion " + (String) view.getTag() + "  " + mListener);
             if (mListener != null) mListener.OnActionClick((String) view.getTag());
         }
     };
