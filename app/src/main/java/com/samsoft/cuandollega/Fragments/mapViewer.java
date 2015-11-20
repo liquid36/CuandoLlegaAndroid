@@ -36,6 +36,7 @@ import android.widget.ImageButton;
 
 import com.samsoft.cuandollega.DataBase;
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.extra.colectivoDialog;
 import com.samsoft.cuandollega.objects.Maps.MarkerWithRadius;
 
 import org.json.JSONArray;
@@ -133,6 +134,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
             mParada.setIcon(getResources().getDrawable(R.drawable.ic_marker_red));
             mParada.setAnchor(0.5f, 1f);
             mParada.setRadius(500);
+            mParada.setOnMarkerDragListener(dragEvents);
             map.getOverlays().add(mParada);
             recalcularParadas(p);
         }
@@ -316,14 +318,16 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     public void recalcularParadas(GeoPoint p)
     {
         deleteMarker();
-        ArrayList<ContentValues> paradas  = db.getClosePoint(Double.toString(p.getLatitude()),Double.toString(p.getLongitude()),mParada.getRadius());
+        ArrayList<ContentValues> paradas  = db.getNearBuses(Double.toString(p.getLatitude()), Double.toString(p.getLongitude()), mParada.getRadius());
+
         for (ContentValues e:paradas) {
             Marker m = new Marker(map);
             m.setPosition(new GeoPoint(e.getAsDouble("lat"),e.getAsDouble("lng")));
             m.setDraggable(false);
             m.setIcon(getResources().getDrawable(R.drawable.ic_marker_blue));
             m.setAnchor(0.5f, 1f);
-            map.getOverlays().add(m);
+            m.setOnMarkerClickListener(clickEvents);
+            map.getOverlays().add(1,m);
             mPoints.add(m);
         }
         map.invalidate();
@@ -384,6 +388,32 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         // called when the status of the GPS provider changes
     }
 
+
+    private Marker.OnMarkerClickListener clickEvents = new Marker.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker, MapView mapView) {
+            colectivoDialog d = new colectivoDialog(getActivity(),db);
+            d.show();
+            return false;
+        }
+    };
+
+    private MarkerWithRadius.OnMarkerDragListener dragEvents = new MarkerWithRadius.OnMarkerDragListener() {
+        @Override
+        public void onMarkerRadius(MarkerWithRadius marker) {
+
+        }
+
+        @Override
+        public void onMarkerRadiusEnd(MarkerWithRadius marker) {
+            recalcularParadas(marker.getPosition());
+        }
+
+        @Override
+        public void onMarkerRadiusStart(MarkerWithRadius marker) {
+
+        }
+    };
 
 
     private class GetRecorrido extends AsyncTask<Integer, Integer, Boolean>  {
