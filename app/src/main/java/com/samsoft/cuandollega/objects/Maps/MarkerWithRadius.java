@@ -192,7 +192,7 @@ public class MarkerWithRadius extends Overlay {
         mIcon.setAlpha((int)(mAlpha*255));
 
         float rotationOnScreen = (mFlat ? -mBearing : mapView.getMapOrientation()-mBearing);
-        Log.d("MARKER", "offsetX = " + mAnchorU + "offsetY = " +mAnchorV);
+
         drawAt(canvas, mIcon, mPositionPixels.x , mPositionPixels.y , false, rotationOnScreen);
 
         final float radius = mapView.getProjection().metersToEquatorPixels(mRadius);

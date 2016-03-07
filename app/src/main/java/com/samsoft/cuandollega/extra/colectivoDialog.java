@@ -39,7 +39,7 @@ public class colectivoDialog {
                 String colectivo = "";
                 if (item > 0) {
                     try {
-                        arr.getJSONObject(item - 1).getString("linea");
+                        colectivo = arr.getJSONObject(item - 1).getString("linea");
                     } catch (Exception e) {e.printStackTrace();}
                 }
                 stopsGroup r[] = stopsGroup.addItem(new stopsGroup[]{},new stopsGroup(idCalle,idInter,colectivo,0));

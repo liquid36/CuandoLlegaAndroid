@@ -227,9 +227,23 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (viewPager.getCurrentItem() == 0 || viewPager.getCurrentItem() == 2) {
             FragmentManager fm = getSupportFragmentManager();
             if (onBackPressed(fm)) {
+
+                if (viewPager.getCurrentItem() == 2) {
+                    Fragment mapCtl = searchFragment(mAdapter.getItem(viewPager.getCurrentItem()));
+
+                    if (mapCtl != null) {
+                        Fragment fmap = mapCtl.getChildFragmentManager().findFragmentByTag("MAPA");
+                        Log.d("MainTabActivity","Econtre el fragment " + fmap.isVisible());
+                        if (fmap != null && fmap.isVisible()) {
+                            setScrollView(false);
+                        }
+                    }
+                }
                 return;
+
             }
         }
+
         super.onBackPressed();
     }
 
@@ -237,7 +251,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (fm != null) {
             if (fm.getBackStackEntryCount() == 1) actionBar.setDisplayHomeAsUpEnabled(false);
             if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
+                fm.popBackStackImmediate();
+                //fm.popBackStack();
                 return true;
             }
             List<Fragment> fragList = fm.getFragments();

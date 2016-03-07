@@ -43,6 +43,11 @@ import java.util.List;
  * Created by sam on 29/05/15.
  */
 public class geoList extends Fragment implements LocationListener{
+    public static final String ACTION_KEY = "ACTION";
+    public static final String LAT_KEY = "LATITUD";
+    public static final String LNG_KEY = "LONGITUD";
+    public static final String RADIO_KEY = "RADIO";
+    public static final String FIXED_ACTION = "FIX_POINT";
     private DataBase db;
     private geoAdapter mAdapter;
     private geoListListener mListener;
@@ -51,6 +56,9 @@ public class geoList extends Fragment implements LocationListener{
     private TextView txtDist;
     private Integer precision;
     Integer radius;
+
+    private String action;
+
     public geoList()
     {
         lat = null;
@@ -63,21 +71,36 @@ public class geoList extends Fragment implements LocationListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         db = new DataBase(getActivity().getApplicationContext());
+
         settings = new settingRep(getActivity().getApplicationContext());
 
-        radius = settings.getInteger("radio");
-        if (radius == 0) {
-            radius = 300;
-            settings.putInteger("radio",radius);
-        }
-        Location l = LocationHelper.getLastLocation(getActivity());
-        if (l != null) {
-            lat = l.getLatitude();
-            lng = l.getLongitude();
+        action = "";
+        Bundle datos = this.getArguments();
+        if (datos != null && datos.containsKey(ACTION_KEY)) {
+
+            action = datos.getString(ACTION_KEY);
+            radius = datos.getInt(RADIO_KEY);
+            lat = datos.getDouble(LAT_KEY);
+            lng = datos.getDouble(LNG_KEY);
+
         } else {
-            lat = 0.0;
-            lng = 0.0;
+
+            radius = settings.getInteger("radio");
+            if (radius == 0) {
+                radius = 300;
+                settings.putInteger("radio", radius);
+            }
+            Location l = LocationHelper.getLastLocation(getActivity());
+            if (l != null) {
+                lat = l.getLatitude();
+                lng = l.getLongitude();
+            } else {
+                lat = 0.0;
+                lng = 0.0;
+            }
+
         }
+
 
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
@@ -145,8 +168,11 @@ public class geoList extends Fragment implements LocationListener{
     private MenuItem progressItem;
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_geo, menu);
-        progressItem = menu.findItem(R.id.act_refresh);
+        if (action.isEmpty()) {
+            inflater.inflate(R.menu.menu_geo, menu);
+            progressItem = menu.findItem(R.id.act_refresh);
+        }
+
     }
 
 
@@ -164,8 +190,8 @@ public class geoList extends Fragment implements LocationListener{
     public void onPrepareOptionsMenu(Menu menu)
     {
         boolean v = ((ActionBarActivity) getActivity()).getSupportActionBar().getSelectedTab().getPosition() == 0;
-        Log.d("calleList", "Happening onPrepareOptionsMenu " + v + "  " );
-        menu.findItem(R.id.act_refresh).setVisible(v);
+        if (action.isEmpty())
+            menu.findItem(R.id.act_refresh).setVisible(v);
     }
 
     private geoAdapter.geoAdapterListener events = new geoAdapter.geoAdapterListener() {

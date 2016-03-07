@@ -1,6 +1,7 @@
 package com.samsoft.cuandollega.Fragments;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +28,8 @@ import org.json.JSONObject;
  */
 
 public class mapControler extends Fragment implements  mapActionSelector.actionSelectListener,
-                                                       colectivoList.colectivoListListener
+                                                       colectivoList.colectivoListListener,
+                                                       mapViewer.pointSelectedListener
 {
     private static final String TAG = "mapControler";
     private static final String MENU_ID = "MENU";
@@ -88,6 +90,7 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
             action = COLECTIVOS_ID;
         } else if (action.equals(mapActionSelector.PARADAS_CLICK)) {
             mapViewer list = new mapViewer();
+            list.setListener(this);
             Bundle datos = new Bundle();
             datos.putString(mapViewer.ACTION_KEY,mapViewer.PARADAS_ACTION);
             list.setArguments(datos);
@@ -143,6 +146,23 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
 
         } catch (Exception e) {e.printStackTrace();}
     }
+
+    public void OnPointSelected(Double lat,Double lng, Integer radius) {
+        geoList list = new geoList();
+        Bundle datos = new Bundle();
+        datos.putString(geoList.ACTION_KEY,geoList.FIXED_ACTION);
+        datos.putInt(geoList.RADIO_KEY,radius);
+        datos.putDouble(geoList.LAT_KEY,lat);
+        datos.putDouble(geoList.LNG_KEY,lng);
+        list.setArguments(datos);
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.frame, list).commit();
+        action = COLECTIVOS_ID;
+
+        ((MainTabActivity)getActivity()).setScrollView(false);
+    }
+
 
     public interface controlerSelectorListener {
         public void allSelect(JSONObject o);
