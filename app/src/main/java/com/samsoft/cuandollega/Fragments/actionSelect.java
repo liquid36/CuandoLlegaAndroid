@@ -20,6 +20,7 @@ public class actionSelect extends Fragment {
     public static final String COLECTIVO_CLICK = "COLECTIVO_CLICK";
     public static final String RECIENTE_CLICK = "RECIENTE_CLICK";
     public static final String CLOSE_CLICK = "CLOSE_CLICK";
+    public static final String TENGO_CLICK = "TENGO_CLICK";
     public actionSelectListener mListener;
 
     public actionSelect() {
@@ -35,14 +36,17 @@ public class actionSelect extends Fragment {
         LinearLayout btn_colectivo = (LinearLayout) v.findViewById(R.id.btn_colectivo);
         LinearLayout btn_reciente = (LinearLayout) v.findViewById(R.id.btn_reciente);
         LinearLayout btn_close = (LinearLayout) v.findViewById(R.id.btn_close);
+        LinearLayout btn_tengo = (LinearLayout) v.findViewById(R.id.btn_tengo);
         btn_calle.setTag(CALLE_CLICK);
         btn_close.setTag(CLOSE_CLICK);
         btn_colectivo.setTag(COLECTIVO_CLICK);
         btn_reciente.setTag(RECIENTE_CLICK);
+        btn_tengo.setTag(TENGO_CLICK);
         btn_calle.setOnClickListener(click);
         btn_colectivo.setOnClickListener(click);
         btn_reciente.setOnClickListener(click);
         btn_close.setOnClickListener(click);
+        btn_tengo.setOnClickListener(click);
         return v;
     }
 

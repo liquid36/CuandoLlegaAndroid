@@ -115,6 +115,11 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
             } else {
                 makeToast("No se realizo ninguna consulta");
             }
+        } else if (action.equals(actionSelect.TENGO_CLICK)) {
+            CuantoTengo list = new CuantoTengo();
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.frame, list).commit();
         }
 
     }
