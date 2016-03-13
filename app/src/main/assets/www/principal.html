@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script type="text/javascript" src="Scripts/jquery-1.7.1.js"></script>
+<script src="Scripts/aes.js"></script>
+<script src="Scripts/mode-cfb-min.js"></script>
+<script src="Scripts/pad-nopadding-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="cordova-2.9.1.js"></script>
+<script type="text/javascript" src="Scripts/jquery.mobile-1.3.2.min.js"></script>
+<script src="Scripts/jquery-1.6.1.min.js"></script>
+<script src="Scripts/jquery-ui.min.js"></script>
+<script type="text/javascript" src="Scripts/dataView.js"></script>
+<script type="text/javascript" src="Scripts/ws.js"></script>
+
+<link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/style1.css">
+
+
+<title></title>
+      
+      
+      
+<script>
+    
+function exitAppPopup() {
+navigator.notification.confirm(
+'¿Esta seguro que desea salir?'
+, function(button) {
+if (button == 2) {
+navigator.app.exitApp();
+} 
+}
+, 'Salir', 'NO,SI');  
+return false;
+}
+	
+function isNumber(evt) {
+evt = (evt) ? evt : window.event;
+var charCode = (evt.which) ? evt.which : evt.keyCode;
+if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+return false;
+}
+return true;
+}	
+
+function makeUppercase() {
+document.form1.txtDni.value = document.form1.txtDni.value.toUpperCase();
+
+
+}
+
+</script>
+</head>
+
+<body>
+<div data-role="page" id="page1">
+		<div id="header" data-theme="b" data-position="fixed" data-tap-toggle="false"  data-role="header"> <a onClick="exitAppPopup(); return false;" data-role="button" data-icon="delete">Salir&nbsp;</a>
+        <h3>SALDO Y<br>MOVIMIENTOS </h3><a href="ayuda.html" data-role="button" data-icon="forward">Ayuda</a>
+		</div>
+        
+<form id="form1" name="form1" runat="server">
+<div>
+   <div data-role="content" id="prueba" >
+   <div class="txtDni" data-role="fieldcontain"><label for="txtDni"> <br> Documento: </label> <input name="txtDni" id="txtDni" placeholder="Ingrese su documento" value="" type="text" onKeyUp="makeUppercase()"></div>
+   <div class="txtNumTajeta" data-role="fieldcontain"> <label for="txtNumTajeta"> Número de tarjeta: </label> <input name="password" id="txtNumTajeta" 
+   placeholder="Ingrese el nro. de su tarjeta" value="" type="tel"  onKeyPress="return isNumber(event)">
+			 
+   <div style="width: 45px; float: left; text-align: left;padding-top:35px;"><input type="checkbox"  name="Recordar" id="chkRecordar"/></div>
+   <div style="width: 50px;float: left; text-align: left;padding-top:33px;font-size:11px; font-family: sans-serif;font-color:grey ">Recordar</div>
+   </div></div><div></div>
+            
+   <div id="divBtn" style="width: 200px; text-color:white; margin-left: auto; margin-right: auto; text-align: center;  color: #FFF;">
+   <input type="button" id="btnGetInfo" value="CONSULTAR"></div><br>
+</form>
+
+   <div id="nrotarjeta"  class="hidden" style=" font-family: sans-serif; font-weight: bold;font-size:12px;"></div>
+   <div id="ultimosaldo"  class="hidden" style=" font-family: sans-serif; font-weight: bold;font-size:12px;"></div>
+   <br>
+   <div id="WSContent"></div>
+   <table id="table" class="hidden" >
+    <tr>
+    <th>Fecha</th>
+    <th>Linea</th>
+    <th>Tipo</th>
+    <th>Importe</th>
+    <th>Saldo</th>
+    </tr>
+   </table>
+   </div>
+  
+<div data-role="footer" class="footer-docs" data-theme="c" data-position="fixed" data-tap-toggle="false" >
+<div style="text-align: center;">
+<div style="width: 50px;  background-image:url(css/images/logoemr2.png);background-repeat: no-repeat;float: left; text-align: center;padding-top:38px;margin-left:10px;background-position: left ; "></div>
+<div style="width: 50px;  background-image:url(css/images/mros2.png);background-repeat: no-repeat; float: right; text-align: center;padding-top:38px;margin-right:10px;background-position: right ; "></div>
+<div style="width: 250px; height:10px; text-color:white; margin-left: auto; margin-right: auto; text-align: center; padding-top:5px; font-size:13px;color: #FFF;">MÁS INFORMACIÓN<BR>
+LLAMÁ AL 147</div>
+</div>
+</body>
+</html>

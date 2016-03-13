@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
+<script type="text/javascript" src="Scripts/jquery-1.7.1.js"></script>
+<script src="Scripts/aes.js"></script>
+<script src="Scripts/mode-cfb-min.js"></script>
+<script src="Scripts/pad-nopadding-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="cordova-2.9.1.js"></script>
+<script type="text/javascript" src="Scripts/jquery.mobile-1.3.2.min.js"></script>
+<script src="Scripts/jquery-1.6.1.min.js"></script>
+<script src="Scripts/jquery-ui.min.js"></script>
+<script type="text/javascript" src="Scripts/dataView.js"></script>
+<script type="text/javascript" src="Scripts/ws.js"></script>
+
+<link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/style1.css">    
+
+<script type="text/javascript" charset="utf-8">
+
+function onLoad() {
+document.addEventListener("deviceready", onDeviceReady, false);
+}
+
+function onDeviceReady() {
+
+var ref = window.open('http://apache.org', '_blank', 'location=yes');
+ref.addEventListener('loadstart', function(event) { alert('start: ' + event.url); });
+ref.addEventListener('loadstop', function(event) { alert('stop: ' + event.url); });
+ref.addEventListener('loaderror', function(event) { alert('error: ' + event.message); });
+ref.addEventListener('exit', function(event) { alert(event.type); });
+
+}
+</script>
+
+<title></title>
+</head>
+
+<body>
+<div data-role="page" id="page2">
+<div id="header" data-theme="b" data-position="fixed" data-tap-toggle="false"  data-role="header"> <a href="principal.html" data-role="button" data-icon="back">Volver</a>
+      
+
+			<h3>MENÚ DE<br>AYUDA </h3>
+            </div>
+            <div style="padding-left:5px;padding-right:5px">
+            
+              <p><strong><u>AYUDA</u></strong></p>
+              <p>Esta aplicación permite consultar el último saldo y operaciones registradas de su tarjeta sin contacto de Rosario.</p>
+              <p>El sistema está disponible para los usuarios que tengan su tarjeta personalizada. Una vez realizado dicho proceso, en el menú principal se deberá ingresar el documento con el cual se realizó la personalización y el número de 17 dígitos que figura en el dorso de su tarjeta.<br><br>
+          
+            La información se  actualiza cada 24 hs.<br>
+              Se muestran las operaciones de los últimos 30 días.<br>
+              Pueden existir operaciones que aún no hayan sido registradas en el sistema.<br><br>
+              La consulta de operaciones requiere de una conexión a internet activa en su dispositivo.<br>
+              </p><br>
+               <p><strong><u>PERSONALIZACIÓN</u></strong></p>
+               Para consultar los medios  mediante los cuales  personalizar su tarjeta  visite el siguiente 
+               <a href="#" onClick="window.open('http://www.emr.gob.ar/preguntas_frecuentes.php','_system','location=yes','closebuttoncaption=Return');">link</a><br><br>
+              
+            <p><strong><u>TIPOS DE OPERACIÓN</u></strong></p>
+            Se describen los diferentes tipos de operación que se muestran en la tabla de resultados.<br>
+            
+            <p><b>Normal:</b> viaje con tarifa normal.<br>
+              <br>
+             <b>Estud:</b> viaje con tarifa estudiante.<br>
+              <br>
+ 	     <b>Univ:</b> viaje con tarifa universitario.<br>
+              <br>
+              <b>Funes:</b> viaje con tarifa Funes.<br>
+              <br>
+              <b>Med Funes:</b> viaje con destino Funes y tarifa estudiante.<br>
+              <br>
+              <b>Plus 1:</b> primer Viaje Plus, otorgado por saldo insuficiente en la tarjeta para realizar el viaje.<br>
+              <br>
+              <b>Plus 2:</b> segundo Viaje Plus, otorgado por saldo insuficiente en la tarjeta para realizar el viaje.<br>
+              <br>
+             <b>A_Plus 1:</b> se abona un Viaje Plus adeudado.<br>
+              <br>
+              <b>A_Plus 2:</b> se abonan dos Viaje Plus adeudados.<br>
+              <br>
+              <b>Trasb:</b> viaje con tarifa trasbordo.<br>
+              <br>
+              <b>Carga:</b> valor correspondiente a la recarga realizada en un punto de venta.<br>
+              <br>
+              <b>Car Virt:</b> recarga de la tarjeta realizada mediante canales electrónicos. El valor mostrado corresponde al momento de la acreditación en la tarjeta.<br>
+              <br>
+              <b>Anu Car:</b> valor correspondiente a la anulación de una recarga realizada en un punto de venta.<br>
+              <br>
+              <b>Pase libre:</b> viaje con pase libre.<br>
+              <br>
+              <b>Otra:</b> operación no categorizada.<br>
+              <br>
+              <b>Op. pendiente:</b> la operación aún no se ha registrado en el sistema.<br>
+              
+            </p>
+            <br>
+             <p><strong><u>CRÉDITOS</u></strong></p>
+           Esta aplicación ha sido desarrollada por el Ente de la Movilidad de Rosario.
+           Ante cualquier duda o sugerencia dirígase al siguiente <a href="#" onClick="window.open('http://www.emr.gob.ar/contacto.php','_system','location=yes','closebuttoncaption=Return');">link</a> o comuníquse al teléfono 147.<br><br>
+             <p><strong><u>VERSIÓN</u></strong></p>
+              v 1.0
+           <br> <br>
+            
+           </div>
+	
+<div data-role="footer" class="footer-docs" data-theme="c" data-position="fixed" data-tap-toggle="false" >
+<div style="text-align: center;">
+
+<div style="width: 50px;  background-image:url(css/images/logoemr2.png);background-repeat: no-repeat;   float: left; text-align: center;padding-top:38px;margin-left:10px;background-position: left ; "></div>
+<div style="width: 50px;  background-image:url(css/images/mros2.png);background-repeat: no-repeat;   float: right; text-align: center;padding-top:38px;margin-right:10px;background-position: right ; "></div>
+<div style="width: 250px; height:10px; text-color:white; margin-left: auto; margin-right: auto; text-align: center; padding-top:5px; font-size:13px;color: #FFF;">MÁS INFORMACIÓN<BR>
+  LLAMÁ AL 147</div>
+
+</div>
+
+</body>
+</html>

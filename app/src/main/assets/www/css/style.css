@@ -1,0 +1,33 @@
+﻿body {
+    font-family: sans-serif;
+	-webkit-user-select: none;
+	 -webkit-touch-callout: none; 
+}
+
+.hidden{display:none;font-size:12px;}
+
+#table {
+    width: 100%;
+	border-spacing: 1px;
+	-webkit-user-select: none;
+		 -webkit-touch-callout: none; 
+}
+
+#table > tbody > tr > th {
+    background-color: #FF8000;
+  
+    text-transform: uppercase;
+}
+
+#table > tbody > tr {
+    font-weight: bold;
+	font-size:12px;
+}
+
+#table tr:nth-child(odd) {
+    background-color: #cbcbcb;
+}
+#table tr:nth-child(even) {
+    background-color: #F2F2F2;
+}
+
