@@ -227,13 +227,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (viewPager.getCurrentItem() == 0 || viewPager.getCurrentItem() == 2) {
             FragmentManager fm = getSupportFragmentManager();
             if (onBackPressed(fm)) {
-
                 if (viewPager.getCurrentItem() == 2) {
                     Fragment mapCtl = searchFragment(mAdapter.getItem(viewPager.getCurrentItem()));
 
                     if (mapCtl != null) {
                         Fragment fmap = mapCtl.getChildFragmentManager().findFragmentByTag("MAPA");
-                        Log.d("MainTabActivity","Econtre el fragment " + fmap.isVisible());
                         if (fmap != null && fmap.isVisible()) {
                             setScrollView(false);
                         }
@@ -324,24 +322,29 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         } catch (Exception e) {e.printStackTrace();}
     }
 
+    public void allSelect(Integer idCalle, Integer idInter,String colectivo)
+    {
+        if (colectivo.equals(" - TODOS - ")) colectivo = "";
+        Intent i = new Intent(this, paradasinfo.class);
+        stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
+        i.putExtra("Stops",stopsGroup.stopsToString(r));
+        startActivity(i);
+    }
+
     public void allSelect(JSONObject o)
     {
         try {
             Integer idCalle = o.getInt("idCalle");
             Integer idInter = o.getInt("idInter");
             String colectivo = o.getString("colectivo");
-            if (colectivo.equals(" - TODOS - ")) colectivo = "";
-
-            Intent i = new Intent(this, paradasinfo.class);
-            stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
-            i.putExtra("Stops",stopsGroup.stopsToString(r));
-            startActivity(i);
+            allSelect(idCalle,idInter,colectivo);
         } catch (Exception e){e.printStackTrace();}
     }
 
     private Boolean scrollState = true;
     public void setScrollView(Boolean can)
     {
+       Log.d("MainTabACtivity", "setScrollView = " + can);
        viewPager.setPagingEnabled(can);
        scrollState = can;
     }

@@ -217,6 +217,7 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
 
     public interface controlerSelectorListener {
         public void allSelect(JSONObject o);
+        public void allSelect(Integer idCalle,Integer idInter,String colectivo);
     }
 }
 

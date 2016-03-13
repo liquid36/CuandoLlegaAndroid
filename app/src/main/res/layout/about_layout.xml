@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="No pretendemos ser una copia directa al servicio web que ofrece la Municipalidad, sino que con esfuerzo, paciencia y voluntad pretendemos ir agregando nuevas funcionalidades que complementen el servicio. "
+                android:text="No pretendemos ser una copia directa al servicio web que ofrece la Municipalidad, sino que con esfuerzo, paciencia y voluntad queremos ir agregando nuevas funcionalidades que complementen el servicio. "
                 android:id="@+id/textView5"
                 android:paddingTop="10dp"
                 android:paddingBottom="50dp"

@@ -29,22 +29,23 @@ import org.json.JSONObject;
 
 public class mapControler extends Fragment implements  mapActionSelector.actionSelectListener,
                                                        colectivoList.colectivoListListener,
-                                                       mapViewer.pointSelectedListener
+                                                       mapViewer.pointSelectedListener,
+                                                        geoList.geoListListener
 {
     private static final String TAG = "mapControler";
     private static final String MENU_ID = "MENU";
     private static final String CALLE_ID = "STREET";
     private static final String COLECTIVOS_ID = "BUSES";
     private String action;
-    private Integer idCalle,idInter;
+    private Integer idCalle = 0,idInter = 0;
     private String colectivo;
-    private controlerSelectorListener mLister;
+    private controlerSelector.controlerSelectorListener mLister;
 
     public mapControler()
     {
         action = MENU_ID;
     }
-    public void setListener(controlerSelectorListener listener){mLister = listener;}
+    public void setListener(controlerSelector.controlerSelectorListener listener){mLister = listener;}
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        //mLister = (controlerSelectorListener) activity;
+        mLister = (controlerSelector.controlerSelectorListener) activity;
     }
 
     @Override
@@ -81,6 +82,8 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
         Log.d(TAG, action);
         ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (action.equals(mapActionSelector.RECORRIDO_CLICK)) {
+            idCalle = 0;
+            idInter = 0;
             colectivoList list = new colectivoList();
             list.setAll(true);
             list.setListener(this);
@@ -91,13 +94,14 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
         } else if (action.equals(mapActionSelector.PARADAS_CLICK)) {
             mapViewer list = new mapViewer();
             list.setListener(this);
+            ((MainTabActivity)getActivity()).setScrollView(false);
             Bundle datos = new Bundle();
             datos.putString(mapViewer.ACTION_KEY,mapViewer.PARADAS_ACTION);
             list.setArguments(datos);
             FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
             transaction.addToBackStack(null);
             transaction.replace(R.id.frame, list,"MAPA").commit();
-            ((MainTabActivity)getActivity()).setScrollView(false);
+
         } else {
             makeToast("No se realizo ninguna consulta");
         }
@@ -123,25 +127,21 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
 
     public void OnColectivoClick(JSONObject o){
         try {
-            Integer idColectivo = o.getInt("idColectivo");
-
-            mapViewer list = new mapViewer();
-            Bundle datos = new Bundle();
-            datos.putString(mapViewer.ACTION_KEY,mapViewer.RECORRIDO_ACTION);
-            datos.putInt("idColectivo",idColectivo);
-            list.setArguments(datos);
-            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-            transaction.addToBackStack(null);
-            transaction.replace(R.id.frame, list,"MAPA").commit();
-            action = COLECTIVOS_ID;
-
-            ((MainTabActivity)getActivity()).setScrollView(false);
-                //mLister.allSelect(o);
-                /*Intent i = new Intent(getActivity(), paradasinfo.class);
-                stopsGroup stops [] = new stopsGroup[]{};
-                stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
-                i.putExtra("Stops",stopsGroup.stopsToString(r));
-                startActivity(i);*/
+            if (idCalle == 0) {
+                ((MainTabActivity) getActivity()).setScrollView(false);
+                Integer idColectivo = o.getInt("idColectivo");
+                mapViewer list = new mapViewer();
+                Bundle datos = new Bundle();
+                datos.putString(mapViewer.ACTION_KEY, mapViewer.RECORRIDO_ACTION);
+                datos.putInt("idColectivo", idColectivo);
+                list.setArguments(datos);
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.replace(R.id.frame, list, "MAPA").commit();
+                action = COLECTIVOS_ID;
+            } else {
+                mLister.allSelect(idCalle,idInter,o.getString("colectivo"));
+            }
 
 
         } catch (Exception e) {e.printStackTrace();}
@@ -149,6 +149,7 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
 
     public void OnPointSelected(Double lat,Double lng, Integer radius) {
         geoList list = new geoList();
+        list.setListener(this);
         Bundle datos = new Bundle();
         datos.putString(geoList.ACTION_KEY,geoList.FIXED_ACTION);
         datos.putInt(geoList.RADIO_KEY,radius);
@@ -163,9 +164,19 @@ public class mapControler extends Fragment implements  mapActionSelector.actionS
         ((MainTabActivity)getActivity()).setScrollView(false);
     }
 
-
-    public interface controlerSelectorListener {
-        public void allSelect(JSONObject o);
+    public void OnGeoClick(JSONObject o)
+    {
+        try {
+            idCalle = o.getInt("idCalle");
+            colectivo = o.getString("colectivo");
+            idInter = o.getInt("idInter");
+            colectivoList list = new colectivoList();
+            list.setListener(this);
+            list.setCalles(idCalle,idInter);
+            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+            transaction.addToBackStack(null);
+            transaction.replace(R.id.frame, list).commit();
+        } catch (Exception e) {e.printStackTrace();}
     }
 }
 

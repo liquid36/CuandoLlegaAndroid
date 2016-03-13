@@ -100,7 +100,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
 
             Integer pos = ((ActionBarActivity) getActivity()).getSupportActionBar().getSelectedTab().getPosition();
             if (pos == 2) {
-                ((MainTabActivity) getActivity()).setScrollView(true);
+                ((MainTabActivity) getActivity()).setScrollView(false);
             }
 
             //Bitmap fillBMP = BitmapFactory.decodeResource(getActivity().getApplicationContext().getResources(), R.drawable.abc_ic_search);
