@@ -70,6 +70,8 @@ public class getTimeArrive {
                     String steps = lineas[i].substring(lineas[i].indexOf(":") + 1);
                     if (!lineas[i].contains("min.")) {
                         result.add(bandera + ":" + steps);
+                    } else if (lineas[i].contains("Prox. serv.")) {
+                        result.add(bandera + ":" + steps);
                     } else {
                         String[] ll = steps.split("siguiente");
                         for (int j = 0; j < ll.length; j++) {
