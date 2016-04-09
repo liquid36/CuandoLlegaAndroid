@@ -78,6 +78,17 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="50dp"
                 android:paddingRight="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Tanto los colectivos disponibles, los recorridos, los tiempos de llegadas y el saldo de la tarjeta son datos que otorga la municipalidad de Rosario."
+                android:id="@+id/textView6"
+                android:paddingTop="10dp"
+                android:paddingBottom="50dp"
+                android:paddingRight="10dp" />
+
             </LinearLayout>
     </ScrollView>
 

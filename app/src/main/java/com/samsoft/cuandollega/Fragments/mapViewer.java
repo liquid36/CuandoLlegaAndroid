@@ -40,8 +40,10 @@ import android.widget.ImageButton;
 import com.samsoft.cuandollega.Activities.MainTabActivity;
 import com.samsoft.cuandollega.DataBase;
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.extra.colectivoDialog;
 import com.samsoft.cuandollega.objects.Maps.MarkerWithRadius;
+import com.samsoft.cuandollega.objects.settingRep;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -148,6 +150,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
                 mParada.setRadius(500);
                 mParada.setOnMarkerDragListener(dragEvents);
                 map.getOverlays().add(mParada);
+                mostrarMensaje();
                 //recalcularParadas(p);
             }
 
@@ -170,6 +173,18 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
             parent.removeView(_view);
             return _view;
         }*/
+    }
+
+    public void mostrarMensaje()
+    {
+        settingRep settings = new settingRep(getActivity().getApplicationContext());
+        Boolean first = settings.getBoolean("paradasMaps");
+        if (!first) {
+            settings.putBoolean("paradasMaps",true);
+            new DialogAccion(getActivity(),"Cuando Llega Movil",
+                    "Seleccione un punto en el mapa y haz click en la lupa para buscar las paradas cercana.\nMantén presionado el marcador para cambiar el radio de búsqueda."
+                    ,"Aceptar" ,"" , null).Show();
+        }
     }
 
     @Override

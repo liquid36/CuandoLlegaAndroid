@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsoft.cuandollega.R;
+import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.objects.settingRep;
 
 import org.json.JSONArray;
@@ -103,9 +104,22 @@ public class CuantoTengo extends Fragment {
                 }
             }
         });
-
+        mostrarMensaje();
         return v;
 
+    }
+
+    public void mostrarMensaje()
+    {
+        settingRep settings = new settingRep(getActivity().getApplicationContext());
+        Boolean first = settings.getBoolean("cuantoTengo");
+        if (!first) {
+            settings.putBoolean("cuantoTengo",true);
+            new DialogAccion(getActivity(),"Cuando Llega Movil",
+                    "Verisón de prueba del Cuanto Tengo.\nIngrese el número de tarjeta y DNI para saber el saldo de su tarjeta."
+                    + "\nLos datos son suministrado por la municipalidad, sepa discupar si no están actualizados"
+                    ,"Aceptar" ,"" , null).Show();
+        }
     }
 
     public class WebViewJavaScriptInterface{
