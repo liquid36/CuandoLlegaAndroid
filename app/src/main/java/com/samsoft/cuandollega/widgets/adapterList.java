@@ -92,7 +92,7 @@ public class adapterList extends RemoteViewsService
 
                 Integer parada = o.getInt("parada");
                 String linea = o.getString("name");
-                ArrayList<String> datos = new getTimeArrive(linea,parada).run();
+                ArrayList<String> datos = new getTimeArrive(db.getBusId(linea),parada).run();
 
 
             } catch (Exception e) {e.printStackTrace();}

@@ -230,7 +230,8 @@ public class paradasinfo extends ActionBarActivity {
             try {
                 parada = stop.getInt("parada");
                 linea = stop.getString("linea");
-                datos = new getTimeArrive(linea,parada).run();
+
+                datos = new getTimeArrive(db.getBusId(linea),parada).run();
                 return !datos.isEmpty();
 
             } catch (Exception e) {

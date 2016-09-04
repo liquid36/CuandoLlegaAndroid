@@ -14,6 +14,7 @@ public class stopsGroup {
     public String Bus;
     public Integer idFav;
 
+
     public stopsGroup()
     {
         idCalle = 0;

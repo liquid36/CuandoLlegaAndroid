@@ -151,9 +151,4 @@ public class colectivoSearch extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
-
 }

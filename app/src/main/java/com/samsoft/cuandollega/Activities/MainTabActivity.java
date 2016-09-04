@@ -155,16 +155,25 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     {
         super.onStart();
         Boolean first = settings.getBoolean("FirstLoad");
-        if (!first) {
+        if (!first && true == false) {
             settings.putBoolean("FirstLoad",true);
-            new DialogAccion(MainTabActivity.this,"Cuando Llega Movil",
+            /*new DialogAccion(MainTabActivity.this,"Cuando Llega Movil",
                     "Bienvenido a Cuando Llega Movil!\n\n" +
                             "Busqueda por Calle\n" +
                             "Busqueda por Colectivo\n" +
                             "Marcadores de paradas\n"+
                             "Paradas Cercanas\n"+
                             "Multiples consultas"
-                    ,"Aceptar" ,"" , null).Show();
+                    ,"Aceptar" ,"" , null).Show();*/
+        }
+        Boolean fallo = settings.getBoolean("FALLODOS");
+        if (!fallo) {
+            settings.putBoolean("FALLODOS",true);
+            new DialogAccion(MainTabActivity.this, "Cuando Llega Movil",
+                    "Lo sentimos, la municipalidad de Rosario cambio parte de los datos de los colectivos."
+                    + " Pusimos en marcha la geolocalizacion de las paradas y las consultas. Pronto, llegaran los recorridos."
+                            + "\nPOR FAVOR, NO DESINSTALE LA APLICACION, estamos trabajando para volver a estar copletamente funcional."
+                    , "Aceptar", "", null).Show();
         }
     }
 

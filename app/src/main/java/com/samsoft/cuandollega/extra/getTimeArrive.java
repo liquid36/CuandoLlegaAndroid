@@ -31,10 +31,10 @@ import java.util.ListIterator;
  */
 public class getTimeArrive {
 
-    private String linea;
+    private Integer linea;
     private Integer parada;
 
-    public getTimeArrive(String lin, Integer par)
+    public getTimeArrive(Integer lin, Integer par)
     {
         linea = lin;
         parada = par;
@@ -46,40 +46,32 @@ public class getTimeArrive {
         Log.d("getTimeArrive",datos);
         String [] lineas = datos.substring(11).split("-");
         for(int i = 0; i < lineas.length; i++) {
-            if (lineas[i].length() > 6) {
+            if (lineas[i].trim().substring(0,1).equals("<")) {
+                break;
+            }
+            if (lineas[i].length() > 6 ) {
+                Log.d("sublinea",lineas[i]);
                 if (lineas[i].indexOf(":") > 0) {
-                    char b = lineas[i].charAt(lineas[i].indexOf(":") - 1);
-                    String bandera;
-                    switch (b) {
-                        case 'R':
-                            bandera = "ROJO";
-                            break;
-                        case 'V':
-                            bandera = "VERDE";
-                            break;
-                        case 'N':
-                            bandera = "NEGRO";
-                            break;
-                        case 'A':
-                            bandera = "AEROPUERTO";
-                            break;
-                        default:
-                            bandera = "UNICO";
-                            break;
-                    }
+                    int dospuntos_pos = lineas[i].indexOf(":");
+                    int bandera_pos = lineas[i].substring(0,dospuntos_pos).lastIndexOf(' ');
+                    String bandera = lineas[i].substring(0,dospuntos_pos).substring(bandera_pos);
+
+
                     String steps = lineas[i].substring(lineas[i].indexOf(":") + 1);
-                    if (!lineas[i].contains("min.")) {
+                    if (!lineas[i].contains("min")) {
                         result.add(bandera + ":" + steps);
                     } else if (lineas[i].contains("Prox. serv.")) {
                         result.add(bandera + ":" + steps);
                     } else {
                         String[] ll = steps.split("siguiente");
                         for (int j = 0; j < ll.length; j++) {
-                            Log.d("TIME",ExpandAnimation.strToInteger(ll[j],1) + "  " + ExpandAnimation.strToInteger(ll[j],2));
-                            SimpleDateFormat df = new SimpleDateFormat("HH:mm");
-                            Calendar now = Calendar.getInstance();
-                            now.add(Calendar.MINUTE, ExpandAnimation.strToInteger(ll[j],1));
-                            result.add(bandera + ":" + ll[j] + " llega " + df.format(now.getTime()) + "Hs");
+                            if (ll[j].length() > 0) {
+                                Log.d("TIME", ll[j]);
+                                SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+                                Calendar now = Calendar.getInstance();
+                                now.add(Calendar.MINUTE, ExpandAnimation.strToInteger(ll[j], 1));
+                                result.add(bandera + ":" + ll[j] + " llega " + df.format(now.getTime()) + "Hs");
+                            }
                         }
                     }
                 } else {
@@ -94,13 +86,14 @@ public class getTimeArrive {
     public ArrayList<String> run()
     {
         try {
-            String url = "http://www.etr.gov.ar/ajax/getSmsResponse.php";
+            String url = "http://etr.gov.ar/ajax/cuandollega/getSmsResponseEfisat.php";
             InputStream content = null;
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(url);
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
             nameValuePairs.add(new BasicNameValuePair("parada", parada.toString()));
-            nameValuePairs.add(new BasicNameValuePair("linea", linea));
+            nameValuePairs.add(new BasicNameValuePair("linea", linea.toString()));
+            nameValuePairs.add(new BasicNameValuePair("accion", "getSmsEfisat"));
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
             content = response.getEntity().getContent();

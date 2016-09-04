@@ -242,6 +242,22 @@ public class DataBase  {
         //db.close();
     }
 
+    public Integer getBusId(String linea) {
+        Cursor c = null;
+        int res = 0;
+        try {
+            c = db.rawQuery("SELECT id FROM colectivos where name  = ?"  , new String[] { linea });
+            if (c.moveToNext()) {
+                res = c.getInt(0);
+            }
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+        return res;
+    }
+
     public String getCalleName(Integer idCalle) {
         Cursor c = null;
         String res = "";
@@ -658,9 +674,6 @@ public class DataBase  {
             db.execSQL("ALTER TABLE colectivos ADD COLUMN cl Boolean;");
         }catch (Exception e) {Log.d("DATABASE","CAMBIOS YA APLICADOS");}
 
-
-
-
         db.execSQL("DELETE FROM paradas");
         db.execSQL("DELETE FROM calles");
         db.execSQL("DELETE FROM geostreetD");
@@ -683,9 +696,9 @@ public class DataBase  {
         db.execSQL("INSERT INTO calles SELECT * FROM DB1.calles");
         db.execSQL("INSERT INTO geostreetD SELECT * FROM DB1.geostreetD");
 
-        db.execSQL("INSERT INTO recorridos SELECT * FROM DB1.recorridos");
-        db.execSQL("INSERT INTO colec_rcd SELECT * FROM DB1.colec_rcd");
-        db.execSQL("INSERT INTO rcdreng SELECT * FROM DB1.rcdreng");
+        //db.execSQL("INSERT INTO recorridos SELECT * FROM DB1.recorridos");
+        //db.execSQL("INSERT INTO colec_rcd SELECT * FROM DB1.colec_rcd");
+        //db.execSQL("INSERT INTO rcdreng SELECT * FROM DB1.rcdreng");
 
         db.setTransactionSuccessful();
         db.endTransaction();
