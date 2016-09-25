@@ -17,9 +17,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.Activities.MainTabActivity;
 import com.samsoft.cuandollega.DataBase;
 import com.samsoft.cuandollega.R;
 import com.samsoft.cuandollega.extra.InputDialog;
+import com.samsoft.cuandollega.objects.MainTabAdapter;
 import com.samsoft.cuandollega.objects.favoriteAdapter;
 
 import org.json.JSONArray;
@@ -107,10 +109,18 @@ public class favoriteList extends Fragment {
 
     public void recalcularAdapter()
     {
+        //db = new DataBase(getActivity().getApplicationContext());
         JSONArray arr = db.getFavoritos();
         madapter.clear();
-        for(int i = 0; i < arr.length();i++)
-            try {madapter.add(arr.getJSONObject(i));} catch (Exception e) {e.printStackTrace();}
+        for(int i = 0; i < arr.length();i++) {
+            try {
+                madapter.add(arr.getJSONObject(i));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        //db.Close();
+
     }
 
     public void refreshScreen()
@@ -123,7 +133,8 @@ public class favoriteList extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        db = new DataBase(activity.getApplicationContext());
+        //db = new DataBase(activity.getApplicationContext());
+        db = ((MainTabActivity) activity).db;
         try {
             mListener = (favoriteListListener) activity;
         } catch (ClassCastException e) {

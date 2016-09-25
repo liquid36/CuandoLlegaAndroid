@@ -58,6 +58,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     private String[] tabs = { "Busqueda", "Marcadores","Mapa"};
     public static final int DIALOG_DOWNLOAD_PROGRESS = 0;
 
+    public DataBase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,10 +69,14 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (datos != null && datos.containsKey("Stops")) stops = stopsGroup.stringtoStops(datos.getString("Stops"));
         else stops = new stopsGroup[]{};
 
+        db = new DataBase(getApplicationContext());
+
         int versionCode = BuildConfig.VERSION_CODE ;
         int lastCode = settings.getInteger("Version");
+        boolean db_update = settings.getBoolean("db-update");
 
-        if (versionCode != lastCode) {
+        if (versionCode != lastCode || !db_update) {
+            settings.putBoolean("db-update",false);
             CopiarBaseDatos(true);
             settings.putInteger("Version",versionCode);
         }
@@ -166,13 +172,12 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                             "Multiples consultas"
                     ,"Aceptar" ,"" , null).Show();*/
         }
-        Boolean fallo = settings.getBoolean("FALLODOS");
+        Boolean fallo = settings.getBoolean("FALLOTRES");
         if (!fallo) {
-            settings.putBoolean("FALLODOS",true);
+            settings.putBoolean("FALLOTRES",true);
             new DialogAccion(MainTabActivity.this, "Cuando Llega Movil",
-                    "Lo sentimos, la municipalidad de Rosario cambio parte de los datos de los colectivos."
-                    + " Pusimos en marcha la geolocalizacion de las paradas y las consultas. Pronto, llegaran los recorridos."
-                            + "\nPOR FAVOR, NO DESINSTALE LA APLICACION, estamos trabajando para volver a estar copletamente funcional."
+                    "Volvieron los recorridos. Que felicidad!!!!\n"
+                    + " Muchas gracias por la paciencia."
                     , "Aceptar", "", null).Show();
         }
     }
@@ -205,9 +210,14 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     public void CopiarBaseDatos(boolean fromRaw)
     {
-        progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-        updateDB run = new updateDB(getApplicationContext(),new DataBase(this));
-        run.firstLoad(progresDialog);
+        try {
+            progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
+            updateDB run = new updateDB(getApplicationContext(), db);
+            run.firstLoad(progresDialog);
+            settings.putBoolean("db-update",true);
+        } catch (Exception e) {
+            Log.d("MainTabAtivity","Load problems");
+        }
     }
 
     public void sharedClick(View v)

@@ -89,7 +89,9 @@
                 android:paddingBottom="50dp"
                 android:paddingRight="10dp" />
 
-            </LinearLayout>
+        </LinearLayout>
     </ScrollView>
+
+
 
 </LinearLayout>

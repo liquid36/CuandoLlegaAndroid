@@ -471,13 +471,15 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         protected Boolean doInBackground(Integer... idCole) {
             Integer idColectivo = idCole[0];
             try {
+                Log.d("mapViewer",idColectivo.toString());
+
                 ArrayList<ContentValues> points = db.getRecorrido(idColectivo,"ida");
                 ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();
                 recorridoIda = new Polyline(getActivity().getApplicationContext());
                 recorridoIda.setColor(Color.argb(100,255,0,0));
                 recorridoIda.setWidth(10.0f);
                 for(int i = 0; i< points.size();i++) {
-                    pointsList.add(new GeoPoint(points.get(i).getAsDouble("lat"),points.get(i).getAsDouble("lon")));
+                    pointsList.add(new GeoPoint(points.get(i).getAsDouble("lat"),points.get(i).getAsDouble("lng")));
                 }
                 recorridoIda.setPoints(pointsList);
             } catch (Exception e) {
@@ -491,7 +493,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
                 recorridoVuelta.setColor(Color.argb(100,0,0,255));
                 recorridoVuelta.setWidth(10.0f);
                 for(int i = 0; i< points.size();i++) {
-                    pointsList.add(new GeoPoint(points.get(i).getAsDouble("lat"),points.get(i).getAsDouble("lon")));
+                    pointsList.add(new GeoPoint(points.get(i).getAsDouble("lat"),points.get(i).getAsDouble("lng")));
                 }
                 recorridoVuelta.setPoints(pointsList);
             } catch (Exception e) {

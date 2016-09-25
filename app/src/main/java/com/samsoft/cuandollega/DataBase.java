@@ -65,11 +65,9 @@ public class DataBase  {
         db.execSQL("CREATE VIEW  IF NOT EXISTS callesF AS " +
                 "SELECT calles.id AS id, desc, ifnull(frecuencia,0) AS frecuencia FROM calles LEFT OUTER JOIN calleFreq ON calles.id = calleFreq.id");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS recorridos (id INTEGER, sentido TEXT , desc TEXT)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS rcdreng (id INTEGER, sentido TEXT , num INTEGER, lat TEXT, lon TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS recorridos (id INTEGER, colectivo_id INTEGER,  name TEXT , sentido TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS rcdreng (id INTEGER, recorrido_id INTEGER,  orden INTEGER, lat TEXT, lng TEXT)");
         db.execSQL("CREATE TABLE IF NOT EXISTS colec_rcd (id INTEGER, name TEXT, bandera TEXT , linea TEXT)");
-
-
     }
     //**********************************************************************************************
     //**********************************************************************************************
@@ -354,7 +352,7 @@ public class DataBase  {
         if (cl) where_clasue = " WHERE cl = 1 ";
         try {
             if (cl) c = db.rawQuery("SELECT * FROM colectivos GROUP BY name ORDER BY name" , new String[]{});
-            else  c = db.rawQuery("SELECT * FROM colec_rcd ORDER BY name" , new String[]{});
+            else  c = db.rawQuery("SELECT colectivo_id as id, name , name as linea, '' as bandera FROM recorridos GROUP BY colectivo_id ORDER BY name" , new String[]{});
 
             while (c.moveToNext()) {
                 JSONObject o = hydrateLinea(c);
@@ -546,12 +544,36 @@ public class DataBase  {
     //********               RECORRIDOS                                                    *********
     //**********************************************************************************************
 
+    public ArrayList<ContentValues> getBusRecorridos()
+    {
+        Cursor c = null;
+        ArrayList<ContentValues> retVal = new ArrayList<ContentValues>();
+        try {
+            String query =  "SELECT colectivo_id, name FROM recorridos GROUP BY colectivo_id ORDER BY name";
+            c = db.rawQuery(query, new String[]{});
+            ContentValues map;
+            if(c.moveToFirst()) {
+                do {
+                    map = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(c, map);
+                    retVal.add(map);
+                } while(c.moveToNext());
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (c != null) c.close();
+        }
+        return retVal;
+    }
+
+
     public ArrayList<ContentValues> getRecorrido(Integer idColectivo,String sentido)
     {
         Cursor c = null;
         ArrayList<ContentValues> retVal = new ArrayList<ContentValues>();
         try {
-            String query =  "SELECT id,sentido,num,lat,lon FROM rcdreng WHERE id = " + idColectivo + " AND sentido = '" + sentido+ "' ORDER BY num";
+            String query =  "SELECT orden, lat, lng FROM rcdreng  LEFT JOIN recorridos ON  recorridos.id = rcdreng.recorrido_id WHERE recorridos.colectivo_id = " + idColectivo + " AND recorridos.sentido = '" + sentido+ "' ORDER BY orden";
             c = db.rawQuery(query, new String[]{});
             ContentValues map;
             if(c.moveToFirst()) {
@@ -696,9 +718,9 @@ public class DataBase  {
         db.execSQL("INSERT INTO calles SELECT * FROM DB1.calles");
         db.execSQL("INSERT INTO geostreetD SELECT * FROM DB1.geostreetD");
 
-        //db.execSQL("INSERT INTO recorridos SELECT * FROM DB1.recorridos");
+        db.execSQL("INSERT INTO recorridos SELECT * FROM DB1.recorridos");
         //db.execSQL("INSERT INTO colec_rcd SELECT * FROM DB1.colec_rcd");
-        //db.execSQL("INSERT INTO rcdreng SELECT * FROM DB1.rcdreng");
+        db.execSQL("INSERT INTO rcdreng SELECT * FROM DB1.rcdreng");
 
         db.setTransactionSuccessful();
         db.endTransaction();
