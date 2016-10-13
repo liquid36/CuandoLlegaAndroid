@@ -36,9 +36,18 @@ public class FavDialog extends  AlertDialog.Builder
     private ImageView img;
     private Context cc;
     private LayoutInflater inflater;
+    private favCallback listener = null;
     final ArrayList checkList = new ArrayList();
     LinearLayout v;
-    public FavDialog(Context c, DataBase d, String l,Integer p,ImageView ii)
+
+    public interface  favCallback {
+        public void okClick();
+        public void cancelClick();
+    }
+
+    public void setListener(favCallback callback) { listener = callback; }
+
+    public FavDialog(Context c, DataBase d, String l, Integer p, ImageView ii)
     {
         super(c);
         cc = c;
@@ -75,13 +84,23 @@ public class FavDialog extends  AlertDialog.Builder
                 for (int i = 0; i < checkList.size(); i++) {
                     CheckBox cb = (CheckBox) checkList.get(i);
                     Integer id = (Integer) cb.getTag();
-                    if (cb.isChecked()) db.insertFavList(id, linea, parada);
+                    if (cb.isChecked()) {
+                        db.insertFavList(id, linea, parada);
+                    }
                 }
-                if (db.chekcFavorito(linea, parada))
-                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.starfull));
-                else
-                    img.setImageDrawable(cc.getResources().getDrawable(R.drawable.star_empty));
-                img.invalidate();
+                if (img != null) {
+                    if (db.chekcFavorito(linea, parada)) {
+                        img.setImageDrawable(cc.getResources().getDrawable(R.drawable.starfull));
+                    } else {
+                        img.setImageDrawable(cc.getResources().getDrawable(R.drawable.star_empty));
+                    }
+                    img.invalidate();
+                }
+
+                if (listener != null) {
+                    listener.okClick();
+                }
+
             }
         });
 

@@ -20,6 +20,8 @@ public class paradaInfo {
     public String calle_name = "";
     public String inter_name = "";
 
+    public Boolean isFavorite = false;
+
     public JSONArray resultado = null;
     public ArrayList<String> arrivos = null;
 

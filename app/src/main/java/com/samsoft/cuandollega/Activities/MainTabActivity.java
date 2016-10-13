@@ -333,8 +333,9 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
     public void onFavoriteClick(JSONObject id) {
         try {
-            Intent i = new Intent(this, paradasinfo.class);
+            //Intent i = new Intent(this, paradasinfo.class);
             //stopsGroup stops [] = new stopsGroup[]{};
+            Intent i = new Intent(this, ArrivalsActivity.class);
             stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(0,0,"",id.getInt("id")));
             i.putExtra("Stops",stopsGroup.stopsToString(r));
             startActivity(i);
@@ -344,7 +345,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     public void allSelect(Integer idCalle, Integer idInter,String colectivo)
     {
         if (colectivo.equals(" - TODOS - ")) colectivo = "";
-        Intent i = new Intent(this, paradasinfo.class);
+        //Intent i = new Intent(this, paradasinfo.class);
+        Intent i = new Intent(this, ArrivalsActivity.class);
         stopsGroup r[] = stopsGroup.addItem(stops,new stopsGroup(idCalle,idInter,colectivo,0));
         i.putExtra("Stops",stopsGroup.stopsToString(r));
         startActivity(i);

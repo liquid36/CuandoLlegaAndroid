@@ -110,13 +110,15 @@ public class favoriteList extends Fragment {
     public void recalcularAdapter()
     {
         //db = new DataBase(getActivity().getApplicationContext());
-        JSONArray arr = db.getFavoritos();
-        madapter.clear();
-        for(int i = 0; i < arr.length();i++) {
-            try {
-                madapter.add(arr.getJSONObject(i));
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (db != null) {
+            JSONArray arr = db.getFavoritos();
+            madapter.clear();
+            for (int i = 0; i < arr.length(); i++) {
+                try {
+                    madapter.add(arr.getJSONObject(i));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         //db.Close();

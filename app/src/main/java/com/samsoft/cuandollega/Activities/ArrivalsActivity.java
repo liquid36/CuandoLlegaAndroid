@@ -42,7 +42,7 @@ public class ArrivalsActivity extends AppCompatActivity {
     private static final String TAG = "ArrivalsActivity";
     private DataBase db;
     private stopsGroup stops[];
-    private ArrayList<paradaInfo> paradas;
+    private ArrayList<paradaInfo> paradas = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,17 +65,32 @@ public class ArrivalsActivity extends AppCompatActivity {
             }
         });
 
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        if (paradas == null) {
+            paradas = new ArrayList<paradaInfo>();
+            buscarParadas();
+            runBackground();
+        }
 
         Fragment ff =  getSupportFragmentManager().findFragmentByTag("LIST");
         if (ff == null) {
             arrivalsList f = new arrivalsList();
+            f.setParadas(paradas);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.frame, f, "LIST").commit();
+        } else {
+            arrivalsList f = (arrivalsList) ff;
+            f.setParadas(paradas);
         }
 
+
         saveStat();
-        buscarParadas();
-        runBackground();
+
+
     }
 
     @Override
@@ -89,10 +104,7 @@ public class ArrivalsActivity extends AppCompatActivity {
         int id;
         id = item.getItemId();
         if (id == R.id.act_refresh && isOnline()) {
-            /*
-            listItems.removeAllViews();
-            ShowParadas();
-            */
+            runBackground();
         } else if (id == R.id.act_add) {
             Intent i = new Intent(this,MainTabActivity.class);
             i.putExtra("Stops",stopsGroup.stopsToString(stops));
@@ -127,13 +139,39 @@ public class ArrivalsActivity extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    public void refreshFragment() {
+    public void refreshFragment()
+    {
+        arrivalsList ff = (arrivalsList) getSupportFragmentManager().findFragmentByTag("LIST");
+        if (ff != null) {
+            ff.refreshScreen();
+        }
+    }
+
+    public void starClick(final paradaInfo info) {
+
+        FavDialog d = new FavDialog(ArrivalsActivity.this, db, info.bus_name, info.parada, null);
+        d.setListener(new FavDialog.favCallback() {
+            @Override
+            public void okClick() {
+                info.isFavorite = db.chekcFavorito(info.bus_name, info.parada);
+                refreshFragment();
+            }
+
+            @Override
+            public void cancelClick() {
+
+            }
+        });
+        d.show();
 
     }
 
     public void runBackground()
     {
         for(paradaInfo p : paradas) {
+            p.arrivos = null;
+            p.resultado = null;
+            refreshFragment();
             new AskTime(p,getApplicationContext()).execute(0);
         }
     }
@@ -170,7 +208,8 @@ public class ArrivalsActivity extends AppCompatActivity {
                     }
                     info.calle_name = db.getCalleName(idCalle);
                     info.inter_name = db.getCalleName(idInter);
-                    info.parada     =  o.getInt("parada");
+                    info.parada     = o.getInt("parada");
+                    info.isFavorite = db.chekcFavorito(info.bus_name,info.parada );
 
                     paradas.add(info);
 

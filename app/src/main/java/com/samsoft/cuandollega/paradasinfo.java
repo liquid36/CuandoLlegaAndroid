@@ -121,6 +121,7 @@ public class paradasinfo extends ActionBarActivity {
                     View v = inflater.inflate(R.layout.waitingrow, null);
                     TextView bus = (TextView) v.findViewById(R.id.txtBus);
                     TextView dest = (TextView) v.findViewById(R.id.txtDest);
+
                     bus.setText(o.getString("name"));
                     dest.setText(o.getString("desc"));
 
