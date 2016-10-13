@@ -350,6 +350,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         } catch (Exception e) {
             return null;
         }
+        return null;
     }
 
 

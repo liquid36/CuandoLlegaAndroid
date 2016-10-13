@@ -23,7 +23,7 @@ public class stopsGroup {
         idFav = 0;
     }
 
-    public stopsGroup(Integer calle, Integer inter,String colectivo,Integer favoritos)
+    public stopsGroup(Integer calle, Integer inter, String colectivo, Integer favoritos)
     {
         idCalle = calle;
         idInter = inter;

@@ -99,15 +99,16 @@ public class paradasinfo extends ActionBarActivity {
 
     public void ShowParadas()
     {
-        for(int j = 0;j<stops.length;j++) {
+        for(int j = 0 ; j < stops.length ; j++) {
             idCalle = stops[j].idCalle;
             idInter = stops[j].idInter;
             Bus = stops[j].Bus;
             idFav = stops[j].idFav;
 
             JSONArray a;
-            if (idFav != 0) a = db.getStopsFromFavorite(idFav);
-            else {
+            if (idFav != 0) {
+                a = db.getStopsFromFavorite(idFav);
+            } else {
                 a = db.getStops(Bus, idCalle, idInter);
                 db.addFrequencia(idCalle);
                 db.addFrequencia(idInter);
@@ -219,7 +220,7 @@ public class paradasinfo extends ActionBarActivity {
         private Context contex;
         private String linea;
         private Integer parada;
-        public AskTime(View vv,Context c)
+        public AskTime(View vv, Context c)
         {
             contex = c;
             v = vv;

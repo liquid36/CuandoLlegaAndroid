@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.samsoft.cuandollega" >
+    package="com.samsoft.cuandollega">
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -11,8 +11,6 @@
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
-
-
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -28,10 +26,10 @@
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".Activities.MainTabActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,28 +39,23 @@
         <activity
             android:name=".calleSearch"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_calle_search" >
-        </activity>
+            android:label="@string/title_activity_calle_search"></activity>
         <activity
             android:name=".colectivoSearch"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_colectivo_search" >
-        </activity>
+            android:label="@string/title_activity_colectivo_search"></activity>
         <activity
             android:name=".paradasinfo"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_paradasinfo" >
-        </activity>
+            android:label="@string/title_activity_paradasinfo"></activity>
         <activity
             android:name=".favoriteScreen"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_favorite_screen" >
-        </activity>
+            android:label="@string/title_activity_favorite_screen"></activity>
         <activity
             android:name=".Activities.favoriteScreen"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_favorite_screen" >
-        </activity>
+            android:label="@string/title_activity_favorite_screen"></activity>
 
         <!-- Cosas para el widgets. No funciona muy bien -->
         <!--
@@ -94,12 +87,14 @@
 
         <activity
             android:name=".geoActivity"
-            android:label="@string/title_activity_geo" >
-        </activity>
+            android:label="@string/title_activity_geo"></activity>
         <activity
             android:name=".Activities.About"
-            android:label="@string/title_activity_about" >
-        </activity>
+            android:label="@string/title_activity_about"></activity>
+        <activity
+            android:name=".Activities.ArrivalsActivity"
+            android:label="@string/title_activity_arrivals"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
