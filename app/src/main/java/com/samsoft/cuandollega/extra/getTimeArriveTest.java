@@ -1,9 +1,7 @@
 package com.samsoft.cuandollega.extra;
 
-import android.graphics.Color;
+import android.nfc.Tag;
 import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.samsoft.cuandollega.ExpandAnimation;
 
@@ -14,6 +12,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -21,64 +21,71 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
- * Created by sam on 15/11/14.
+ * Created by sam on 12/10/16.
  */
-public class getTimeArrive {
+
+public class getTimeArriveTest {
 
     private Integer linea;
     private Integer parada;
 
-    public getTimeArrive(Integer lin, Integer par)
+    private JSONArray array;
+
+    private static final String TAG = "getTimeArriveTest";
+    public getTimeArriveTest(Integer lin, Integer par)
     {
         linea = lin;
         parada = par;
     }
 
+    // Example : [{"LineaBandera":"Parada","latitud":"-32.920894","longitud":"-60.739138","arribo":""},{"LineaBandera":"115 UNICO Adaptado","bandera":"UNICO","latitud":"-32.91683","longitud":"-60.72803","arribo":"6 min","interno":"131","horaGPS":"12\/10\/2016 19:56:43"},{"LineaBandera":"115 AEROPUERTO Adaptado","bandera":"AEROPUERTO","latitud":"-32.93264","longitud":"-60.71521","arribo":"9 min","interno":"186","horaGPS":"12\/10\/2016 19:58:04"},{"LineaBandera":"115 UNICO","bandera":"UNICO","latitud":"-32.92816","longitud":"-60.72743","arribo":"11 min","interno":"178","horaGPS":"12\/10\/2016 19:58:08"},{"LineaBandera":"115 AEROPUERTO Adaptado","bandera":"AEROPUERTO","latitud":"-32.95463","longitud":"-60.63723","arribo":"44 min","interno":"200","horaGPS":"12\/10\/2016 19:57:56"}]);
+    public JSONArray getInfo() {return array;}
+
     public ArrayList<String> parserResult(String datos)
     {
+        String start_tag = "JSONcoordenadas = eval(";
+        String end_tag = ");";
         ArrayList<String> result = new ArrayList<String>();
-        Log.d("getTimeArrive",datos);
-        String [] lineas = datos.substring(11).split("-");
-        for(int i = 0; i < lineas.length; i++) {
-            if (lineas[i].trim().substring(0,1).equals("<")) {
-                break;
-            }
-            if (lineas[i].length() > 6 ) {
-                Log.d("sublinea",lineas[i]);
-                if (lineas[i].indexOf(":") > 0) {
-                    int dospuntos_pos = lineas[i].indexOf(":");
-                    int bandera_pos = lineas[i].substring(0,dospuntos_pos).lastIndexOf(' ');
-                    String bandera = lineas[i].substring(0,dospuntos_pos).substring(bandera_pos);
 
+        int index = datos.indexOf(start_tag);
+        if (index > 0) {
+            index += start_tag.length();
+            datos = datos.substring(index);
+            Log.d(TAG,datos);
 
-                    String steps = lineas[i].substring(lineas[i].indexOf(":") + 1);
-                    if (!lineas[i].contains("min")) {
-                        result.add(bandera + ":" + steps);
-                    } else if (lineas[i].contains("Prox. serv.")) {
-                        result.add(bandera + ":" + steps);
-                    } else {
-                        String[] ll = steps.split("siguiente");
-                        for (int j = 0; j < ll.length; j++) {
-                            if (ll[j].length() > 0) {
-                                Log.d("TIME", ll[j]);
-                                SimpleDateFormat df = new SimpleDateFormat("HH:mm");
-                                Calendar now = Calendar.getInstance();
-                                now.add(Calendar.MINUTE, ExpandAnimation.strToInteger(ll[j], 1));
-                                result.add(bandera + ":" + ll[j] + " llega " + df.format(now.getTime()) + "Hs");
-                            }
-                        }
+            int index_b = datos.indexOf(end_tag);
+            if (index_b > 0) {
+                datos = datos.substring(0,index_b);
+                Log.d(TAG,datos);
+                try {
+                    array = new JSONArray(datos);
+
+                    for (int i = 0; i < array.length(); i ++) {
+                        JSONObject o = array.getJSONObject(i);
+                        String linea = o.getString("LineaBandera");
+                        if (linea.equals("Parada")) continue;
+
+                        String resultado = "";
+                        resultado += o.getString("LineaBandera") + " (" + o.getString("interno") + ") :  " + o.getString("arribo");
+
+                        result.add(resultado);
+
                     }
-                } else {
-                    result.add(lineas[i]);
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
             }
+
+        } else {
+            result.add(datos);
         }
+
         return result;
     }
 
@@ -86,7 +93,7 @@ public class getTimeArrive {
     public ArrayList<String> run()
     {
         try {
-            String url = "http://etr.gov.ar/ajax/cuandollega/getSmsResponseEfisat.php";
+            String url = "http://www.etr.gov.ar/ajax/cuandollega/getSmsResponseEfisatTest.php";
             InputStream content = null;
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(url);
@@ -119,5 +126,4 @@ public class getTimeArrive {
             return sb.toString();
         } catch (Exception e){return "";}
     }
-
 }

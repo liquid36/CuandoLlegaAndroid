@@ -321,31 +321,35 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
         criteria.setCostAllowed(true);
         LocationManager lm = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         //lm.requestSingleUpdate(criteria, this, null);
-        lm.requestLocationUpdates(0,0,criteria,this,null);
+        try {
+            lm.requestLocationUpdates(0, 0, criteria, this, null);
+        } catch (Exception e) {};
     }
 
     public GeoPoint getLastLocation()
     {
-        float bestAccuracy = Float.MAX_VALUE;
-        long minTime = Long.MIN_VALUE,bestTime = Long.MIN_VALUE;
-        Location bestResult = null;
-        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        List<String> matchingProviders = lm.getAllProviders();
-        for (String provider: matchingProviders) {
-            Location location = lm.getLastKnownLocation(provider);
-            if (location != null) {
-                float accuracy = location.getAccuracy();
-                long time = location.getTime();
-                if (time > bestTime ){
-                    bestResult = location;
-                    bestTime = time;
+        try {
+            float bestAccuracy = Float.MAX_VALUE;
+            long minTime = Long.MIN_VALUE, bestTime = Long.MIN_VALUE;
+            Location bestResult = null;
+            LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+            List<String> matchingProviders = lm.getAllProviders();
+            for (String provider : matchingProviders) {
+                Location location = lm.getLastKnownLocation(provider);
+                if (location != null) {
+                    float accuracy = location.getAccuracy();
+                    long time = location.getTime();
+                    if (time > bestTime) {
+                        bestResult = location;
+                        bestTime = time;
+                    }
                 }
             }
+            if (bestResult != null)
+                return new GeoPoint(bestResult);
+        } catch (Exception e) {
+            return null;
         }
-        if (bestResult != null )
-            return new GeoPoint(bestResult);
-
-        return null;
     }
 
 

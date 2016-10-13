@@ -32,6 +32,7 @@ import com.samsoft.cuandollega.extra.DialogAccion;
 import com.samsoft.cuandollega.extra.FavDialog;
 import com.samsoft.cuandollega.extra.SMSAction;
 import com.samsoft.cuandollega.extra.getTimeArrive;
+import com.samsoft.cuandollega.extra.getTimeArriveTest;
 import com.samsoft.cuandollega.extra.lunchFavAction;
 import com.samsoft.cuandollega.objects.stopsGroup;
 
@@ -231,7 +232,8 @@ public class paradasinfo extends ActionBarActivity {
                 parada = stop.getInt("parada");
                 linea = stop.getString("linea");
 
-                datos = new getTimeArrive(db.getBusId(linea),parada).run();
+                getTimeArriveTest times =  new getTimeArriveTest(db.getBusId(linea),parada);
+                datos = times.run();
                 return !datos.isEmpty();
 
             } catch (Exception e) {
@@ -246,8 +248,13 @@ public class paradasinfo extends ActionBarActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             Log.d("paradaInfo","Resultado: " + result);
+
+            LinearLayout list = (LinearLayout) v;
+            ProgressBar bar = (ProgressBar) list.findViewById(R.id.waitingbar);
+            bar.setVisibility(View.GONE);
+
             if (result) {
-                LinearLayout list = (LinearLayout) v;
+
                 for (int i = 0; i < datos.size(); i++) {
                     TextView t = new TextView(contex);
                     t.setText(datos.get(i));
@@ -255,10 +262,9 @@ public class paradasinfo extends ActionBarActivity {
                     list.addView(t);
                 }
 
-                ProgressBar bar = (ProgressBar) list.findViewById(R.id.waitingbar);
                 ImageView img = (ImageView) list.findViewById(R.id.actionIcon);
-                bar.setVisibility(View.GONE);
                 img.setVisibility(View.VISIBLE);
+
                 Log.d("paradaInfo",bar + " " + img);
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
