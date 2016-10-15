@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="25dp"
+    android:paddingTop="15dp"
+    android:animateLayoutChanges="false">
+
+    <ImageView
+        app:srcCompat="@drawable/play"
+        android:id="@+id/imageView"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingTop="0dp" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="normal|bold"
+            android:id="@+id/tarjeta_dni"
+            android:textColor="@android:color/background_dark" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="25dp"
+            android:id="@+id/tarjeta_numero"
+            android:textColor="@android:color/background_dark" />
+    </LinearLayout>
+
+</LinearLayout>

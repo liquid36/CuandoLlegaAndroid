@@ -42,7 +42,7 @@ public class updateDB
                 updateDB.CopyFile(in, out);
             }
             db.AttachDB(dbfile.getAbsolutePath());
-            //db.Close();
+            db.Close();
             dbfile.delete();
             return true;
         } catch (Exception e) {

@@ -212,7 +212,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     {
         try {
             progresDialog = ProgressDialog.show(this, "Cargando base de datos", "Por favor espere...", true);
-            updateDB run = new updateDB(getApplicationContext(), db);
+            DataBase _db = new DataBase(getApplicationContext());
+            updateDB run = new updateDB(getApplicationContext(), _db);
             run.firstLoad(progresDialog);
             settings.putBoolean("db-update",true);
         } catch (Exception e) {

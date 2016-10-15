@@ -8,7 +8,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView3" >
+        android:id="@+id/scrollView3" android:fillViewport="true" >
 
         <LinearLayout
             android:orientation="vertical"
@@ -75,6 +75,24 @@
                 android:id="@+id/webView"
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Tarjetas recordadas"
+                android:maxLines="5"
+                android:textStyle="normal|bold"
+                android:textAllCaps="true" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tarjetaList">
+
+            </LinearLayout>
+
 
             </LinearLayout>
     </ScrollView>

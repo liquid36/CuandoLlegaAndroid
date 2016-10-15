@@ -1,10 +1,13 @@
 package com.samsoft.cuandollega.Fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +20,20 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.samsoft.cuandollega.R;
 import com.samsoft.cuandollega.extra.DialogAccion;
+import com.samsoft.cuandollega.objects.colectivoAdapter;
 import com.samsoft.cuandollega.objects.settingRep;
+import com.samsoft.cuandollega.objects.tarjetaAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by sam on 7/03/16.
@@ -35,12 +43,16 @@ public class CuantoTengo extends Fragment {
     public static final String TARJETA_KEY = "TARJETA";
     public static final String DOCUMENTO_KEY = "DOCUMENTO";
     public static final String MESSAGE_KEY = "MESSAGE";
+    public static final String TARJETAS_KEY = "TARJETAS_LISTADO";
     public String message;
     public settingRep settings;
     public EditText txtTarjeta;
     public EditText txtDocumento;
     public TextView lbMsg;
 
+    private LinearLayout ll;
+    private tarjetaAdapter  madapter;
+    private JSONArray tarjetas;
 
     public void setMessage(String m) {
         message = m;
@@ -67,10 +79,25 @@ public class CuantoTengo extends Fragment {
             setMessage(savedInstanceState.getString(MESSAGE_KEY));
         }
 
+        tarjetas = new JSONArray();
         if (settings.repo.contains(TARJETA_KEY)) {
             txtTarjeta.setText(settings.getString(TARJETA_KEY));
             txtDocumento.setText(settings.getString(DOCUMENTO_KEY));
         }
+
+        if (settings.repo.contains(TARJETAS_KEY)) {
+            String temp = settings.getString(TARJETAS_KEY);
+            try {
+                tarjetas = new JSONArray(temp);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        ll = (LinearLayout) v.findViewById(R.id.tarjetaList);
+        //madapter = new tarjetaAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>(),events);
+        recalcularAdapter();
+        //lw.setAdapter(madapter);
 
         web.getSettings().setJavaScriptEnabled(true);
         web.getSettings().setPluginState(WebSettings.PluginState.ON);
@@ -95,7 +122,9 @@ public class CuantoTengo extends Fragment {
                     if (cbRecordar.isChecked()) {
                         settings.putString(TARJETA_KEY,nroTarj);
                         settings.putString(DOCUMENTO_KEY,nroDNI);
+                        agregarTarjeta(nroDNI,nroTarj);
                     }
+
                     nroTarj = nroTarj.substring(0,16);
                     web.loadUrl("javascript:ObtenerOperaciones(" + nroTarj + "," + nroDNI + ")");
                     setMessage("Obteniendo información...");
@@ -107,6 +136,54 @@ public class CuantoTengo extends Fragment {
         mostrarMensaje();
         return v;
 
+    }
+
+    public void  recalcularAdapter()
+    {
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ll.removeAllViews();
+        try {
+            for(int i = 0; i < tarjetas.length();i++) {
+                JSONObject o = tarjetas.getJSONObject(i);
+                View v = inflater.inflate(R.layout.itemlist_cuantotengo_tarjeta, null);
+                TextView txt_dni = (TextView) v.findViewById(R.id.tarjeta_dni);
+                TextView txt_numero = (TextView) v.findViewById(R.id.tarjeta_numero);
+                String numero = o.getString("tarjeta");
+                String dni = o.getString("dni");
+                txt_dni.setText(dni);
+                txt_numero.setText(numero);
+                v.setTag(i);
+                v.setOnClickListener(onClick);
+                v.setOnLongClickListener(onLong);
+
+                ll.addView(v);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void agregarTarjeta(String dni, String tarjeta)
+    {
+        try {
+            for(int i = 0; i < tarjetas.length();i++) {
+                JSONObject o = tarjetas.getJSONObject(i);
+                if (dni.equals(o.getString("dni"))) {
+                    return;
+                }
+            }
+            JSONObject n = new JSONObject();
+            n.put("dni",dni);
+            n.put("tarjeta",tarjeta);
+            tarjetas.put(n);
+            settings.putString(TARJETAS_KEY, tarjetas.toString());
+            recalcularAdapter();
+            //madapter.notifyDataSetChanged();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void mostrarMensaje()
@@ -121,6 +198,63 @@ public class CuantoTengo extends Fragment {
                     ,"Aceptar" ,"" , null).Show();
         }
     }
+
+    private  final View.OnClickListener onClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            try {
+                int i = (int) view.getTag();
+                txtTarjeta.setText(tarjetas.getJSONObject(i).getString("tarjeta"));
+                txtDocumento.setText(tarjetas.getJSONObject(i).getString("dni"));
+            } catch (Exception e) {}
+        }
+    };
+
+    private final View.OnLongClickListener onLong = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View view) {
+            final int ii = (int) view.getTag();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Eliminar tarjeta");
+            builder.setMessage("¿Desea olvidar esta tarjeta?");
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    try {
+                        Log.d(TAG,"paso por aca");
+                        tarjetas.remove(ii);
+                        settings.putString(TARJETAS_KEY, tarjetas.toString());
+                        recalcularAdapter();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            builder.setNegativeButton("Cancelar",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            builder.show();
+            return false;
+        }
+    };
+
+    private  final tarjetaAdapter.tarjetaAdapterListener events = new tarjetaAdapter.tarjetaAdapterListener() {
+        @Override
+        public void OnItemClick(Integer position) {
+            try {
+                txtTarjeta.setText(tarjetas.getJSONObject(position).getString("tarjeta"));
+                txtDocumento.setText(tarjetas.getJSONObject(position).getString("dni"));
+            } catch (Exception e){}
+        }
+
+        @Override
+        public void OnItemLongClick(final Integer position) {
+
+        }
+    };
 
     public class WebViewJavaScriptInterface{
 
