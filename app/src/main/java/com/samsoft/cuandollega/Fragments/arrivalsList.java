@@ -35,7 +35,7 @@ public class arrivalsList extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        db = new DataBase(getActivity().getApplicationContext());
+        //db = new DataBase(getActivity().getApplicationContext());
 
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);

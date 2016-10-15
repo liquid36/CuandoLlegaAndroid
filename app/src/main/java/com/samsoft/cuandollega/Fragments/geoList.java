@@ -70,7 +70,7 @@ public class geoList extends Fragment implements LocationListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        db = new DataBase(getActivity().getApplicationContext());
+        //db = new DataBase(getActivity().getApplicationContext());
 
         settings = new settingRep(getActivity().getApplicationContext());
 
@@ -131,10 +131,12 @@ public class geoList extends Fragment implements LocationListener{
 
     public void recalcularAdapter()
     {
+        db = new DataBase(getActivity().getApplicationContext());
         ArrayList<ContentValues> arr = db.getClosePoint(lat.toString(),lng.toString(),radius);
         mAdapter.clear();
         for(int i = 0; i < arr.size();i++)
             try {mAdapter.add(arr.get(i));} catch (Exception e) {e.printStackTrace();}
+        db.Close();
     }
 
     public void refreshScreen()

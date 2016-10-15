@@ -56,7 +56,7 @@ public class colectivoList extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-        db = new DataBase(getActivity().getApplicationContext());
+        //db = new DataBase(getActivity().getApplicationContext());
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
         madapter = new colectivoAdapter(getActivity().getApplicationContext(),new ArrayList<JSONObject>(),events);
@@ -68,6 +68,7 @@ public class colectivoList extends Fragment {
 
     public void recalcularAdapter(Integer idCalle,Integer idInterseccion)
     {
+        db = new DataBase(getActivity().getApplicationContext());
         this.idCalle = idCalle; this.idInterseccion = idInterseccion;
         JSONArray arr = new JSONArray();
         JSONObject o = new JSONObject();
@@ -88,7 +89,7 @@ public class colectivoList extends Fragment {
         }
         for(int i = 0; i < arr.length();i++)
             try {madapter.add(arr.getJSONObject(i));} catch (Exception e) {e.printStackTrace();}
-
+        db.Close();
     }
 
     public void refreshScreen()

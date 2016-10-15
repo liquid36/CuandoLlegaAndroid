@@ -69,7 +69,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (datos != null && datos.containsKey("Stops")) stops = stopsGroup.stringtoStops(datos.getString("Stops"));
         else stops = new stopsGroup[]{};
 
-        db = new DataBase(getApplicationContext());
+        //db = new DataBase(getApplicationContext());
 
         int versionCode = BuildConfig.VERSION_CODE ;
         int lastCode = settings.getInteger("Version");

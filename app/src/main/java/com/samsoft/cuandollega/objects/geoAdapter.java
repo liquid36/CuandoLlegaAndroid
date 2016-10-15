@@ -40,6 +40,7 @@ public class geoAdapter extends ArrayAdapter<ContentValues> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        db = new DataBase(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.georow, parent, false);
         try {
@@ -75,6 +76,7 @@ public class geoAdapter extends ArrayAdapter<ContentValues> {
             }
 
         } catch (Exception e ) {e.printStackTrace();}
+        db.Close();
         return rowView;
     }
 

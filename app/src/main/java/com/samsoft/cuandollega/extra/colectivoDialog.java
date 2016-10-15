@@ -17,7 +17,7 @@ import org.json.JSONArray;
  */
 public class colectivoDialog {
     private AlertDialog alert;
-    public colectivoDialog(final Context c,DataBase db,ContentValues values) {
+    public colectivoDialog(final Context c, DataBase db, ContentValues values) {
         final Integer idCalle = values.getAsInteger("idCalle");
         final Integer idInter = values.getAsInteger("idInter");
         String name1 = db.getCalleName(idCalle);
@@ -49,6 +49,7 @@ public class colectivoDialog {
             }
         });
         alert = builder.create();
+        db.Close();
     }
 
     public void show()

@@ -61,7 +61,11 @@ public class calleList extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        String calle_name = "";
         db = new DataBase(getActivity().getApplicationContext());
+        if (mCalle != 0) {
+            calle_name = db.getCalleName(mCalle);
+        }
 
         View v = inflater.inflate(R.layout.list_view, container, false);
         ListView lw = (ListView) v.findViewById(R.id.listView);
@@ -70,18 +74,21 @@ public class calleList extends Fragment {
         lw.setAdapter(madapter);
 
         if (mCalle != 0) {
-            String txtcalle = db.getCalleName(mCalle);
             LinearLayout msgCalle = (LinearLayout) v.findViewById(R.id.msgCalle);
             TextView t = (TextView) msgCalle.findViewById(R.id.labCalle);
-            t.setText(txtcalle + " Y ...");
+            t.setText(calle_name + " Y ...");
             msgCalle.setVisibility(View.VISIBLE);
         }
         setHasOptionsMenu(true);
+
         return v;
     }
 
     public void recalcularAdapter(Integer idCalle,String colectivo,String name)
     {
+        if (db == null) {
+            db = new DataBase(getActivity().getApplicationContext());
+        }
         try {
             mCalle = idCalle;
             mColectivo = colectivo;
@@ -97,6 +104,8 @@ public class calleList extends Fragment {
                     e.printStackTrace();
                 }
         }catch (Exception e) {e.printStackTrace();}
+        db.Close();
+        db = null;
     }
 
     public void refreshScreen()
@@ -123,7 +132,7 @@ public class calleList extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if (s != null && db != null)
+                if (s != null)
                     recalcularAdapter(mCalle,mColectivo,s);
                 return false;
             }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.samsoft.cuandollega.Activities.ArrivalsActivity;
 import com.samsoft.cuandollega.Activities.MainTabActivity;
 import com.samsoft.cuandollega.R;
 import com.samsoft.cuandollega.objects.settingRep;
@@ -109,7 +110,8 @@ public class controlerSelector extends Fragment implements  actionSelect.actionS
             settingRep s = new settingRep(getActivity().getApplicationContext());
             if (!s.getString("Reciente").equals(""))  {
                 String sreciente = s.getString("Reciente");
-                Intent i = new Intent(getActivity(), paradasinfo.class);
+                //Intent i = new Intent(getActivity(), paradasinfo.class);
+                Intent i = new Intent(getActivity(), ArrivalsActivity.class);
                 i.putExtra("Stops",sreciente);
                 startActivity(i);
             } else {

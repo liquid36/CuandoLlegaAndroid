@@ -94,6 +94,15 @@ public class ArrivalsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (db != null) {
+            db.Close();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.paradasinfo, menu);
         return true;
@@ -206,8 +215,8 @@ public class ArrivalsActivity extends AppCompatActivity {
                         info.calle = idCalle;
                         info.inter = idInter;
                     }
-                    info.calle_name = db.getCalleName(idCalle);
-                    info.inter_name = db.getCalleName(idInter);
+                    info.calle_name = db.getCalleName(info.calle);
+                    info.inter_name = db.getCalleName(info.inter);
                     info.parada     = o.getInt("parada");
                     info.isFavorite = db.chekcFavorito(info.bus_name,info.parada );
 

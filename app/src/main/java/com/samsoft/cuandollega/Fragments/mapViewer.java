@@ -98,7 +98,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         //if (_view == null) {
-            db = new DataBase(getActivity().getApplicationContext());
+            //db = new DataBase(getActivity().getApplicationContext());
 
             Integer pos = ((ActionBarActivity) getActivity()).getSupportActionBar().getSelectedTab().getPosition();
             if (pos == 2) {
@@ -356,6 +356,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
 
     public void recalcularParadas(GeoPoint p)
     {
+        db = new DataBase(getActivity().getApplicationContext());
         deleteMarker();
         ArrayList<ContentValues> paradas  = db.getNearBuses(Double.toString(p.getLatitude()), Double.toString(p.getLongitude()), mParada.getRadius());
 
@@ -372,6 +373,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
             mPoints.add(m);
         }
         map.invalidate();
+        db.Close();
     }
 
     public void deleteMarker()
@@ -444,7 +446,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
     private Marker.OnMarkerClickListener clickEvents = new Marker.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker, MapView mapView) {
-            colectivoDialog d = new colectivoDialog(getActivity(),db,(ContentValues) marker.getRelatedObject());
+            colectivoDialog d = new colectivoDialog(getActivity() ,  new DataBase(getActivity().getApplicationContext()) /*db*/,(ContentValues) marker.getRelatedObject());
             d.show();
             return true;
         }
@@ -474,6 +476,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
 
         @Override
         protected Boolean doInBackground(Integer... idCole) {
+            db = new DataBase(getActivity().getApplicationContext());
             Integer idColectivo = idCole[0];
             try {
                 Log.d("mapViewer",idColectivo.toString());
@@ -504,7 +507,7 @@ public class mapViewer extends Fragment implements MapEventsReceiver , LocationL
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            db.Close();
             /*try {
                 JSONArray points = db.getRecorrido(idColectivo,"vuelta");
                 ArrayList<GeoPoint> pointsList = new ArrayList<GeoPoint>();

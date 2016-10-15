@@ -109,7 +109,7 @@ public class favoriteList extends Fragment {
 
     public void recalcularAdapter()
     {
-        //db = new DataBase(getActivity().getApplicationContext());
+        db = new DataBase(getActivity().getApplicationContext());
         if (db != null) {
             JSONArray arr = db.getFavoritos();
             madapter.clear();
@@ -121,7 +121,7 @@ public class favoriteList extends Fragment {
                 }
             }
         }
-        //db.Close();
+        db.Close();
 
     }
 
@@ -136,7 +136,7 @@ public class favoriteList extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         //db = new DataBase(activity.getApplicationContext());
-        db = ((MainTabActivity) activity).db;
+        //db = ((MainTabActivity) activity).db;
         try {
             mListener = (favoriteListListener) activity;
         } catch (ClassCastException e) {
@@ -172,7 +172,9 @@ public class favoriteList extends Fragment {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     JSONObject o = (JSONObject) madapter.getItem(position);
                     try {
+                        db = new DataBase(getActivity().getApplicationContext());
                         db.removeFavorito(o.getInt("id"));
+                        db.Close();
                         recalcularAdapter();
                         madapter.notifyDataSetChanged();
                     } catch (Exception e) {
