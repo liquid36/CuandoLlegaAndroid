@@ -92,7 +92,9 @@ public class favoriteList extends Fragment {
                                     Toast.makeText(getActivity(),"Campo vacío" , Toast.LENGTH_SHORT).show();
                                     return;
                                 }
+                                db = new DataBase(getActivity().getApplicationContext());
                                 db.addFavorito(txt);
+                                db.Close();
                                 recalcularAdapter();
                             }
 

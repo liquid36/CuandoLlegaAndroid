@@ -93,7 +93,7 @@ public class getTimeArriveTest {
     public ArrayList<String> run()
     {
         try {
-            String url = "http://www.etr.gov.ar/ajax/cuandollega/getSmsResponseEfisatTest.php";
+            String url = "http://www.etr.gov.ar/ajax/cuandollega/getSmsResponseEfisat.php";
             InputStream content = null;
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(url);
